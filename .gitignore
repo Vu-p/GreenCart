@@ -54,14 +54,19 @@ stitch_greencart_smart_grocery_app/
 **/.flutter-plugins
 **/.flutter-plugins-dependencies
 **/.packages
+**/.plugin_symlinks/
 **/build/
 **/coverage/
 **/doc/api/
 **/.pub-cache/
 **/.pub/
+**/*.dill
 **/ios/Flutter/.last_build_id
+**/ios/Flutter/Generated.xcconfig
 **/ios/Flutter/ephemeral/
+**/ios/Flutter/flutter_assets/
 **/ios/Flutter/flutter_export_environment.sh
+**/ios/Runner/GeneratedPluginRegistrant.*
 
 # Flutter generated release artifacts
 *.symbols
@@ -71,12 +76,19 @@ app.*.map.json
 **/android/app/debug/
 **/android/app/profile/
 **/android/app/release/
+**/android/app/build/
+**/android/app/.cxx/
+**/android/app/generated/
+**/android/app/intermediates/
+**/android/app/outputs/
+**/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
 **/android/.gradle/
 **/android/local.properties
 
 # iOS generated artifacts
 **/ios/Pods/
 **/ios/.symlinks/
+**/ios/DerivedData/
 **/ios/Flutter/Flutter.framework
 **/ios/Flutter/Flutter.podspec
 **/ios/Runner.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
