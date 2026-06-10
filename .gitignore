@@ -4,9 +4,17 @@ Thumbs.db
 *.swp
 *.swo
 .idea/
+**/.vs/
 .vscode/*
 !.vscode/settings.json
 !.vscode/extensions.json
+*.vsidx
+*.dtbcache.v2
+*.futdcache.v2
+*.metadata.v*.bin
+*.projects.v*.bin
+*.strings.v*.bin
+DocumentLayout.json
 
 # Logs and environment
 *.log
