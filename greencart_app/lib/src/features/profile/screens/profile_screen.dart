@@ -10,6 +10,7 @@ import 'package:greencart_app/src/core/widgets/organic_card.dart';
 import 'package:greencart_app/src/core/widgets/organic_promo_banner.dart';
 import 'package:greencart_app/src/features/auth/application/auth_controller.dart';
 import 'package:greencart_app/src/features/auth/screens/login_screen.dart';
+import 'package:greencart_app/src/features/meal_planner/screens/meal_planner_screen.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -137,6 +138,29 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             title: 'Save \$124.50 this month',
             subtitle: 'Free delivery on every organic order.',
             icon: Icons.local_shipping_outlined,
+          ),
+          const SizedBox(height: 14),
+          InkWell(
+            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+            onTap: () => context.go(MealPlannerScreen.routePath),
+            child: const OrganicCard(
+              child: Row(
+                children: [
+                  Icon(Icons.restaurant_menu, color: AppTheme.primary),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'Open weekly meal planner',
+                      style: TextStyle(
+                        color: AppTheme.charcoalInk,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                  Icon(Icons.chevron_right, color: AppTheme.outline),
+                ],
+              ),
+            ),
           ),
           const SizedBox(height: 22),
           OrganicCard(

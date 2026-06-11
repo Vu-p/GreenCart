@@ -19,7 +19,7 @@ class OrdersScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const MobilePageTitle(
-          title: 'Orders',
+          title: 'Order History',
           subtitle: 'Track weekly grocery runs',
         ),
         actions: const [
