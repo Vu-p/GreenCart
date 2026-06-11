@@ -1,0 +1,97 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+**/.vs/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.vsidx
+*.dtbcache.v2
+*.futdcache.v2
+*.metadata.v*.bin
+*.projects.v*.bin
+*.strings.v*.bin
+DocumentLayout.json
+
+# Logs and environment
+*.log
+*.tmp
+*.temp
+.env
+.env.*
+!.env.example
+
+# Local app configuration / secrets
+**/appsettings.json
+**/appsettings.*.json
+!**/appsettings.example.json
+
+# .NET
+**/bin/
+**/obj/
+**/TestResults/
+*.user
+*.suo
+*.rsuser
+*.nupkg
+packages/
+
+# Local SQLite databases
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Design exports / large local references
+stitch_greencart_smart_grocery_app/
+
+# Flutter / Dart
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.packages
+**/.plugin_symlinks/
+**/build/
+**/coverage/
+**/doc/api/
+**/.pub-cache/
+**/.pub/
+**/*.dill
+**/ios/Flutter/.last_build_id
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/ephemeral/
+**/ios/Flutter/flutter_assets/
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/Runner/GeneratedPluginRegistrant.*
+
+# Flutter generated release artifacts
+*.symbols
+app.*.map.json
+
+# Android generated artifacts
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+**/android/app/build/
+**/android/app/.cxx/
+**/android/app/generated/
+**/android/app/intermediates/
+**/android/app/outputs/
+**/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+**/android/.gradle/
+**/android/local.properties
+
+# iOS generated artifacts
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/DerivedData/
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Runner.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
+**/ios/Runner.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+**/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
+**/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist

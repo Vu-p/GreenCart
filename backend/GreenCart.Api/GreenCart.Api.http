@@ -1,0 +1,32 @@
+@GreenCart.Api_HostAddress = http://localhost:5126
+
+GET {{GreenCart.Api_HostAddress}}/api/categories
+Accept: application/json
+
+###
+
+GET {{GreenCart.Api_HostAddress}}/api/products?isDeal=true&inStock=true
+Accept: application/json
+
+###
+
+POST {{GreenCart.Api_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test Customer",
+  "email": "customer@example.local",
+  "password": "password123"
+}
+
+###
+
+POST {{GreenCart.Api_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "customer@example.local",
+  "password": "password123"
+}
+
+###
