@@ -15,6 +15,9 @@ public sealed class ProductsController(AppDbContext dbContext) : ControllerBase
         [FromQuery] Guid? categoryId,
         [FromQuery] decimal? minPrice,
         [FromQuery] decimal? maxPrice,
+        [FromQuery] bool? isDeal,
+        [FromQuery] bool? isOrganic,
+        [FromQuery] bool? inStock,
         CancellationToken cancellationToken)
     {
         var query = dbContext.Products.Include(product => product.Category).AsNoTracking();
@@ -42,23 +45,29 @@ public sealed class ProductsController(AppDbContext dbContext) : ControllerBase
             query = query.Where(product => product.Price <= maxPrice);
         }
 
+        if (isDeal is not null)
+        {
+            query = query.Where(product => product.IsDeal == isDeal);
+        }
+
+        if (isOrganic is not null)
+        {
+            query = query.Where(product => product.IsOrganic == isOrganic);
+        }
+
+        if (inStock is not null)
+        {
+            query = inStock.Value
+                ? query.Where(product => product.Stock > 0)
+                : query.Where(product => product.Stock <= 0);
+        }
+
         var products = await query
             .OrderByDescending(product => product.IsDeal)
             .ThenBy(product => product.Name)
-            .Select(product => new ProductResponse(
-                product.Id,
-                product.Name,
-                product.Description,
-                product.Price,
-                product.Stock,
-                product.ImageUrl,
-                product.CategoryId,
-                product.Category == null ? string.Empty : product.Category.Name,
-                product.IsOrganic,
-                product.IsDeal))
             .ToListAsync(cancellationToken);
 
-        return Ok(products);
+        return Ok(products.Select(ApiMappings.ToResponse).ToList());
     }
 
     [HttpGet("{id:guid}")]
@@ -69,19 +78,6 @@ public sealed class ProductsController(AppDbContext dbContext) : ControllerBase
             .AsNoTracking()
             .SingleOrDefaultAsync(product => product.Id == id, cancellationToken);
 
-        return product is null ? NotFound() : Ok(ToResponse(product));
+        return product is null ? NotFound() : Ok(ApiMappings.ToResponse(product));
     }
-
-    private static ProductResponse ToResponse(Models.Product product) =>
-        new(
-            product.Id,
-            product.Name,
-            product.Description,
-            product.Price,
-            product.Stock,
-            product.ImageUrl,
-            product.CategoryId,
-            product.Category?.Name ?? string.Empty,
-            product.IsOrganic,
-            product.IsDeal);
 }

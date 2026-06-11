@@ -3,7 +3,7 @@
 Week 1 implements the end-to-end authentication foundation for GreenCart:
 
 - .NET 8 Web API in `backend/GreenCart.Api`
-- SQLite development database
+- SQLite app database
 - Flutter mobile app in `greencart_app`
 - Register, login, restore session, profile update, and logout
 - Splash follows the Stitch design: `Get Started` opens Login, while an existing valid token opens the app.
@@ -35,6 +35,8 @@ The SQLite database file is created automatically as:
 backend/GreenCart.Api/greencart.db
 ```
 
+If your local database was created before EF Core migrations were added, delete `backend/GreenCart.Api/greencart.db` once and restart the API so SQLite can rebuild from migrations.
+
 Optional development admin seed is controlled by local `appsettings.json`:
 
 ```json
@@ -46,7 +48,7 @@ Optional development admin seed is controlled by local `appsettings.json`:
 }
 ```
 
-SQLite is the Week 1/MVP development database. Before the realtime Order/Admin phase, the project should migrate to PostgreSQL.
+SQLite is the application database for GreenCart. Later order, admin, and realtime phases continue to use SQLite with EF Core migrations.
 
 ## Run the Flutter App
 
@@ -80,12 +82,12 @@ flutter analyze
 flutter test
 ```
 
-## Realtime Roadmap
+## Backend Roadmap
 
-Realtime features are documented for later weeks, not implemented in Week 2:
+Backend features are implemented progressively by feature branch:
 
-- Realtime Order Tracking: Admin changes order status through `Pending -> Confirmed -> Delivering -> Completed`; ASP.NET SignalR pushes updates to the customer Order Detail screen without refresh.
-- Realtime Product Substitution: Admin proposes a replacement product when an item is out of stock; SignalR pushes an `Accept / Decline` popup to the customer app.
-- Backend realtime technology: ASP.NET SignalR.
-- Flutter realtime technology: `signalr_netcore`.
-- Database for realtime/order phase: PostgreSQL.
+- Auth/Profile: register, login, restore session, profile update, logout, and password change.
+- Catalog: categories, products, filters, deals, organic and stock views.
+- Cart/Checkout/Orders: authenticated cart, checkout transaction, order history, order tracking, and cancellation.
+- Reviews/Admin/Realtime: order reviews, product reviews, admin product/order management, and SignalR order updates.
+- Database: SQLite remains the database for all phases.
