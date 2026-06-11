@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:greencart_app/src/core/theme/app_theme.dart';
-import 'package:greencart_app/src/core/widgets/app_nav_bar.dart';
 import 'package:greencart_app/src/core/widgets/mobile_page_title.dart';
 import 'package:greencart_app/src/core/widgets/organic_state_message.dart';
 import 'package:greencart_app/src/features/catalog/data/product_repository.dart';
@@ -40,6 +39,17 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   @override
+  void didUpdateWidget(covariant SearchScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialCategoryId != widget.initialCategoryId ||
+        oldWidget.initialCategoryName != widget.initialCategoryName) {
+      _categoryId = widget.initialCategoryId;
+      _categoryName = widget.initialCategoryName;
+      _productsFuture = _loadProducts();
+    }
+  }
+
+  @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
@@ -52,6 +62,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   void _search() {
+    FocusManager.instance.primaryFocus?.unfocus();
     setState(() {
       _productsFuture = _loadProducts();
     });
@@ -75,6 +86,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         ),
       ),
       body: ListView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
         children: [
           TextField(
@@ -154,7 +166,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: const AppNavBar(currentIndex: 1),
     );
   }
 }

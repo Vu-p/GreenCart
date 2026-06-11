@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:greencart_app/src/core/theme/app_theme.dart';
 import 'package:greencart_app/src/core/utils/currency_formatter.dart';
 import 'package:greencart_app/src/core/widgets/organic_card.dart';
+import 'package:greencart_app/src/features/checkout/screens/checkout_screen.dart';
 
 class OrderSummary extends StatelessWidget {
   const OrderSummary({
@@ -32,9 +34,7 @@ class OrderSummary extends StatelessWidget {
           _SummaryRow(label: 'Total', value: total, emphasized: true),
           const SizedBox(height: 20),
           ElevatedButton.icon(
-            onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Checkout starts in Week 3.')),
-            ),
+            onPressed: () => context.push(CheckoutScreen.routePath),
             icon: const Icon(Icons.lock_outline),
             label: const Text('Checkout Securely'),
           ),

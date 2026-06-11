@@ -27,7 +27,13 @@ class AuthScaffold extends StatelessWidget {
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(color: AppTheme.surface),
-        child: scrollable ? SingleChildScrollView(child: content) : content,
+        child: scrollable
+            ? SingleChildScrollView(
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                child: content,
+              )
+            : content,
       ),
     );
   }
