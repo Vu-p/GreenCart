@@ -1,5 +1,6 @@
 using System.Text;
 using GreenCart.Api.Data;
+using GreenCart.Api.Hubs;
 using GreenCart.Api.Options;
 using GreenCart.Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -44,6 +45,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -59,7 +61,7 @@ if (app.Environment.IsDevelopment())
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await dbContext.Database.EnsureCreatedAsync();
+    await dbContext.Database.MigrateAsync();
 
     var seeder = scope.ServiceProvider.GetRequiredService<IDatabaseSeeder>();
     await seeder.SeedAsync();
@@ -71,5 +73,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<OrderHub>("/hubs/orders");
 
 app.Run();

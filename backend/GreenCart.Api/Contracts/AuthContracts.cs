@@ -11,6 +11,10 @@ public sealed record LoginRequest(
     [Required, EmailAddress, MaxLength(255)] string Email,
     [Required, MinLength(8), MaxLength(128)] string Password);
 
+public sealed record ChangePasswordRequest(
+    [Required, MinLength(8), MaxLength(128)] string CurrentPassword,
+    [Required, MinLength(8), MaxLength(128)] string NewPassword);
+
 public sealed record UpdateProfileRequest(
     [Required, MinLength(2), MaxLength(120)] string Name,
     [MaxLength(32)] string? Phone,

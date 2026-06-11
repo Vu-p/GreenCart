@@ -50,6 +50,31 @@ public sealed class AuthController(IAuthService authService) : ControllerBase
         return user is null ? NotFound() : Ok(user);
     }
 
+    [Authorize]
+    [HttpPost("logout")]
+    public IActionResult Logout() => NoContent();
+
+    [Authorize]
+    [HttpPut("change-password")]
+    public async Task<IActionResult> ChangePassword(ChangePasswordRequest request, CancellationToken cancellationToken)
+    {
+        var userId = GetUserId();
+        if (userId is null)
+        {
+            return Unauthorized();
+        }
+
+        try
+        {
+            var changed = await authService.ChangePasswordAsync(userId.Value, request, cancellationToken);
+            return changed ? NoContent() : NotFound();
+        }
+        catch (UnauthorizedAccessException exception)
+        {
+            return Unauthorized(new { message = exception.Message });
+        }
+    }
+
     private Guid? GetUserId()
     {
         var rawId = User.FindFirstValue(ClaimTypes.NameIdentifier);

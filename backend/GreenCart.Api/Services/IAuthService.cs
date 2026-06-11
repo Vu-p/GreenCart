@@ -8,4 +8,5 @@ public interface IAuthService
     Task<AuthResponse> LoginAsync(LoginRequest request, CancellationToken cancellationToken);
     Task<UserResponse?> GetCurrentUserAsync(Guid userId, CancellationToken cancellationToken);
     Task<UserResponse?> UpdateProfileAsync(Guid userId, UpdateProfileRequest request, CancellationToken cancellationToken);
+    Task<bool> ChangePasswordAsync(Guid userId, ChangePasswordRequest request, CancellationToken cancellationToken);
 }

@@ -73,6 +73,24 @@ public sealed class AuthService(AppDbContext dbContext, IOptions<JwtOptions> jwt
         return ToResponse(user);
     }
 
+    public async Task<bool> ChangePasswordAsync(Guid userId, ChangePasswordRequest request, CancellationToken cancellationToken)
+    {
+        var user = await dbContext.Users.SingleOrDefaultAsync(user => user.Id == userId, cancellationToken);
+        if (user is null)
+        {
+            return false;
+        }
+
+        if (!BCrypt.Net.BCrypt.Verify(request.CurrentPassword, user.PasswordHash))
+        {
+            throw new UnauthorizedAccessException("Current password is incorrect.");
+        }
+
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+        await dbContext.SaveChangesAsync(cancellationToken);
+        return true;
+    }
+
     private string CreateToken(User user)
     {
         var claims = new List<Claim>

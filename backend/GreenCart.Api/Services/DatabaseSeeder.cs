@@ -8,7 +8,6 @@ public sealed class DatabaseSeeder(AppDbContext dbContext, IConfiguration config
 {
     public async Task SeedAsync()
     {
-        await EnsureWeek2TablesAsync();
         await SeedAdminAsync();
         await SeedProductsAsync();
     }
@@ -25,13 +24,14 @@ public sealed class DatabaseSeeder(AppDbContext dbContext, IConfiguration config
             return;
         }
 
-        var hasAdmin = await dbContext.Users.AnyAsync(user => user.Email == adminEmail);
+        var normalizedAdminEmail = adminEmail.Trim().ToLowerInvariant();
+        var hasAdmin = await dbContext.Users.AnyAsync(user => user.Email == normalizedAdminEmail);
         if (!hasAdmin)
         {
             dbContext.Users.Add(new User
             {
                 Name = "GreenCart Admin",
-                Email = adminEmail,
+                Email = normalizedAdminEmail,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(adminPassword),
                 Role = UserRoles.Admin
             });
@@ -53,7 +53,9 @@ public sealed class DatabaseSeeder(AppDbContext dbContext, IConfiguration config
             new Category { Name = "Fruit", ImageUrl = "https://images.unsplash.com/photo-1619566636858-adf3ef46400b" },
             new Category { Name = "Dairy", ImageUrl = "https://images.unsplash.com/photo-1628088062854-d1870b4553da" },
             new Category { Name = "Meat", ImageUrl = "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f" },
-            new Category { Name = "Pantry", ImageUrl = "https://images.unsplash.com/photo-1586201375761-83865001e31c" }
+            new Category { Name = "Pantry", ImageUrl = "https://images.unsplash.com/photo-1586201375761-83865001e31c" },
+            new Category { Name = "Bakery", ImageUrl = "https://images.unsplash.com/photo-1509440159596-0249088772ff" },
+            new Category { Name = "Beverages", ImageUrl = "https://images.unsplash.com/photo-1544145945-f90425340c7e" }
         };
 
         dbContext.Categories.AddRange(categories);
@@ -68,7 +70,10 @@ public sealed class DatabaseSeeder(AppDbContext dbContext, IConfiguration config
             Product("TH Fresh Milk", "Pasteurized fresh milk with a clean, naturally creamy taste.", 2.49m, 0, categoryByName["Dairy"], "https://images.unsplash.com/photo-1563636619-e9143da7973b", false, false),
             Product("Greek Yogurt", "High-protein plain yogurt for snacks, bowls, and smoothies.", 3.29m, 31, categoryByName["Dairy"], "https://images.unsplash.com/photo-1488477181946-6428a0291777", false, true),
             Product("Chicken Breast", "Lean chicken breast trimmed and ready for meal prep.", 7.99m, 20, categoryByName["Meat"], "https://images.unsplash.com/photo-1604503468506-a8da13d82791", false, false),
-            Product("Brown Rice", "Nutty whole grain rice for healthy weekly cooking.", 6.49m, 44, categoryByName["Pantry"], "https://images.unsplash.com/photo-1586201375761-83865001e31c", false, false));
+            Product("Brown Rice", "Nutty whole grain rice for healthy weekly cooking.", 6.49m, 44, categoryByName["Pantry"], "https://images.unsplash.com/photo-1586201375761-83865001e31c", false, false),
+            Product("Sourdough Loaf", "Naturally leavened bread with a crisp crust and soft center.", 4.99m, 16, categoryByName["Bakery"], "https://images.unsplash.com/photo-1509440159596-0249088772ff", false, true),
+            Product("Cold Pressed Juice", "Bright green juice with apple, cucumber, spinach, and lime.", 3.99m, 28, categoryByName["Beverages"], "https://images.unsplash.com/photo-1613478223719-2ab802602423", true, false),
+            Product("Free Range Eggs", "Dozen free range eggs for breakfast, baking, and weekly staples.", 4.49m, 35, categoryByName["Dairy"], "https://images.unsplash.com/photo-1506976785307-8732e854ad03", false, true));
 
         await dbContext.SaveChangesAsync();
     }
@@ -93,42 +98,4 @@ public sealed class DatabaseSeeder(AppDbContext dbContext, IConfiguration config
             IsOrganic = isOrganic,
             IsDeal = isDeal
         };
-
-    private async Task EnsureWeek2TablesAsync()
-    {
-        await dbContext.Database.ExecuteSqlRawAsync("""
-            CREATE TABLE IF NOT EXISTS "Categories" (
-                "Id" TEXT NOT NULL CONSTRAINT "PK_Categories" PRIMARY KEY,
-                "Name" TEXT NOT NULL,
-                "ImageUrl" TEXT NULL
-            );
-            """);
-
-        await dbContext.Database.ExecuteSqlRawAsync("""
-            CREATE UNIQUE INDEX IF NOT EXISTS "IX_Categories_Name" ON "Categories" ("Name");
-            """);
-
-        await dbContext.Database.ExecuteSqlRawAsync("""
-            CREATE TABLE IF NOT EXISTS "Products" (
-                "Id" TEXT NOT NULL CONSTRAINT "PK_Products" PRIMARY KEY,
-                "Name" TEXT NOT NULL,
-                "Description" TEXT NOT NULL,
-                "Price" REAL NOT NULL,
-                "Stock" INTEGER NOT NULL,
-                "ImageUrl" TEXT NOT NULL,
-                "CategoryId" TEXT NOT NULL,
-                "IsOrganic" INTEGER NOT NULL,
-                "IsDeal" INTEGER NOT NULL,
-                CONSTRAINT "FK_Products_Categories_CategoryId" FOREIGN KEY ("CategoryId") REFERENCES "Categories" ("Id") ON DELETE RESTRICT
-            );
-            """);
-
-        await dbContext.Database.ExecuteSqlRawAsync("""
-            CREATE INDEX IF NOT EXISTS "IX_Products_CategoryId" ON "Products" ("CategoryId");
-            """);
-
-        await dbContext.Database.ExecuteSqlRawAsync("""
-            CREATE INDEX IF NOT EXISTS "IX_Products_Name" ON "Products" ("Name");
-            """);
-    }
 }
