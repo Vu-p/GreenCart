@@ -50,6 +50,13 @@ class ApiClient {
     return _dio.put(path, data: data, options: await _options(authorized));
   }
 
+  Future<Response<dynamic>> delete(
+    String path, {
+    bool authorized = false,
+  }) async {
+    return _dio.delete(path, options: await _options(authorized));
+  }
+
   Future<Options?> _options(bool authorized) async {
     if (!authorized) {
       return null;

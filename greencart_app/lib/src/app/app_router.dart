@@ -121,7 +121,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: PaymentSuccessScreen.routePath,
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => const PaymentSuccessScreen(),
+        builder: (context, state) => PaymentSuccessScreen(
+          orderId: state.uri.queryParameters['orderId'],
+          orderNumber: state.uri.queryParameters['orderNumber'],
+        ),
       ),
       GoRoute(
         path: DealsScreen.routePath,

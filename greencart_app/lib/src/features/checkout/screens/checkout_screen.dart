@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:greencart_app/src/core/theme/app_theme.dart';
@@ -6,25 +7,21 @@ import 'package:greencart_app/src/core/utils/currency_formatter.dart';
 import 'package:greencart_app/src/core/widgets/animated_entrance.dart';
 import 'package:greencart_app/src/core/widgets/mobile_page_title.dart';
 import 'package:greencart_app/src/core/widgets/organic_card.dart';
+import 'package:greencart_app/src/core/widgets/organic_state_message.dart';
 import 'package:greencart_app/src/core/widgets/section_header.dart';
-import 'package:greencart_app/src/features/cart/data/mock_cart_items.dart';
+import 'package:greencart_app/src/features/checkout/data/checkout_repository.dart';
 import 'package:greencart_app/src/features/checkout/data/mock_checkout.dart';
 import 'package:greencart_app/src/features/checkout/models/delivery_slot.dart';
 import 'package:greencart_app/src/features/checkout/screens/substitution_screen.dart';
 
-class CheckoutScreen extends StatelessWidget {
+class CheckoutScreen extends ConsumerWidget {
   const CheckoutScreen({super.key});
 
   static const routePath = '/checkout';
 
   @override
-  Widget build(BuildContext context) {
-    final subtotal = mockCartItems.fold<double>(
-      0,
-      (total, item) => total + item.price * item.quantity,
-    );
-    final delivery = deliverySlots.first.price;
-    final total = subtotal + delivery;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final previewState = ref.watch(checkoutPreviewProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -33,94 +30,118 @@ class CheckoutScreen extends StatelessWidget {
           subtitle: 'Confirm delivery and payment',
         ),
       ),
-      body: ListView(
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
-        children: [
-          const AnimatedEntrance(
-            child: SectionHeader(title: 'Delivery Address'),
-          ),
-          const SizedBox(height: 12),
-          const AnimatedEntrance(
-            delay: Duration(milliseconds: 80),
-            child: OrganicCard(
-              child: Row(
-                children: [
-                  Icon(Icons.location_on_outlined, color: AppTheme.primary),
-                  SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      '221B Green Market Street\nDistrict 1, Ho Chi Minh City',
-                      style: TextStyle(
-                        color: AppTheme.charcoalInk,
-                        fontSize: 16,
-                        height: 1.4,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+      body: previewState.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stackTrace) => ListView(
+          padding: const EdgeInsets.fromLTRB(16, 80, 16, 28),
+          children: [
+            OrganicStateMessage(
+              icon: Icons.shopping_cart_checkout,
+              title: 'Could not prepare checkout.',
+              actionLabel: 'Retry',
+              onAction: () => ref.invalidate(checkoutPreviewProvider),
             ),
-          ),
-          const SizedBox(height: 22),
-          const SectionHeader(title: 'Delivery Slot'),
-          const SizedBox(height: 12),
-          for (final slot in deliverySlots) ...[
-            AnimatedEntrance(
-              delay: Duration(
-                milliseconds: 120 + (deliverySlots.indexOf(slot) * 80),
-              ),
-              child: _DeliverySlotCard(slot: slot),
-            ),
-            const SizedBox(height: 10),
           ],
-          const SizedBox(height: 12),
-          const SectionHeader(title: 'Payment'),
-          const SizedBox(height: 12),
-          const AnimatedEntrance(
-            delay: Duration(milliseconds: 420),
-            child: OrganicCard(
-              child: Row(
-                children: [
-                  Icon(Icons.credit_card, color: AppTheme.primary),
-                  SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      'Visa ending in 4242',
-                      style: TextStyle(
-                        color: AppTheme.charcoalInk,
-                        fontWeight: FontWeight.w700,
+        ),
+        data: (preview) => ListView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
+          children: [
+            const AnimatedEntrance(
+              child: SectionHeader(title: 'Delivery Address'),
+            ),
+            const SizedBox(height: 12),
+            AnimatedEntrance(
+              delay: const Duration(milliseconds: 80),
+              child: OrganicCard(
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.location_on_outlined,
+                      color: AppTheme.primary,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        preview.deliveryAddress ??
+                            '221B Green Market Street\nDistrict 1, Ho Chi Minh City',
+                        style: const TextStyle(
+                          color: AppTheme.charcoalInk,
+                          fontSize: 16,
+                          height: 1.4,
+                        ),
                       ),
                     ),
-                  ),
-                  Icon(Icons.check_circle, color: AppTheme.primary),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 22),
-          AnimatedEntrance(
-            delay: const Duration(milliseconds: 520),
-            child: OrganicCard(
-              radius: AppTheme.radiusLg,
-              child: Column(
-                children: [
-                  _SummaryRow(label: 'Subtotal', value: subtotal),
-                  const SizedBox(height: 10),
-                  _SummaryRow(label: 'Delivery', value: delivery),
-                  const Divider(height: 28, color: AppTheme.mistGray),
-                  _SummaryRow(label: 'Total', value: total, emphasized: true),
-                  const SizedBox(height: 20),
-                  ElevatedButton.icon(
-                    onPressed: () => context.push(SubstitutionScreen.routePath),
-                    icon: const Icon(Icons.sync_alt),
-                    label: const Text('Review Substitutions'),
-                  ),
-                ],
+            const SizedBox(height: 22),
+            const SectionHeader(title: 'Delivery Slot'),
+            const SizedBox(height: 12),
+            for (final slot in deliverySlots) ...[
+              AnimatedEntrance(
+                delay: Duration(
+                  milliseconds: 120 + (deliverySlots.indexOf(slot) * 80),
+                ),
+                child: _DeliverySlotCard(slot: slot),
+              ),
+              const SizedBox(height: 10),
+            ],
+            const SizedBox(height: 12),
+            const SectionHeader(title: 'Payment'),
+            const SizedBox(height: 12),
+            const AnimatedEntrance(
+              delay: Duration(milliseconds: 420),
+              child: OrganicCard(
+                child: Row(
+                  children: [
+                    Icon(Icons.credit_card, color: AppTheme.primary),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'Visa ending in 4242',
+                        style: TextStyle(
+                          color: AppTheme.charcoalInk,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    Icon(Icons.check_circle, color: AppTheme.primary),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 22),
+            AnimatedEntrance(
+              delay: const Duration(milliseconds: 520),
+              child: OrganicCard(
+                radius: AppTheme.radiusLg,
+                child: Column(
+                  children: [
+                    _SummaryRow(label: 'Subtotal', value: preview.subtotal),
+                    const SizedBox(height: 10),
+                    _SummaryRow(label: 'Delivery', value: preview.deliveryFee),
+                    const Divider(height: 28, color: AppTheme.mistGray),
+                    _SummaryRow(
+                      label: 'Total',
+                      value: preview.total,
+                      emphasized: true,
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton.icon(
+                      onPressed: preview.items.isEmpty
+                          ? null
+                          : () => context.push(SubstitutionScreen.routePath),
+                      icon: const Icon(Icons.sync_alt),
+                      label: const Text('Review Substitutions'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

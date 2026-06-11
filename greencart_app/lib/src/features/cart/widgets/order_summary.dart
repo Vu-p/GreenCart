@@ -11,12 +11,14 @@ class OrderSummary extends StatelessWidget {
     required this.subtotal,
     required this.delivery,
     required this.total,
+    this.enabled = true,
     super.key,
   });
 
   final double subtotal;
   final double delivery;
   final double total;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,9 @@ class OrderSummary extends StatelessWidget {
           _SummaryRow(label: 'Total', value: total, emphasized: true),
           const SizedBox(height: 20),
           ElevatedButton.icon(
-            onPressed: () => context.push(CheckoutScreen.routePath),
+            onPressed: enabled
+                ? () => context.push(CheckoutScreen.routePath)
+                : null,
             icon: const Icon(Icons.lock_outline),
             label: const Text('Checkout Securely'),
           ),
