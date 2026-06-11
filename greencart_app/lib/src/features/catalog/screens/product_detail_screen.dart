@@ -5,6 +5,7 @@ import 'package:greencart_app/src/core/theme/app_theme.dart';
 import 'package:greencart_app/src/core/utils/currency_formatter.dart';
 import 'package:greencart_app/src/core/widgets/organic_card.dart';
 import 'package:greencart_app/src/core/widgets/quantity_button.dart';
+import 'package:greencart_app/src/features/cart/data/cart_repository.dart';
 import 'package:greencart_app/src/features/catalog/data/product_repository.dart';
 
 class ProductDetailScreen extends ConsumerStatefulWidget {
@@ -184,12 +185,40 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                         const SizedBox(height: 24),
                         ElevatedButton.icon(
                           onPressed: product.inStock
-                              ? () =>
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('Cart starts in Week 3.'),
-                                      ),
-                                    )
+                              ? () async {
+                                  try {
+                                    await ref
+                                        .read(cartRepositoryProvider)
+                                        .addItem(
+                                          productId: product.id,
+                                          quantity: _quantity,
+                                        );
+                                    ref.invalidate(cartProvider);
+                                    if (context.mounted) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Added $_quantity item(s) to cart.',
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  } catch (_) {
+                                    if (context.mounted) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                            'Could not add item. Please login and try again.',
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  }
+                                }
                               : null,
                           icon: const Icon(Icons.shopping_cart_outlined),
                           label: Text(

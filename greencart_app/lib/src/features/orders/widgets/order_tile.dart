@@ -16,9 +16,7 @@ class OrderTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-      onTap: () => context.push(
-        OrderTrackingScreen.pathFor(order.id.replaceAll('#', '')),
-      ),
+      onTap: () => context.push(OrderTrackingScreen.pathFor(order.id)),
       child: OrganicCard(
         padding: const EdgeInsets.all(14),
         child: Row(
@@ -33,7 +31,9 @@ class OrderTile extends StatelessWidget {
                 borderRadius: BorderRadius.circular(18),
               ),
               child: Icon(
-                order.icon,
+                order.active
+                    ? Icons.local_shipping_outlined
+                    : Icons.receipt_long_outlined,
                 color: order.active ? AppTheme.primary : AppTheme.outline,
               ),
             ),
@@ -47,6 +47,8 @@ class OrderTile extends StatelessWidget {
                       Expanded(
                         child: Text(
                           order.id,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.titleSmall,
                         ),
                       ),
@@ -61,7 +63,7 @@ class OrderTile extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${order.status} - ${order.window}',
+                    '${order.status} - ${order.orderNumber}',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   const SizedBox(height: 8),

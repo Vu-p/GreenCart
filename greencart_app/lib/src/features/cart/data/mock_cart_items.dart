@@ -1,30 +1,31 @@
-import 'package:flutter/material.dart';
-
 import '../models/cart_item.dart';
 
 const mockCartItems = [
   CartItem(
-    name: 'Organic Avocado Pack',
-    category: 'Fresh Produce',
-    price: 8.40,
+    productId: 'mock-avocado',
+    productName: 'Organic Avocado Pack',
+    imageUrl: '',
+    unitPrice: 8.40,
     quantity: 2,
-    icon: Icons.spa_outlined,
-    color: Color(0xFFDDF4E6),
+    lineTotal: 16.80,
+    stock: 12,
   ),
   CartItem(
-    name: 'Oat Milk Barista',
-    category: 'Dairy Alternatives',
-    price: 4.75,
+    productId: 'mock-oat-milk',
+    productName: 'Oat Milk Barista',
+    imageUrl: '',
+    unitPrice: 4.75,
     quantity: 1,
-    icon: Icons.local_drink_outlined,
-    color: Color(0xFFFFF1D6),
+    lineTotal: 4.75,
+    stock: 8,
   ),
   CartItem(
-    name: 'Farm Eggs',
-    category: 'Pantry',
-    price: 6.25,
+    productId: 'mock-eggs',
+    productName: 'Farm Eggs',
+    imageUrl: '',
+    unitPrice: 6.25,
     quantity: 1,
-    icon: Icons.egg_alt_outlined,
-    color: Color(0xFFF0F4F2),
+    lineTotal: 6.25,
+    stock: 20,
   ),
 ];

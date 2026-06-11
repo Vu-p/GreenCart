@@ -9,12 +9,24 @@ import 'package:greencart_app/src/features/catalog/screens/home_screen.dart';
 import 'package:greencart_app/src/features/orders/screens/order_tracking_screen.dart';
 
 class PaymentSuccessScreen extends StatelessWidget {
-  const PaymentSuccessScreen({super.key});
+  const PaymentSuccessScreen({this.orderId, this.orderNumber, super.key});
 
   static const routePath = '/checkout/success';
 
+  final String? orderId;
+  final String? orderNumber;
+
+  static String pathFor({
+    required String orderId,
+    required String orderNumber,
+  }) =>
+      '$routePath?orderId=${Uri.encodeComponent(orderId)}&orderNumber=${Uri.encodeComponent(orderNumber)}';
+
   @override
   Widget build(BuildContext context) {
+    final displayOrder = orderNumber ?? 'GC-2048';
+    final trackingId = orderId ?? displayOrder;
+
     return Scaffold(
       body: SafeArea(
         child: ListView(
@@ -54,13 +66,13 @@ class PaymentSuccessScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 28),
-            const AnimatedEntrance(
-              delay: Duration(milliseconds: 340),
+            AnimatedEntrance(
+              delay: const Duration(milliseconds: 340),
               child: OrganicCard(
                 radius: AppTheme.radiusLg,
                 child: Column(
                   children: [
-                    _ReceiptRow(label: 'Order', value: '#GC-2048'),
+                    _ReceiptRow(label: 'Order', value: displayOrder),
                     SizedBox(height: 12),
                     _ReceiptRow(
                       label: 'Delivery',
@@ -77,7 +89,7 @@ class PaymentSuccessScreen extends StatelessWidget {
               delay: const Duration(milliseconds: 460),
               child: ElevatedButton.icon(
                 onPressed: () =>
-                    context.go(OrderTrackingScreen.pathFor('GC-2048')),
+                    context.go(OrderTrackingScreen.pathFor(trackingId)),
                 icon: const Icon(Icons.local_shipping_outlined),
                 label: const Text('Track Order'),
               ),
