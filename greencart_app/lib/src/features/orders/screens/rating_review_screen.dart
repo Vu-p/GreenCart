@@ -22,6 +22,7 @@ class RatingReviewScreen extends StatelessWidget {
         title: MobilePageTitle(title: 'Rate Order', subtitle: 'Order $orderId'),
       ),
       body: ListView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
         children: [
           OrganicCard(
@@ -83,7 +84,10 @@ class RatingReviewScreen extends StatelessWidget {
           ],
           const SizedBox(height: 14),
           ElevatedButton.icon(
-            onPressed: () => context.go(OrdersScreen.routePath),
+            onPressed: () {
+              FocusManager.instance.primaryFocus?.unfocus();
+              context.go(OrdersScreen.routePath);
+            },
             icon: const Icon(Icons.send_outlined),
             label: const Text('Submit Review'),
           ),

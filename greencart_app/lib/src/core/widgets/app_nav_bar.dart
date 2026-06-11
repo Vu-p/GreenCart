@@ -9,9 +9,14 @@ import '../../features/profile/screens/profile_screen.dart';
 import '../theme/app_theme.dart';
 
 class AppNavBar extends StatelessWidget {
-  const AppNavBar({required this.currentIndex, super.key});
+  const AppNavBar({
+    required this.currentIndex,
+    this.onDestinationSelected,
+    super.key,
+  });
 
   final int currentIndex;
+  final ValueChanged<int>? onDestinationSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -62,20 +67,22 @@ class AppNavBar extends StatelessWidget {
                 label: 'Profile',
               ),
             ],
-            onDestinationSelected: (index) {
-              switch (index) {
-                case 0:
-                  context.go(HomeScreen.routePath);
-                case 1:
-                  context.go(SearchScreen.routePath);
-                case 2:
-                  context.go(CartScreen.routePath);
-                case 3:
-                  context.go(OrdersScreen.routePath);
-                case 4:
-                  context.go(ProfileScreen.routePath);
-              }
-            },
+            onDestinationSelected:
+                onDestinationSelected ??
+                (index) {
+                  switch (index) {
+                    case 0:
+                      context.go(HomeScreen.routePath);
+                    case 1:
+                      context.go(SearchScreen.routePath);
+                    case 2:
+                      context.go(CartScreen.routePath);
+                    case 3:
+                      context.go(OrdersScreen.routePath);
+                    case 4:
+                      context.go(ProfileScreen.routePath);
+                  }
+                },
           ),
         ),
       ),

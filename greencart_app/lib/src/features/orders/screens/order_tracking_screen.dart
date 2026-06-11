@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:greencart_app/src/core/theme/app_theme.dart';
+import 'package:greencart_app/src/core/widgets/animated_entrance.dart';
 import 'package:greencart_app/src/core/widgets/mobile_page_title.dart';
 import 'package:greencart_app/src/core/widgets/organic_card.dart';
 import 'package:greencart_app/src/core/widgets/organic_promo_banner.dart';
+import 'package:greencart_app/src/core/widgets/pulse_dot.dart';
 import 'package:greencart_app/src/core/widgets/section_header.dart';
 import 'package:greencart_app/src/features/orders/screens/rating_review_screen.dart';
 
@@ -29,30 +31,41 @@ class OrderTrackingScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
         children: [
-          const OrganicPromoBanner(
-            eyebrow: 'ON ROUTE',
-            title: 'Your produce is being packed.',
-            subtitle: 'Expected today between 5:00 - 7:00 PM.',
-            icon: Icons.local_shipping_outlined,
-            color: AppTheme.deepForest,
+          const AnimatedEntrance(
+            child: OrganicPromoBanner(
+              eyebrow: 'ON ROUTE',
+              title: 'Your produce is being packed.',
+              subtitle: 'Expected today between 5:00 - 7:00 PM.',
+              icon: Icons.local_shipping_outlined,
+              color: AppTheme.deepForest,
+            ),
           ),
           const SizedBox(height: 24),
           const SectionHeader(title: 'Progress'),
           const SizedBox(height: 12),
-          const _TimelineStep(
-            title: 'Order confirmed',
-            subtitle: 'Payment received and basket reserved.',
-            done: true,
+          const AnimatedEntrance(
+            delay: Duration(milliseconds: 120),
+            child: _TimelineStep(
+              title: 'Order confirmed',
+              subtitle: 'Payment received and basket reserved.',
+              state: _TimelineState.done,
+            ),
           ),
-          const _TimelineStep(
-            title: 'Packed fresh',
-            subtitle: 'Cold-packed produce with substitution preferences.',
-            done: true,
+          const AnimatedEntrance(
+            delay: Duration(milliseconds: 220),
+            child: _TimelineStep(
+              title: 'Packed fresh',
+              subtitle: 'Cold-packed produce with substitution preferences.',
+              state: _TimelineState.done,
+            ),
           ),
-          const _TimelineStep(
-            title: 'On route',
-            subtitle: 'Driver will call at the gate.',
-            done: false,
+          const AnimatedEntrance(
+            delay: Duration(milliseconds: 320),
+            child: _TimelineStep(
+              title: 'On route',
+              subtitle: 'Driver will call at the gate.',
+              state: _TimelineState.active,
+            ),
           ),
           const SizedBox(height: 18),
           OrganicCard(
@@ -72,7 +85,7 @@ class OrderTrackingScreen extends StatelessWidget {
                 const SizedBox(height: 18),
                 OutlinedButton.icon(
                   onPressed: () =>
-                      context.go(RatingReviewScreen.pathFor(orderId)),
+                      context.push(RatingReviewScreen.pathFor(orderId)),
                   icon: const Icon(Icons.star_outline),
                   label: const Text('Rate after delivery'),
                 ),
@@ -89,12 +102,12 @@ class _TimelineStep extends StatelessWidget {
   const _TimelineStep({
     required this.title,
     required this.subtitle,
-    required this.done,
+    required this.state,
   });
 
   final String title;
   final String subtitle;
-  final bool done;
+  final _TimelineState state;
 
   @override
   Widget build(BuildContext context) {
@@ -103,15 +116,7 @@ class _TimelineStep extends StatelessWidget {
       children: [
         Column(
           children: [
-            CircleAvatar(
-              radius: 14,
-              backgroundColor: done ? AppTheme.primary : AppTheme.mistGray,
-              child: Icon(
-                done ? Icons.check : Icons.more_horiz,
-                color: done ? Colors.white : AppTheme.outline,
-                size: 16,
-              ),
-            ),
+            _TimelineMarker(state: state),
             Container(width: 2, height: 58, color: AppTheme.mistGray),
           ],
         ),
@@ -130,6 +135,32 @@ class _TimelineStep extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+enum _TimelineState { done, active }
+
+class _TimelineMarker extends StatelessWidget {
+  const _TimelineMarker({required this.state});
+
+  final _TimelineState state;
+
+  @override
+  Widget build(BuildContext context) {
+    if (state == _TimelineState.active) {
+      return const SizedBox(width: 28, height: 28, child: PulseDot(size: 12));
+    }
+
+    final done = state == _TimelineState.done;
+    return CircleAvatar(
+      radius: 14,
+      backgroundColor: done ? AppTheme.primary : AppTheme.mistGray,
+      child: Icon(
+        done ? Icons.check : Icons.more_horiz,
+        color: done ? Colors.white : AppTheme.outline,
+        size: 16,
+      ),
     );
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:greencart_app/src/core/widgets/app_nav_bar.dart';
 import 'package:greencart_app/src/core/widgets/mobile_page_title.dart';
 import 'package:greencart_app/src/core/widgets/organic_action_icon.dart';
 import 'package:greencart_app/src/core/widgets/section_header.dart';
@@ -47,7 +46,6 @@ class OrdersScreen extends StatelessWidget {
           const SupportCard(),
         ],
       ),
-      bottomNavigationBar: const AppNavBar(currentIndex: 3),
     );
   }
 }

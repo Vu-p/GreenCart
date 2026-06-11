@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:greencart_app/src/core/theme/app_theme.dart';
 import 'package:greencart_app/src/core/utils/currency_formatter.dart';
+import 'package:greencart_app/src/core/widgets/animated_entrance.dart';
 import 'package:greencart_app/src/core/widgets/mobile_page_title.dart';
 import 'package:greencart_app/src/core/widgets/organic_card.dart';
 import 'package:greencart_app/src/core/widgets/organic_promo_banner.dart';
@@ -28,17 +29,24 @@ class DealsScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
         children: [
-          const OrganicPromoBanner(
-            eyebrow: 'TODAY ONLY',
-            title: 'Save more on organic weekly essentials.',
-            subtitle: 'Curated baskets for healthy routines.',
-            icon: Icons.sell_outlined,
+          const AnimatedEntrance(
+            child: OrganicPromoBanner(
+              eyebrow: 'TODAY ONLY',
+              title: 'Save more on organic weekly essentials.',
+              subtitle: 'Curated baskets for healthy routines.',
+              icon: Icons.sell_outlined,
+            ),
           ),
           const SizedBox(height: 24),
           const SectionHeader(title: 'Bundles'),
           const SizedBox(height: 14),
           for (final deal in dealBundles) ...[
-            _DealBundleCard(deal: deal),
+            AnimatedEntrance(
+              delay: Duration(
+                milliseconds: 100 + (dealBundles.indexOf(deal) * 80),
+              ),
+              child: _DealBundleCard(deal: deal),
+            ),
             const SizedBox(height: 12),
           ],
           const SizedBox(height: 12),

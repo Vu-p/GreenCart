@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:greencart_app/src/core/theme/app_theme.dart';
 import 'package:greencart_app/src/core/utils/currency_formatter.dart';
+import 'package:greencart_app/src/core/widgets/animated_entrance.dart';
 import 'package:greencart_app/src/core/widgets/mobile_page_title.dart';
 import 'package:greencart_app/src/core/widgets/organic_card.dart';
 import 'package:greencart_app/src/core/widgets/section_header.dart';
@@ -33,73 +34,90 @@ class CheckoutScreen extends StatelessWidget {
         ),
       ),
       body: ListView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
         children: [
-          const SectionHeader(title: 'Delivery Address'),
+          const AnimatedEntrance(
+            child: SectionHeader(title: 'Delivery Address'),
+          ),
           const SizedBox(height: 12),
-          const OrganicCard(
-            child: Row(
-              children: [
-                Icon(Icons.location_on_outlined, color: AppTheme.primary),
-                SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    '221B Green Market Street\nDistrict 1, Ho Chi Minh City',
-                    style: TextStyle(
-                      color: AppTheme.charcoalInk,
-                      fontSize: 16,
-                      height: 1.4,
+          const AnimatedEntrance(
+            delay: Duration(milliseconds: 80),
+            child: OrganicCard(
+              child: Row(
+                children: [
+                  Icon(Icons.location_on_outlined, color: AppTheme.primary),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      '221B Green Market Street\nDistrict 1, Ho Chi Minh City',
+                      style: TextStyle(
+                        color: AppTheme.charcoalInk,
+                        fontSize: 16,
+                        height: 1.4,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 22),
           const SectionHeader(title: 'Delivery Slot'),
           const SizedBox(height: 12),
           for (final slot in deliverySlots) ...[
-            _DeliverySlotCard(slot: slot),
+            AnimatedEntrance(
+              delay: Duration(
+                milliseconds: 120 + (deliverySlots.indexOf(slot) * 80),
+              ),
+              child: _DeliverySlotCard(slot: slot),
+            ),
             const SizedBox(height: 10),
           ],
           const SizedBox(height: 12),
           const SectionHeader(title: 'Payment'),
           const SizedBox(height: 12),
-          const OrganicCard(
-            child: Row(
-              children: [
-                Icon(Icons.credit_card, color: AppTheme.primary),
-                SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    'Visa ending in 4242',
-                    style: TextStyle(
-                      color: AppTheme.charcoalInk,
-                      fontWeight: FontWeight.w700,
+          const AnimatedEntrance(
+            delay: Duration(milliseconds: 420),
+            child: OrganicCard(
+              child: Row(
+                children: [
+                  Icon(Icons.credit_card, color: AppTheme.primary),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'Visa ending in 4242',
+                      style: TextStyle(
+                        color: AppTheme.charcoalInk,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
-                ),
-                Icon(Icons.check_circle, color: AppTheme.primary),
-              ],
+                  Icon(Icons.check_circle, color: AppTheme.primary),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 22),
-          OrganicCard(
-            radius: AppTheme.radiusLg,
-            child: Column(
-              children: [
-                _SummaryRow(label: 'Subtotal', value: subtotal),
-                const SizedBox(height: 10),
-                _SummaryRow(label: 'Delivery', value: delivery),
-                const Divider(height: 28, color: AppTheme.mistGray),
-                _SummaryRow(label: 'Total', value: total, emphasized: true),
-                const SizedBox(height: 20),
-                ElevatedButton.icon(
-                  onPressed: () => context.go(SubstitutionScreen.routePath),
-                  icon: const Icon(Icons.sync_alt),
-                  label: const Text('Review Substitutions'),
-                ),
-              ],
+          AnimatedEntrance(
+            delay: const Duration(milliseconds: 520),
+            child: OrganicCard(
+              radius: AppTheme.radiusLg,
+              child: Column(
+                children: [
+                  _SummaryRow(label: 'Subtotal', value: subtotal),
+                  const SizedBox(height: 10),
+                  _SummaryRow(label: 'Delivery', value: delivery),
+                  const Divider(height: 28, color: AppTheme.mistGray),
+                  _SummaryRow(label: 'Total', value: total, emphasized: true),
+                  const SizedBox(height: 20),
+                  ElevatedButton.icon(
+                    onPressed: () => context.push(SubstitutionScreen.routePath),
+                    icon: const Icon(Icons.sync_alt),
+                    label: const Text('Review Substitutions'),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

@@ -34,7 +34,7 @@ class OrderSummary extends StatelessWidget {
           _SummaryRow(label: 'Total', value: total, emphasized: true),
           const SizedBox(height: 20),
           ElevatedButton.icon(
-            onPressed: () => context.go(CheckoutScreen.routePath),
+            onPressed: () => context.push(CheckoutScreen.routePath),
             icon: const Icon(Icons.lock_outline),
             label: const Text('Checkout Securely'),
           ),

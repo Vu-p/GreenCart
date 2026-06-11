@@ -23,6 +23,7 @@ class SubstitutionScreen extends StatelessWidget {
         ),
       ),
       body: ListView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
         children: [
           const OrganicPromoBanner(
@@ -61,7 +62,7 @@ class SubstitutionScreen extends StatelessWidget {
           ],
           const SizedBox(height: 10),
           ElevatedButton.icon(
-            onPressed: () => context.go(PaymentSuccessScreen.routePath),
+            onPressed: () => context.push(PaymentSuccessScreen.routePath),
             icon: const Icon(Icons.lock_outline),
             label: const Text('Pay Securely'),
           ),

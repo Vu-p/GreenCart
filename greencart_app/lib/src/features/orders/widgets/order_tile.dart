@@ -16,8 +16,9 @@ class OrderTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-      onTap: () =>
-          context.go(OrderTrackingScreen.pathFor(order.id.replaceAll('#', ''))),
+      onTap: () => context.push(
+        OrderTrackingScreen.pathFor(order.id.replaceAll('#', '')),
+      ),
       child: OrganicCard(
         padding: const EdgeInsets.all(14),
         child: Row(

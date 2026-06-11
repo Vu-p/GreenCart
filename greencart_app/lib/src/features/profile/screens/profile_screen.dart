@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:greencart_app/src/core/theme/app_theme.dart';
-import 'package:greencart_app/src/core/widgets/app_nav_bar.dart';
 import 'package:greencart_app/src/core/widgets/mobile_page_title.dart';
 import 'package:greencart_app/src/core/widgets/organic_action_icon.dart';
 import 'package:greencart_app/src/core/widgets/organic_card.dart';
@@ -25,6 +24,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _addressController = TextEditingController();
+  final _phoneFocusNode = FocusNode();
+  final _addressFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -37,6 +38,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     _nameController.dispose();
     _phoneController.dispose();
     _addressController.dispose();
+    _phoneFocusNode.dispose();
+    _addressFocusNode.dispose();
     super.dispose();
   }
 
@@ -48,6 +51,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Future<void> _save() async {
+    FocusManager.instance.primaryFocus?.unfocus();
     await ref
         .read(authControllerProvider.notifier)
         .updateProfile(
@@ -58,6 +62,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Future<void> _logout() async {
+    FocusManager.instance.primaryFocus?.unfocus();
     await ref.read(authControllerProvider.notifier).logout();
     if (mounted) {
       context.go(LoginScreen.routePath);
@@ -97,6 +102,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         ],
       ),
       body: ListView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: const EdgeInsets.fromLTRB(16, 20, 16, 28),
         children: [
           OrganicCard(
@@ -142,7 +148,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           const SizedBox(height: 14),
           InkWell(
             borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-            onTap: () => context.go(MealPlannerScreen.routePath),
+            onTap: () => context.push(MealPlannerScreen.routePath),
             child: const OrganicCard(
               child: Row(
                 children: [
@@ -169,6 +175,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               children: [
                 TextField(
                   controller: _nameController,
+                  textInputAction: TextInputAction.next,
+                  onSubmitted: (_) => _phoneFocusNode.requestFocus(),
                   decoration: const InputDecoration(
                     labelText: 'Name',
                     prefixIcon: Icon(Icons.person_outline),
@@ -177,7 +185,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 const SizedBox(height: 14),
                 TextField(
                   controller: _phoneController,
+                  focusNode: _phoneFocusNode,
                   keyboardType: TextInputType.phone,
+                  textInputAction: TextInputAction.next,
+                  onSubmitted: (_) => _addressFocusNode.requestFocus(),
                   decoration: const InputDecoration(
                     labelText: 'Phone',
                     prefixIcon: Icon(Icons.phone_outlined),
@@ -186,6 +197,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 const SizedBox(height: 14),
                 TextField(
                   controller: _addressController,
+                  focusNode: _addressFocusNode,
+                  textInputAction: TextInputAction.done,
+                  onSubmitted: (_) {
+                    if (!authState.isLoading) {
+                      _save();
+                    }
+                  },
                   decoration: const InputDecoration(
                     labelText: 'Address',
                     prefixIcon: Icon(Icons.location_on_outlined),
@@ -226,7 +244,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: const AppNavBar(currentIndex: 4),
     );
   }
 }

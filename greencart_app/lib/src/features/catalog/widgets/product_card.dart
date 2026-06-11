@@ -15,7 +15,7 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-      onTap: () => context.go(ProductDetailScreen.pathFor(product.id)),
+      onTap: () => context.push(ProductDetailScreen.pathFor(product.id)),
       child: Container(
         decoration: AppTheme.cardDecoration(),
         clipBehavior: Clip.antiAlias,

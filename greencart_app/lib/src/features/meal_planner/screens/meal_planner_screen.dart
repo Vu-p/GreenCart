@@ -58,7 +58,7 @@ class _MealPlanCard extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       child: InkWell(
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        onTap: () => context.go(RecipeDetailScreen.pathFor(meal.id)),
+        onTap: () => context.push(RecipeDetailScreen.pathFor(meal.id)),
         child: Row(
           children: [
             Container(
