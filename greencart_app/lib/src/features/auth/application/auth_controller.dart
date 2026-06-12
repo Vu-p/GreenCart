@@ -62,6 +62,10 @@ class AuthController extends StateNotifier<AuthState> {
     );
   }
 
+  Future<bool> loginWithGoogle() async {
+    return _runAuthAction(_repository.loginWithGoogle);
+  }
+
   Future<bool> updateProfile({
     required String name,
     String? phone,
@@ -103,6 +107,10 @@ class AuthController extends StateNotifier<AuthState> {
       if (error.type == DioExceptionType.connectionError) {
         return 'Cannot connect to GreenCart API. Check API_BASE_URL.';
       }
+    }
+
+    if (error is StateError) {
+      return error.message;
     }
 
     return 'Something went wrong. Please try again.';

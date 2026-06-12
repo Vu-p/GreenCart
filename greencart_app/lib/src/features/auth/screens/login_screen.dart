@@ -50,6 +50,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
+  Future<void> _googleLogin() async {
+    FocusManager.instance.primaryFocus?.unfocus();
+    final success = await ref
+        .read(authControllerProvider.notifier)
+        .loginWithGoogle();
+
+    if (success && mounted) {
+      context.go(HomeScreen.routePath);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authControllerProvider);
@@ -183,7 +194,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           children: [
             Expanded(
               child: OutlinedButton.icon(
-                onPressed: null,
+                onPressed: authState.isLoading ? null : _googleLogin,
                 icon: const Icon(Icons.g_mobiledata),
                 label: const Text('Google'),
               ),
