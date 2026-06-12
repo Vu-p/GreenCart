@@ -1,0 +1,300 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>GreenCart - Summer Quinoa Salad</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#006d39",
+                    "surface-container-highest": "#e1e3e2",
+                    "secondary-fixed": "#ffddb3",
+                    "secondary-container": "#fdb64b",
+                    "tertiary-container": "#be5061",
+                    "on-primary-fixed-variant": "#00522a",
+                    "on-secondary-fixed": "#291800",
+                    "on-tertiary-container": "#fffbff",
+                    "error": "#ba1a1a",
+                    "primary-container": "#008648",
+                    "ripened-orange": "#FF9F1C",
+                    "on-primary-container": "#f6fff4",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#822335",
+                    "on-surface-variant": "#3e4a40",
+                    "charcoal-ink": "#1A1C1B",
+                    "on-error": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "surface-container-low": "#f2f4f3",
+                    "surface": "#f8faf9",
+                    "inverse-surface": "#2e3131",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-fixed": "#ffdadc",
+                    "primary": "#006a38",
+                    "surface-dim": "#d8dada",
+                    "surface-variant": "#e1e3e2",
+                    "surface-container-lowest": "#ffffff",
+                    "on-background": "#191c1c",
+                    "on-secondary-container": "#704800",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed-dim": "#ffb2b9",
+                    "surface-container-high": "#e6e9e8",
+                    "inverse-on-surface": "#eff1f0",
+                    "secondary-fixed-dim": "#ffb951",
+                    "mist-gray": "#E2E8E5",
+                    "background": "#f8faf9",
+                    "succulent-green": "#E9F5EE",
+                    "tertiary": "#9e3849",
+                    "primary-fixed": "#8cf9ad",
+                    "on-surface": "#191c1c",
+                    "on-secondary-fixed-variant": "#633f00",
+                    "outline-variant": "#bdcabd",
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed": "#00210d",
+                    "primary-fixed-dim": "#6fdc93",
+                    "inverse-primary": "#6fdc93",
+                    "deep-forest": "#1E4D34",
+                    "secondary": "#825500",
+                    "surface-container": "#eceeed",
+                    "on-tertiary-fixed": "#400010",
+                    "surface-bright": "#f8faf9",
+                    "outline": "#6e7a6f"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "base": "8px",
+                    "stack-md": "12px",
+                    "container-margin-mobile": "16px",
+                    "stack-lg": "24px",
+                    "container-margin-desktop": "32px",
+                    "gutter": "16px",
+                    "stack-sm": "4px"
+            },
+            "fontFamily": {
+                    "title-md": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-bold": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "price-display": ["Inter"]
+            },
+            "fontSize": {
+                    "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-bold": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "price-display": ["22px", {"lineHeight": "24px", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scrolling-touch {
+            -webkit-overflow-scrolling: touch;
+        }
+        .recipe-header-gradient {
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 100%);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-lg antialiased">
+<!-- Top Navigation Bar -->
+<header class="bg-surface/80 backdrop-blur-md shadow-sm w-full sticky top-0 z-50 flex justify-between items-center px-container-margin-mobile h-16 w-full">
+<div class="flex items-center gap-base">
+<button class="active:scale-95 duration-200 hover:bg-surface-container-low transition-colors p-2 rounded-full" onclick="window.location.href='{{DATA:SCREEN:SCREEN_27}}'">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">GreenCart</h1>
+</div>
+<div class="flex items-center gap-base">
+<button class="active:scale-95 duration-200 hover:bg-surface-container-low transition-colors p-2 rounded-full" onclick="window.location.href='{{DATA:SCREEN:SCREEN_27}}'">
+<span class="material-symbols-outlined text-on-surface-variant">favorite</span>
+</button>
+<button class="active:scale-95 duration-200 hover:bg-surface-container-low transition-colors p-2 rounded-full">
+<span class="material-symbols-outlined text-on-surface-variant">share</span>
+</button>
+</div>
+</header>
+<main class="max-w-[1280px] mx-auto pb-32">
+<!-- Hero Section -->
+<section class="relative w-full h-[45vh] md:h-[60vh] overflow-hidden">
+<img alt="Summer Quinoa Salad" class="w-full h-full object-cover" data-alt="A vibrant, top-down photograph of a Summer Quinoa Salad in a rustic ceramic bowl. The salad is packed with bright green edamame, juicy red cherry tomatoes, diced mango, and fresh mint leaves, all tossed in fluffy white quinoa. Soft, natural morning sunlight streams across a light oak wooden table, creating a fresh, organic vitality aesthetic. The composition is clean and minimalist, emphasizing the raw, healthy textures of the fresh ingredients." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7pz07FQBtVuOVPafIKzGRpOLehHOHoPWuJIMX2DHgvuWXU4VjAYApbTYQIEOk1WFjCXnencGm9KVPYjeU6dI6a3YtHjQmjPAaPw7fG4DvVi0ft85aNOt1gLzX7Ttzm0IvwhQW_IGdaKoQs2zyNc4ahYrcdiDLMLj33hgDAxNWplZf1SgTVhDWOZl9mXshguQJQRkrt0AG9lfeR29hjvfZ0VNmJ1eDr4kr8LMKmBdrCmhjZDysXuwIzdkcq15wMcUHjhpbpdaOIEE">
+<div class="absolute inset-0 recipe-header-gradient flex flex-col justify-end p-container-margin-mobile md:p-container-margin-desktop">
+<div class="inline-flex items-center gap-2 bg-succulent-green/90 backdrop-blur px-3 py-1 rounded-full mb-base self-start">
+<span class="material-symbols-outlined text-primary text-[18px]">eco</span>
+<span class="font-label-bold text-label-bold text-primary">PLANT-BASED</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg md:text-[48px] md:leading-tight text-white drop-shadow-md">Summer Quinoa Salad</h2>
+</div>
+</section>
+<div class="px-container-margin-mobile md:px-container-margin-desktop mt-stack-lg grid grid-cols-1 md:grid-cols-12 gap-stack-lg">
+<!-- Left Column: Details -->
+<div class="md:col-span-7 space-y-stack-lg">
+<!-- Recipe Meta -->
+<div class="flex items-center justify-between p-stack-lg bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_0_rgba(26,28,27,0.04)]">
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-primary">schedule</span>
+<span class="font-label-bold text-label-bold text-on-surface-variant mt-1">20 MINS</span>
+</div>
+<div class="w-[1px] h-10 bg-mist-gray"></div>
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-primary">restaurant</span>
+<span class="font-label-bold text-label-bold text-on-surface-variant mt-1">4 SERVINGS</span>
+</div>
+<div class="w-[1px] h-10 bg-mist-gray"></div>
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-primary">local_fire_department</span>
+<span class="font-label-bold text-label-bold text-on-surface-variant mt-1">320 KCAL</span>
+</div>
+</div>
+<!-- Description -->
+<div class="space-y-base">
+<h3 class="font-title-md text-title-md text-deep-forest">About this recipe</h3>
+<p class="text-on-surface-variant leading-relaxed">
+                        Refresh your palate with this vibrant Summer Quinoa Salad. It's a perfect balance of sweet and savory, featuring protein-rich quinoa, crisp seasonal vegetables, and a zesty citrus dressing. Ideal for meal prepping or a light lunch on a sunny afternoon.
+                    </p>
+</div>
+<!-- Instructions Snippet (Visual Rhythm) -->
+<div class="bg-succulent-green p-stack-lg rounded-xl">
+<h3 class="font-title-md text-title-md text-primary mb-base">Quick Tip</h3>
+<p class="body-sm text-on-primary-fixed-variant">
+                        Toast the quinoa for 2-3 minutes in the pan before adding water to unlock a deeper, nuttier flavor profile.
+                    </p>
+</div>
+</div>
+<!-- Right Column: Ingredients -->
+<div class="md:col-span-5">
+<div class="bg-surface-container-lowest p-stack-lg rounded-2xl shadow-[0_4px_12px_0_rgba(26,28,27,0.04)] border border-mist-gray">
+<div class="flex justify-between items-end mb-stack-lg">
+<h3 class="font-title-md text-title-md text-on-surface">Ingredients</h3>
+<span class="font-label-bold text-label-bold text-on-surface-variant">8 ITEMS</span>
+</div>
+<ul class="space-y-base">
+<!-- Ingredient Item: In Pantry -->
+<li class="flex items-center justify-between p-3 rounded-xl hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center gap-3">
+<div class="relative flex items-center justify-center">
+<input checked="" class="w-6 h-6 rounded-full border-2 border-primary text-primary focus:ring-0 cursor-not-allowed opacity-40" disabled="" type="checkbox">
+<span class="material-symbols-outlined absolute text-[16px] text-primary" style="font-variation-settings: 'wght' 700;">check</span>
+</div>
+<div>
+<p class="font-body-lg text-body-lg text-on-surface-variant line-through">White Quinoa</p>
+<p class="font-label-bold text-label-bold text-primary uppercase text-[10px]">In your pantry</p>
+</div>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">1 cup</span>
+</li>
+<!-- Ingredient Item: Needs Adding -->
+<li class="flex items-center justify-between p-3 rounded-xl hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center gap-3">
+<input class="w-6 h-6 rounded-full border-2 border-outline text-primary focus:ring-primary transition-all cursor-pointer" type="checkbox">
+<div>
+<p class="font-body-lg text-body-lg text-on-surface">Organic Cherry Tomatoes</p>
+<p class="font-label-bold text-label-bold text-ripened-orange uppercase text-[10px]">Add to cart • $4.99</p>
+</div>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">1 pint</span>
+</li>
+<!-- Ingredient Item: Already in Cart -->
+<li class="flex items-center justify-between p-3 rounded-xl bg-succulent-green/50 border border-primary/10 transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[16px]" style="font-variation-settings: 'wght' 700;">shopping_cart</span>
+</div>
+<div>
+<p class="font-body-lg text-body-lg text-on-surface">Fresh Mango</p>
+<p class="font-label-bold text-label-bold text-primary uppercase text-[10px]">In Cart</p>
+</div>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">1 large</span>
+</li>
+<!-- More Ingredients -->
+<li class="flex items-center justify-between p-3 rounded-xl hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center gap-3">
+<input class="w-6 h-6 rounded-full border-2 border-outline text-primary focus:ring-primary transition-all cursor-pointer" type="checkbox">
+<div>
+<p class="font-body-lg text-body-lg text-on-surface">English Cucumber</p>
+<p class="font-label-bold text-label-bold text-on-surface-variant uppercase text-[10px]">Not in cart</p>
+</div>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">1 medium</span>
+</li>
+<li class="flex items-center justify-between p-3 rounded-xl hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center gap-3">
+<input class="w-6 h-6 rounded-full border-2 border-outline text-primary focus:ring-primary transition-all cursor-pointer" type="checkbox">
+<div>
+<p class="font-body-lg text-body-lg text-on-surface">Frozen Edamame</p>
+<p class="font-label-bold text-label-bold text-on-surface-variant uppercase text-[10px]">Not in cart</p>
+</div>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">1/2 cup</span>
+</li>
+</ul>
+<div class="mt-stack-lg pt-stack-lg border-t border-mist-gray">
+<div class="flex justify-between items-center mb-stack-lg">
+<span class="text-on-surface-variant">Missing items (5)</span>
+<span class="font-price-display text-price-display text-primary">$12.45</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Action Bar -->
+<div class="fixed bottom-0 left-0 right-0 z-50 bg-surface/90 backdrop-blur-md shadow-[0_-4px_12px_0_rgba(26,28,27,0.04)] px-container-margin-mobile py-stack-md md:px-container-margin-desktop">
+<div class="max-w-[1280px] mx-auto flex items-center gap-base">
+<div class="hidden md:flex flex-col mr-auto">
+<span class="font-label-bold text-label-bold text-on-surface-variant">TOTAL FOR RECIPE</span>
+<span class="font-price-display text-price-display text-on-surface">$12.45</span>
+</div>
+<button class="flex-1 md:flex-none md:min-w-[240px] bg-primary text-on-primary py-4 px-8 rounded-xl font-title-md text-title-md shadow-lg active:scale-95 transition-all duration-150 flex items-center justify-center gap-2" onclick="window.location.href='{{DATA:SCREEN:SCREEN_24}}'">
+<span class="material-symbols-outlined">add_shopping_cart</span>
+                Add All to Cart
+            </button>
+</div>
+</div>
+<!-- Mobile Navigation Suppressed as per Task-Focused/Details rule -->
+<script>
+        // Micro-interaction: Checkbox styling and price update logic
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const parent = this.closest('li');
+                if (this.checked && !this.disabled) {
+                    parent.classList.add('bg-succulent-green/30');
+                } else {
+                    parent.classList.remove('bg-succulent-green/30');
+                }
+            });
+        });
+
+        // Simple scale effect on the main CTA
+        const mainBtn = document.querySelector('button.bg-primary');
+        mainBtn.addEventListener('mouseenter', () => {
+            mainBtn.style.boxShadow = '0 10px 25px -5px rgba(0, 106, 56, 0.4)';
+        });
+        mainBtn.addEventListener('mouseleave', () => {
+            mainBtn.style.boxShadow = '0 10px 15px -3px rgba(0, 106, 56, 0.2)';
+        });
+    </script>
+
+
+</body></html>

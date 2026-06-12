@@ -1,0 +1,330 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport">
+<title>Meal Planner - GreenCart</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-fixed": "#8cf9ad",
+                    "surface-container-high": "#e6e9e8",
+                    "secondary-fixed": "#ffddb3",
+                    "on-secondary-container": "#704800",
+                    "on-surface": "#191c1c",
+                    "on-secondary-fixed-variant": "#633f00",
+                    "mist-gray": "#E2E8E5",
+                    "surface": "#f8faf9",
+                    "on-error": "#ffffff",
+                    "secondary-container": "#fdb64b",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed-dim": "#6fdc93",
+                    "on-primary-container": "#f6fff4",
+                    "background": "#f8faf9",
+                    "secondary": "#825500",
+                    "on-secondary-fixed": "#291800",
+                    "on-primary-fixed": "#00210d",
+                    "on-tertiary-fixed": "#400010",
+                    "tertiary-container": "#be5061",
+                    "surface-dim": "#d8dada",
+                    "deep-forest": "#1E4D34",
+                    "on-tertiary-container": "#fffbff",
+                    "charcoal-ink": "#1A1C1B",
+                    "inverse-surface": "#2e3131",
+                    "surface-tint": "#006d39",
+                    "ripened-orange": "#FF9F1C",
+                    "on-surface-variant": "#3e4a40",
+                    "on-background": "#191c1c",
+                    "on-primary-fixed-variant": "#00522a",
+                    "tertiary-fixed": "#ffdadc",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed-dim": "#ffb951",
+                    "error": "#ba1a1a",
+                    "primary": "#006a38",
+                    "inverse-on-surface": "#eff1f0",
+                    "succulent-green": "#E9F5EE",
+                    "outline-variant": "#bdcabd",
+                    "outline": "#6e7a6f",
+                    "surface-variant": "#e1e3e2",
+                    "surface-container": "#eceeed",
+                    "on-secondary": "#ffffff",
+                    "surface-bright": "#f8faf9",
+                    "tertiary": "#9e3849",
+                    "on-tertiary-fixed-variant": "#822335",
+                    "tertiary-fixed-dim": "#ffb2b9",
+                    "error-container": "#ffdad6",
+                    "surface-container-low": "#f2f4f3",
+                    "inverse-primary": "#6fdc93",
+                    "surface-container-highest": "#e1e3e2",
+                    "on-error-container": "#93000a",
+                    "primary-container": "#008648"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-md": "12px",
+                    "gutter": "16px",
+                    "container-margin-desktop": "32px",
+                    "stack-lg": "24px",
+                    "container-margin-mobile": "16px",
+                    "base": "8px",
+                    "stack-sm": "4px"
+            },
+            "fontFamily": {
+                    "body-sm": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "price-display": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "title-md": ["Inter"],
+                    "label-bold": ["Inter"],
+                    "headline-lg-mobile": ["Inter"]
+            },
+            "fontSize": {
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "price-display": ["22px", {"lineHeight": "24px", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-bold": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .organic-shadow { box-shadow: 0 4px 12px rgba(26, 28, 27, 0.04); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="w-full sticky top-0 z-50 bg-surface shadow-sm transition-transform active:scale-95">
+<div class="flex items-center justify-between px-container-mobile h-16 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer" data-icon="menu">menu</span>
+<h1 class="font-display-lg text-headline-lg-mobile font-bold text-primary">GreenCart</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer" data-icon="search">search</span>
+</div>
+</div>
+</header>
+<main class="px-container-mobile pt-stack-lg max-w-md mx-auto">
+<!-- Meal Planner Title -->
+<section class="mb-stack-lg">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Meal Planner</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Plan your week with fresh ingredients.</p>
+</section>
+<!-- Search Bar -->
+<div class="mb-stack-lg">
+<div class="relative flex items-center bg-mist-gray/30 rounded-full px-4 py-3 organic-shadow">
+<span class="material-symbols-outlined text-on-surface-variant mr-3" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 w-full text-body-lg font-body-lg placeholder-on-surface-variant/60" placeholder="Find recipes..." type="text">
+</div>
+</div>
+<!-- Horizontal Categories -->
+<div class="flex overflow-x-auto hide-scrollbar gap-3 mb-stack-lg -mx-container-mobile px-container-mobile">
+<button class="whitespace-nowrap px-6 py-2 rounded-full bg-primary text-on-primary font-label-bold text-label-bold">All Recipes</button>
+<button class="whitespace-nowrap px-6 py-2 rounded-full bg-succulent-green text-primary font-label-bold text-label-bold">Quick &amp; Easy</button>
+<button class="whitespace-nowrap px-6 py-2 rounded-full bg-succulent-green text-primary font-label-bold text-label-bold">Healthy</button>
+<button class="whitespace-nowrap px-6 py-2 rounded-full bg-succulent-green text-primary font-label-bold text-label-bold">Vegetarian</button>
+<button class="whitespace-nowrap px-6 py-2 rounded-full bg-succulent-green text-primary font-label-bold text-label-bold">Family Favorites</button>
+</div>
+<!-- Planned Meals (Bento-ish Preview) -->
+<section class="mb-stack-lg">
+<div class="flex items-center justify-between mb-stack-md">
+<h3 class="font-title-md text-title-md text-on-surface">Planned Meals</h3>
+<span class="text-primary font-label-bold text-label-bold cursor-pointer">Edit Schedule</span>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<div class="bg-surface-container-low p-3 rounded-xl border border-mist-gray flex flex-col gap-2">
+<div class="w-full h-24 rounded-lg overflow-hidden relative">
+<img alt="Green Salad" class="w-full h-full object-cover" data-alt="A vibrant, fresh green salad in a white ceramic bowl, featuring heirloom tomatoes, thinly sliced radishes, and organic kale. The lighting is soft morning sunlight on a clean wooden table, creating a healthy and appetizing atmosphere consistent with a modern minimalist organic kitchen." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDffkUkJkJrKFEZ8TwZXyivRqXkOquQjuPuJ2H-MbYbzcpqQwybx-qhxaO1Gpdt-FxP3oEnw0NeoS-_dJbFeFdcPewGOhr-nZt_WKYfkWj4ygo2WZybeO2gXI7FGTP19aCFJCD8mQrLxBAGrkZNAiYbUlYPCEre12vSil2us5Tqd_l56mzNoq8zzwKtAXksriPwqToTwzadO7FzRVeaHO2PhCcWxMj_mib0hR2-wrho4q2mfeGR4whjUscqfGRkZPNY32M2oAP1gMY">
+</div>
+<div>
+<p class="font-label-bold text-label-bold text-primary uppercase">Monday</p>
+<p class="font-body-sm text-body-sm font-semibold truncate">Green Power Bowl</p>
+</div>
+</div>
+<div class="bg-surface-container-low p-3 rounded-xl border border-mist-gray flex flex-col gap-2">
+<div class="w-full h-24 rounded-lg overflow-hidden relative">
+<img alt="Pasta" class="w-full h-full object-cover" data-alt="A delicious close-up of pasta with fresh basil and cherry tomatoes, served in a rustic stoneware bowl. The scene is illuminated by warm, soft light, highlighting the glossy olive oil and textured pasta strands, embodying a cozy and reliable home-cooked meal aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMmB1N2sz6nNjLOLQ4PERp9VvIAN8ioMds-ZiVX5_S-Ns-dKTOQgFKRsMz_tuWXMRjZ7NtOmz7bMOPXs1BUtxLiVbBblBGC0j6AIviwHlU05d7-GUHndI9YviCKmC-Lmo_fktBkxFG3ywQOZ0Rc52p0RGh9GduETQLhOSuxscd8bAfVbJ7-jF17IG8C3QNRffTGK2XC_fghEnIKLC5T-vQpe1PAwCvae0cu3YI54HdR_Mv0OiwY2r2MMPdxMJg3CwsbYTaaTY1hwQ">
+</div>
+<div>
+<p class="font-label-bold text-label-bold text-primary uppercase">Tuesday</p>
+<p class="font-body-sm text-body-sm font-semibold truncate">Pesto Linguine</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Popular Recipes -->
+<section class="mb-stack-lg">
+<div class="flex items-center justify-between mb-stack-md">
+<h3 class="font-title-md text-title-md text-on-surface">Popular Recipes</h3>
+<span class="text-primary font-label-bold text-label-bold cursor-pointer">See All</span>
+</div>
+<div class="space-y-4">
+<!-- Recipe Card 1 -->
+<div class="bg-surface-container-lowest rounded-2xl overflow-hidden organic-shadow group transition-all active:scale-[0.98]" onclick="window.location.href='{{DATA:SCREEN:SCREEN_32}}'">
+<div class="relative h-48">
+<img alt="Vietnamese Sour Soup" class="w-full h-full object-cover" data-alt="A steaming bowl of traditional Vietnamese Sour Soup (Canh Chua) featuring fresh pineapples, tomatoes, bean sprouts, and herbs in a clear, aromatic broth. The photography is professional and high-contrast, shot in a bright, modern studio setting with a clean background that emphasizes the vibrant organic colors of the fresh vegetables." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUTZVblNcvxxBAEfzcI3pLDrBHzgvTxi0WNgRSVSu62toJiPdWGbM0ghQfijJs1woTGIqAZC-vfFi8h_5cKr-6K0PIBJoDDR7FxEzQBvRD63OIpganjPGIJTWNBhAaC2j17l86LgzpUW525uI0Ou-FtElwzp5swT6CIL1Zt7-Y7gg3DpnIRvpIYoAI08FfFz9sPQZbIuZrORwsODlKDb-z5afJ2PADmhUTvUOxmNZ6iXG8705rZ6Ob7y0BKhpg4acoSw9H7Ckel_w">
+<div class="absolute top-3 right-3 bg-succulent-green/90 backdrop-blur px-3 py-1 rounded-full text-primary font-label-bold text-label-bold">
+                            25 min
+                        </div>
+</div>
+<div class="p-4 flex justify-between items-end">
+<div>
+<h4 class="font-title-md text-title-md text-on-surface">Vietnamese Sour Soup</h4>
+<div class="flex items-center gap-2 mt-1">
+<span class="material-symbols-outlined text-[16px] text-ripened-orange" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-body-sm font-body-sm text-on-surface-variant">4.8 (120 reviews)</span>
+</div>
+</div>
+<button class="bg-primary text-on-primary w-12 h-12 rounded-full flex items-center justify-center transition-transform hover:scale-105 active:scale-90">
+<span class="material-symbols-outlined" data-icon="add_shopping_cart">add_shopping_cart</span>
+</button>
+</div>
+</div>
+<!-- Recipe Card 2 -->
+<div class="bg-surface-container-lowest rounded-2xl overflow-hidden organic-shadow group transition-all active:scale-[0.98]" onclick="window.location.href='{{DATA:SCREEN:SCREEN_32}}'">
+<div class="relative h-48">
+<img alt="Braised Pork with Eggs" class="w-full h-full object-cover" data-alt="A comforting plate of Braised Pork with Eggs (Thit Kho), featuring tender, caramelized pork belly pieces and hard-boiled eggs in a rich, savory amber glaze. The scene is styled on a minimal slate plate, captured with high-quality tactile photography that emphasizes the succulent textures and deep, reliable colors of a gourmet home-cooked meal." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6PE-cOgjZiCl1c1eyzlIDwHeDRAcba68nF_eDRLH3UXZW9AmNEw4klcM_9IjrcZp4QP-vn8yG6-4hN70UjRXhSZIXB1BBHOywt8zTPlXRqKhO2ETQvP_A0hcoW4jQkjojdhlmmMSKfZj85UtT6H3El_A0oorhmufKgjGxlGgxUgBiBMia9eXf9MPZ2oGKKU4J-n4ybD_Y_5K_U9fYiCIdM4fIXW2rAmrAE9JI0--Hl5QTCoX0R6OrBr_tNUZIFZoFvp8ByqOsNWQ">
+<div class="absolute top-3 right-3 bg-succulent-green/90 backdrop-blur px-3 py-1 rounded-full text-primary font-label-bold text-label-bold">
+                            45 min
+                        </div>
+</div>
+<div class="p-4 flex justify-between items-end">
+<div>
+<h4 class="font-title-md text-title-md text-on-surface">Braised Pork with Eggs</h4>
+<div class="flex items-center gap-2 mt-1">
+<span class="material-symbols-outlined text-[16px] text-ripened-orange" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-body-sm font-body-sm text-on-surface-variant">4.9 (85 reviews)</span>
+</div>
+</div>
+<button class="bg-primary text-on-primary w-12 h-12 rounded-full flex items-center justify-center transition-transform hover:scale-105 active:scale-90">
+<span class="material-symbols-outlined" data-icon="add_shopping_cart">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Smart Ingredient Selection -->
+<section class="mb-stack-lg bg-surface-container p-gutter rounded-3xl border border-mist-gray/30">
+<div class="flex items-center justify-between mb-gutter">
+<div>
+<h3 class="font-title-md text-title-md text-on-surface">Smart Selection</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Vietnamese Sour Soup</p>
+</div>
+<span class="material-symbols-outlined text-primary-container" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<div class="space-y-3">
+<div class="flex items-center justify-between bg-surface-container-lowest p-3 rounded-xl">
+<div class="flex items-center gap-3">
+<div class="w-5 h-5 rounded-full border-2 border-primary flex items-center justify-center">
+<div class="w-3 h-3 bg-primary rounded-full"></div>
+</div>
+<div>
+<p class="font-body-lg font-semibold">Organic Pineapple</p>
+<p class="text-label-bold font-label-bold text-on-surface-variant">1 Unit (approx 400g)</p>
+</div>
+</div>
+<p class="font-price-display text-primary">$3.50</p>
+</div>
+<div class="flex items-center justify-between bg-surface-container-lowest p-3 rounded-xl border-l-4 border-ripened-orange">
+<div class="flex items-center gap-3">
+<div class="w-5 h-5 rounded-full border-2 border-primary flex items-center justify-center">
+<div class="w-3 h-3 bg-primary rounded-full"></div>
+</div>
+<div>
+<div class="flex items-center gap-1">
+<p class="font-body-lg font-semibold">Roma Tomatoes</p>
+<span class="material-symbols-outlined text-[16px] text-ripened-orange" title="Smart Substitution available">info</span>
+</div>
+<p class="text-label-bold font-label-bold text-on-secondary-container bg-secondary-fixed/30 px-1 rounded">Smart Substitution Active</p>
+</div>
+</div>
+<p class="font-price-display text-primary">$1.20</p>
+</div>
+<div class="flex items-center justify-between bg-surface-container-lowest p-3 rounded-xl">
+<div class="flex items-center gap-3">
+<div class="w-5 h-5 rounded-full border-2 border-outline"></div>
+<div>
+<p class="font-body-lg font-semibold text-on-surface-variant">Fresh Bean Sprouts</p>
+<p class="text-label-bold font-label-bold text-on-surface-variant">200g</p>
+</div>
+</div>
+<p class="font-price-display text-on-surface-variant">$0.80</p>
+</div>
+</div>
+<button class="w-full mt-gutter bg-primary text-on-primary py-4 rounded-2xl font-label-bold text-label-bold uppercase tracking-wider shadow-md hover:shadow-lg transition-all active:scale-[0.98]">
+                Add All Selected to Cart • $5.50
+            </button>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 bg-surface/80 dark:bg-charcoal-ink/80 backdrop-blur-md shadow-[0_-4px_12px_rgba(26,28,27,0.04)]">
+<div class="flex justify-around items-center h-20 px-4 pb-safe w-full">
+<div class="flex flex-col items-center justify-center text-on-surface-variant transition-all duration-200 ease-in-out active:scale-90 cursor-pointer" onclick="window.location.href='{{DATA:SCREEN:SCREEN_9}}'">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-bold text-label-bold">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant transition-all duration-200 ease-in-out active:scale-90 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="font-label-bold text-label-bold">Search</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant transition-all duration-200 ease-in-out active:scale-90 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+<span class="font-label-bold text-label-bold">Cart</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 transition-all duration-200 ease-in-out active:scale-90 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-bold text-label-bold">Planner</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant transition-all duration-200 ease-in-out active:scale-90 cursor-pointer" onclick="window.location.href='{{DATA:SCREEN:SCREEN_8}}'">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-bold text-label-bold">Profile</span>
+</div>
+</div>
+</nav>
+<script>
+        // Micro-interaction for substitution indicator
+        document.querySelectorAll('.material-symbols-outlined[title]').forEach(el => {
+            el.addEventListener('click', () => {
+                alert("We've found a fresher alternative from a local farm for this item!");
+            });
+        });
+
+        // Simple scroll behavior for header
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            const header = document.querySelector('header');
+            if (currentScroll > lastScroll && currentScroll > 100) {
+                header.classList.add('-translate-y-full');
+            } else {
+                header.classList.remove('-translate-y-full');
+            }
+            lastScroll = currentScroll;
+        });
+    </script>
+
+
+</body></html>

@@ -25,22 +25,26 @@ class OrderSummary extends StatelessWidget {
     return OrganicCard(
       radius: AppTheme.radiusLg,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text('Order Summary', style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 16),
           _SummaryRow(label: 'Subtotal', value: subtotal),
           const SizedBox(height: 10),
-          _SummaryRow(label: 'Delivery', value: delivery),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16),
-            child: Divider(color: AppTheme.mistGray),
+          _SummaryRow(
+            label: 'Shipping Fee',
+            value: delivery,
+            freeWhenZero: true,
           ),
+          const Divider(height: 28, color: AppTheme.mistGray),
           _SummaryRow(label: 'Total', value: total, emphasized: true),
           const SizedBox(height: 20),
           ElevatedButton.icon(
             onPressed: enabled
                 ? () => context.push(CheckoutScreen.routePath)
                 : null,
-            icon: const Icon(Icons.lock_outline),
-            label: const Text('Checkout Securely'),
+            icon: const Icon(Icons.arrow_forward),
+            label: const Text('Proceed to Checkout'),
           ),
         ],
       ),
@@ -53,11 +57,13 @@ class _SummaryRow extends StatelessWidget {
     required this.label,
     required this.value,
     this.emphasized = false,
+    this.freeWhenZero = false,
   });
 
   final String label;
   final double value;
   final bool emphasized;
+  final bool freeWhenZero;
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +77,7 @@ class _SummaryRow extends StatelessWidget {
         ),
         const Spacer(),
         Text(
-          formatCurrency(value),
+          freeWhenZero && value == 0 ? 'FREE' : formatCurrency(value),
           style: TextStyle(
             color: emphasized ? AppTheme.primary : AppTheme.charcoalInk,
             fontSize: emphasized ? 22 : 16,

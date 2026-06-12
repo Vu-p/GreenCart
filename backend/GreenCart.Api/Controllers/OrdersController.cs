@@ -22,10 +22,11 @@ public sealed class OrdersController(AppDbContext dbContext) : ControllerBase
             return Unauthorized();
         }
 
-        var orders = await BaseOrderQuery()
+        var orders = (await BaseOrderQuery()
             .Where(order => order.UserId == userId.Value)
+            .ToListAsync(cancellationToken))
             .OrderByDescending(order => order.CreatedAt)
-            .ToListAsync(cancellationToken);
+            .ToList();
 
         return Ok(orders.Select(ApiMappings.ToResponse).ToList());
     }

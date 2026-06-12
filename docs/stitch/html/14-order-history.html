@@ -1,0 +1,344 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport">
+<title>Order History - GreenCart</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed-dim": "#ffb951",
+                    "surface-bright": "#f8faf9",
+                    "surface-container-low": "#f2f4f3",
+                    "surface-container-highest": "#e1e3e2",
+                    "tertiary-fixed-dim": "#ffb2b9",
+                    "on-tertiary-fixed": "#400010",
+                    "outline-variant": "#bdcabd",
+                    "on-primary-container": "#f6fff4",
+                    "on-background": "#191c1c",
+                    "primary-fixed-dim": "#6fdc93",
+                    "on-primary": "#ffffff",
+                    "surface-tint": "#006d39",
+                    "primary-fixed": "#8cf9ad",
+                    "tertiary-fixed": "#ffdadc",
+                    "on-surface": "#191c1c",
+                    "on-primary-fixed": "#00210d",
+                    "surface-variant": "#e1e3e2",
+                    "on-error": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container": "#eceeed",
+                    "ripened-orange": "#FF9F1C",
+                    "error-container": "#ffdad6",
+                    "error": "#ba1a1a",
+                    "tertiary-container": "#be5061",
+                    "succulent-green": "#E9F5EE",
+                    "on-tertiary-fixed-variant": "#822335",
+                    "on-secondary-fixed-variant": "#633f00",
+                    "background": "#f8faf9",
+                    "surface": "#f8faf9",
+                    "on-tertiary": "#ffffff",
+                    "deep-forest": "#1E4D34",
+                    "surface-dim": "#d8dada",
+                    "surface-container-high": "#e6e9e8",
+                    "secondary-fixed": "#ffddb3",
+                    "inverse-on-surface": "#eff1f0",
+                    "primary-container": "#008648",
+                    "on-secondary": "#ffffff",
+                    "tertiary": "#9e3849",
+                    "primary": "#006a38",
+                    "on-secondary-container": "#704800",
+                    "inverse-surface": "#2e3131",
+                    "charcoal-ink": "#1A1C1B",
+                    "on-tertiary-container": "#fffbff",
+                    "secondary": "#825500",
+                    "on-error-container": "#93000a",
+                    "on-surface-variant": "#3e4a40",
+                    "on-primary-fixed-variant": "#00522a",
+                    "on-secondary-fixed": "#291800",
+                    "mist-gray": "#E2E8E5",
+                    "inverse-primary": "#6fdc93",
+                    "outline": "#6e7a6f",
+                    "secondary-container": "#fdb64b"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-sm": "4px",
+                    "stack-md": "12px",
+                    "gutter": "16px",
+                    "stack-lg": "24px",
+                    "base": "8px",
+                    "container-margin-mobile": "16px",
+                    "container-margin-desktop": "32px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "price-display": ["Inter"],
+                    "title-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-bold": ["Inter"],
+                    "headline-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "price-display": ["22px", {"lineHeight": "24px", "fontWeight": "700"}],
+                    "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-bold": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-tab {
+            color: #006a38;
+            border-bottom: 2px solid #006a38;
+        }
+        .card-shadow {
+            box-shadow: 0 4px 12px rgba(26, 28, 27, 0.04);
+        }
+        body {
+            background-color: #f8faf9;
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-body-lg text-on-background pb-24">
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 w-full z-50 shadow-sm bg-surface flex justify-between items-center px-container-margin-mobile h-16">
+<div class="flex items-center gap-4">
+<button class="active:scale-95 transition-transform hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-primary">menu</span>
+</button>
+<h1 class="font-display-lg text-display-lg text-primary tracking-tight">GreenCart</h1>
+</div>
+<button class="active:scale-95 transition-transform hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-primary">notifications</span>
+</button>
+</header>
+<!-- Main Canvas -->
+<main class="pt-20 px-container-margin-mobile max-w-2xl mx-auto">
+<!-- Header Section -->
+<section class="mb-stack-lg">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Order History</h2>
+<p class="text-on-surface-variant font-body-sm mt-1">Review and manage your grocery deliveries.</p>
+</section>
+<!-- Filter Tabs -->
+<nav class="flex border-b border-mist-gray mb-stack-lg sticky top-16 bg-surface z-40">
+<button class="flex-1 py-4 text-center font-label-bold text-label-bold active-tab transition-all" id="tab-active" onclick="switchTab('active')">
+                Active
+            </button>
+<button class="flex-1 py-4 text-center font-label-bold text-label-bold text-on-surface-variant transition-all" id="tab-completed" onclick="switchTab('completed')">
+                Completed
+            </button>
+</nav>
+<!-- Active Orders List -->
+<div class="space-y-stack-lg" id="active-content">
+<!-- Active Order Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-stack-md card-shadow border border-mist-gray/30">
+<div class="flex justify-between items-start mb-stack-md">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg overflow-hidden bg-mist-gray">
+<img alt="Groceries" class="w-full h-full object-cover" data-alt="A lush and vibrant close-up photograph of a variety of organic vegetables including green kale, red tomatoes, and orange carrots, arranged neatly in a wooden delivery crate. The lighting is soft and natural, emphasizing the dew drops on the leaves and the fresh textures. The color palette is dominated by healthy greens and earthy tones, maintaining a high-end, farm-to-table aesthetic for a modern grocery service." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKCNgxLjTjbsD6EsY37JbNBEhK935qy7GOBYMJgFuuOthZVUceR038h1u3Ws6Tnm7fISB7nP4QJ-wmHQiPadTaWTqLM_ZF8mdtDo4VGDKam9RT4DE7c08KIfpQabaQaYWSefz_G5qs9epb_LcdIUPZvjKObUHFb2aDjVDQE77oQB8scMRQLJplWJZUKve5CnzDxPvtFHIR4xPKd8ss8-JmBXuAoeO4u7NsJtE62B5_Ewv14buXKmf0_bmYlXbStacogIeTpignCkU">
+</div>
+<div>
+<p class="font-title-md text-title-md text-on-surface">Order #GC-8842</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Today, 10:30 AM</p>
+</div>
+</div>
+<span class="bg-ripened-orange/10 text-ripened-orange px-3 py-1 rounded-full font-label-bold text-[10px] uppercase tracking-wider">Delivering</span>
+</div>
+<div class="flex justify-between items-center py-stack-md border-y border-mist-gray/20">
+<div class="flex flex-col">
+<span class="text-on-surface-variant font-label-bold text-[10px] uppercase">Items</span>
+<span class="font-body-lg text-body-lg">12 items</span>
+</div>
+<div class="flex flex-col text-right">
+<span class="text-on-surface-variant font-label-bold text-[10px] uppercase">Total</span>
+<span class="font-price-display text-price-display text-primary">$54.20</span>
+</div>
+</div>
+<div class="mt-stack-md flex gap-stack-md">
+<a href="{{DATA:SCREEN:SCREEN_28}}" class="flex-1 bg-primary text-on-primary py-3 rounded-xl font-label-bold text-label-bold flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.98] transition-all"><span class="material-symbols-outlined text-[18px]">local_shipping</span>Track Order</a>
+</div>
+</div>
+<!-- Active Order Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-stack-md card-shadow border border-mist-gray/30">
+<div class="flex justify-between items-start mb-stack-md">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg overflow-hidden bg-mist-gray">
+<img alt="Dairy products" class="w-full h-full object-cover" data-alt="A clean, minimalist studio photograph of glass milk bottles and blocks of artisan cheese resting on a white marble surface. The lighting is high-key and bright, creating soft shadows that emphasize the pure white of the milk and the rich textures of the cheese. The scene is framed with a few sprigs of fresh rosemary for a touch of organic green, embodying the premium quality and freshness of the GreenCart brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDe5yqUzmxskfwYA8qXi7sm3QQ8AYN1NCiLDHro0DyPUY-kddWWU2ljVcN1ktoo9Yha6Gw2nZPSKna9axTAPoE68tr7bFNfHF3NjvDLsMrXtJ1_M-IhevAYE38DSgfsJNp5Mita6VWa_cifXagyLgg3QUhvdZM3x8W1qe4PCAHbfi6MS8cDeEoAMf2rwCjjfe35i5q63kWhV8SAGh3zOwu1fzr_HbDMQBJuenU0ZDzHYc5ydU8t4OWd9fVPvUYn5v1kwBfoQfUuL1g">
+</div>
+<div>
+<p class="font-title-md text-title-md text-on-surface">Order #GC-8839</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Yesterday, 4:15 PM</p>
+</div>
+</div>
+<span class="bg-primary/10 text-primary px-3 py-1 rounded-full font-label-bold text-[10px] uppercase tracking-wider">Confirmed</span>
+</div>
+<div class="flex justify-between items-center py-stack-md border-y border-mist-gray/20">
+<div class="flex flex-col">
+<span class="text-on-surface-variant font-label-bold text-[10px] uppercase">Items</span>
+<span class="font-body-lg text-body-lg">5 items</span>
+</div>
+<div class="flex flex-col text-right">
+<span class="text-on-surface-variant font-label-bold text-[10px] uppercase">Total</span>
+<span class="font-price-display text-price-display text-primary">$32.15</span>
+</div>
+</div>
+<div class="mt-stack-md">
+<a href="{{DATA:SCREEN:SCREEN_6}}" class="w-full border-2 border-mist-gray text-charcoal-ink py-3 rounded-xl font-label-bold text-label-bold flex items-center justify-center gap-2 hover:bg-mist-gray/20 active:scale-[0.98] transition-all">View Details</a>
+</div>
+</div>
+</div>
+<!-- Completed Orders List (Hidden by default) -->
+<div class="hidden space-y-stack-lg" id="completed-content">
+<div class="bg-surface-container-lowest rounded-xl p-stack-md card-shadow border border-mist-gray/30 opacity-90">
+<div class="flex justify-between items-start mb-stack-md">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg overflow-hidden bg-mist-gray grayscale-[0.2]">
+<img alt="Fruit mix" class="w-full h-full object-cover" data-alt="A bright and airy composition of fresh citrus fruits including oranges, lemons, and grapefruits sliced open to reveal their juicy, vibrant interiors. The fruits are set against a clean, mist-gray background that makes the bold yellows and oranges pop. The lighting is diffused and professional, creating an inviting, health-focused visual that perfectly aligns with a premium grocery app's aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5l1kYd_BuUVjM9LDvaCVt9Pzo-ec23fZaYRB70Wfdhy2qUnJReqT3XyQ--DCHrTtD7R1FoLFw3DYvQC-lsnJnhNJwZ3ZTlLsrLkFoS6xTHboDwL2qSljxPDhaeKeJ4TvRYWiccXE-i9Uh6gWwJVSF2ljZXeCiicIwWHReZwTRRBftwQhebwoelte7G8d7KbGTygRTrKDMB7Hbuzmfhb8mv48L8qeSKK0J5V2rbg5CAvFC-oldWZbfUL2Uq2LCo-OlasHRPqJL-Ic">
+</div>
+<div>
+<p class="font-title-md text-title-md text-on-surface">Order #GC-8750</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Oct 12, 2023</p>
+</div>
+</div>
+<span class="bg-surface-container-highest text-on-surface-variant px-3 py-1 rounded-full font-label-bold text-[10px] uppercase tracking-wider">Completed</span>
+</div>
+<div class="flex justify-between items-center py-stack-md border-y border-mist-gray/20">
+<div class="flex flex-col">
+<span class="text-on-surface-variant font-label-bold text-[10px] uppercase">Items</span>
+<span class="font-body-lg text-body-lg">8 items</span>
+</div>
+<div class="flex flex-col text-right">
+<span class="text-on-surface-variant font-label-bold text-[10px] uppercase">Total</span>
+<span class="font-price-display text-price-display text-on-surface-variant">$45.80</span>
+</div>
+</div>
+<div class="mt-stack-md flex gap-stack-md">
+<button class="flex-1 bg-succulent-green text-primary py-3 rounded-xl font-label-bold text-label-bold flex items-center justify-center gap-2 hover:opacity-80 active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined text-[18px]">rebase_edit</span>
+                        Reorder
+                    </button>
+<button class="flex-1 border-2 border-mist-gray text-charcoal-ink py-3 rounded-xl font-label-bold text-label-bold flex items-center justify-center hover:bg-mist-gray/20 active:scale-[0.98] transition-all">
+                        Receipt
+                    </button>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-stack-md card-shadow border border-mist-gray/30 opacity-90">
+<div class="flex justify-between items-start mb-stack-md">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg overflow-hidden bg-mist-gray grayscale-[0.2]">
+<img alt="Bakery items" class="w-full h-full object-cover" data-alt="A warm, atmospheric photo of freshly baked artisan bread loaves with a golden-brown crust, dusted with flour, resting on a rustic linen cloth. The lighting is low and moody, highlighting the texture of the bread and creating a cozy, comforting feeling. The background is simple and dark, allowing the warm tones of the bakery products to take center stage, suitable for a premium grocery delivery brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8wC-E54DUJlJoYiulKdNud6jHqjo--O8QTX4rZcN0FfqNJVl4fJxn_Xh3QCl4LqmnO5KUUD1RhgrUPuuMsxRv-DWnZ_IPrIrexPVxCHgOI7I9KEAR5POiohNFqZ4Njkc5zzv4iK3MgGimptGstgrqDBjKY-qvSl5oSOiV5Uaklwbnail1JQPUW3Isuc8BEyD7pvmbgIKTsPsvacQ-g3a6JsM0sxZr-utesdc783TSD92BHXp-LITjKQu1N3XEETyXn7ehvcLvoTM">
+</div>
+<div>
+<p class="font-title-md text-title-md text-on-surface">Order #GC-8622</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Sep 28, 2023</p>
+</div>
+</div>
+<span class="bg-surface-container-highest text-on-surface-variant px-3 py-1 rounded-full font-label-bold text-[10px] uppercase tracking-wider">Completed</span>
+</div>
+<div class="flex justify-between items-center py-stack-md border-y border-mist-gray/20">
+<div class="flex flex-col">
+<span class="text-on-surface-variant font-label-bold text-[10px] uppercase">Items</span>
+<span class="font-body-lg text-body-lg">15 items</span>
+</div>
+<div class="flex flex-col text-right">
+<span class="text-on-surface-variant font-label-bold text-[10px] uppercase">Total</span>
+<span class="font-price-display text-price-display text-on-surface-variant">$89.10</span>
+</div>
+</div>
+<div class="mt-stack-md flex gap-stack-md">
+<button class="flex-1 bg-succulent-green text-primary py-3 rounded-xl font-label-bold text-label-bold flex items-center justify-center gap-2 hover:opacity-80 active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined text-[18px]">rebase_edit</span>
+                        Reorder
+                    </button>
+<button class="flex-1 border-2 border-mist-gray text-charcoal-ink py-3 rounded-xl font-label-bold text-label-bold flex items-center justify-center hover:bg-mist-gray/20 active:scale-[0.98] transition-all">
+                        Receipt
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar Shell -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-2 pb-safe bg-surface/80 dark:bg-charcoal-ink/80 backdrop-blur-md rounded-t-xl z-50 shadow-[0_-4px_12px_rgba(26,28,27,0.04)]">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-200 ease-out active:scale-90" href="{{DATA:SCREEN:SCREEN_9}}">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-bold text-label-bold">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-200 ease-out active:scale-90" href="{{DATA:SCREEN:SCREEN_31}}">
+<span class="material-symbols-outlined">search</span>
+<span class="font-label-bold text-label-bold">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-200 ease-out active:scale-90" href="{{DATA:SCREEN:SCREEN_24}}">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="font-label-bold text-label-bold">Cart</span>
+</a>
+<!-- ACTIVE TAB: Orders -->
+<a class="flex flex-col items-center justify-center bg-succulent-green text-primary rounded-full px-4 py-1 transition-all duration-200 ease-out active:scale-90" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+<span class="font-label-bold text-label-bold">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-200 ease-out active:scale-90" href="{{DATA:SCREEN:SCREEN_8}}">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-bold text-label-bold">Profile</span>
+</a>
+</nav>
+<script>
+        function switchTab(tab) {
+            const activeContent = document.getElementById('active-content');
+            const completedContent = document.getElementById('completed-content');
+            const activeTabBtn = document.getElementById('tab-active');
+            const completedTabBtn = document.getElementById('tab-completed');
+
+            if (tab === 'active') {
+                activeContent.classList.remove('hidden');
+                completedContent.classList.add('hidden');
+                activeTabBtn.classList.add('active-tab');
+                activeTabBtn.classList.remove('text-on-surface-variant');
+                completedTabBtn.classList.remove('active-tab');
+                completedTabBtn.classList.add('text-on-surface-variant');
+            } else {
+                activeContent.classList.add('hidden');
+                completedContent.classList.remove('hidden');
+                completedTabBtn.classList.add('active-tab');
+                completedTabBtn.classList.remove('text-on-surface-variant');
+                activeTabBtn.classList.remove('active-tab');
+                activeTabBtn.classList.add('text-on-surface-variant');
+            }
+        }
+
+        // Add subtle scroll header effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 20) {
+                header.classList.add('shadow-md');
+                header.classList.remove('shadow-sm');
+            } else {
+                header.classList.add('shadow-sm');
+                header.classList.remove('shadow-md');
+            }
+        });
+    </script>
+
+
+</body></html>

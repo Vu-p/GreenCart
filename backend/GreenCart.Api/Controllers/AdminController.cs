@@ -18,9 +18,10 @@ public sealed class AdminController(AppDbContext dbContext, IHubContext<OrderHub
     [HttpGet("orders")]
     public async Task<ActionResult<IReadOnlyList<OrderResponse>>> GetOrders(CancellationToken cancellationToken)
     {
-        var orders = await BaseOrderQuery()
+        var orders = (await BaseOrderQuery()
+            .ToListAsync(cancellationToken))
             .OrderByDescending(order => order.CreatedAt)
-            .ToListAsync(cancellationToken);
+            .ToList();
 
         return Ok(orders.Select(ApiMappings.ToResponse).ToList());
     }

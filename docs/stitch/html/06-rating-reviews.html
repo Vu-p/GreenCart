@@ -1,0 +1,374 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport">
+<title>Rate Your Order | GreenCart</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "succulent-green": "#E9F5EE",
+                    "secondary-fixed-dim": "#ffb951",
+                    "on-background": "#191c1c",
+                    "on-secondary-container": "#704800",
+                    "on-primary-fixed-variant": "#00522a",
+                    "on-tertiary-fixed-variant": "#822335",
+                    "error": "#ba1a1a",
+                    "surface-bright": "#f8faf9",
+                    "primary-fixed": "#8cf9ad",
+                    "deep-forest": "#1E4D34",
+                    "surface-container-highest": "#e1e3e2",
+                    "surface-variant": "#e1e3e2",
+                    "secondary-fixed": "#ffddb3",
+                    "ripened-orange": "#FF9F1C",
+                    "mist-gray": "#E2E8E5",
+                    "on-secondary-fixed": "#291800",
+                    "primary-fixed-dim": "#6fdc93",
+                    "on-error": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "secondary": "#825500",
+                    "background": "#f8faf9",
+                    "inverse-on-surface": "#eff1f0",
+                    "surface-dim": "#d8dada",
+                    "on-error-container": "#93000a",
+                    "inverse-primary": "#6fdc93",
+                    "on-secondary-fixed-variant": "#633f00",
+                    "on-primary": "#ffffff",
+                    "surface-container": "#eceeed",
+                    "on-surface-variant": "#3e4a40",
+                    "surface-container-high": "#e6e9e8",
+                    "charcoal-ink": "#1A1C1B",
+                    "on-primary-fixed": "#00210d",
+                    "primary-container": "#008648",
+                    "inverse-surface": "#2e3131",
+                    "secondary-container": "#fdb64b",
+                    "outline-variant": "#bdcabd",
+                    "surface-container-low": "#f2f4f3",
+                    "on-tertiary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "tertiary-container": "#be5061",
+                    "on-tertiary-fixed": "#400010",
+                    "tertiary-fixed-dim": "#ffb2b9",
+                    "tertiary": "#9e3849",
+                    "outline": "#6e7a6f",
+                    "on-surface": "#191c1c",
+                    "tertiary-fixed": "#ffdadc",
+                    "surface": "#f8faf9",
+                    "surface-tint": "#006d39",
+                    "on-tertiary-container": "#fffbff",
+                    "on-primary-container": "#f6fff4",
+                    "primary": "#006a38",
+                    "surface-container-lowest": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-lg": "24px",
+                    "gutter": "16px",
+                    "base": "8px",
+                    "stack-sm": "4px",
+                    "container-margin-desktop": "32px",
+                    "stack-md": "12px",
+                    "container-margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "price-display": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-bold": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "title-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"]
+            },
+            "fontSize": {
+                    "price-display": ["22px", {"lineHeight": "24px", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-bold": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #f8faf9;
+            color: #191c1c;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .star-rating .material-symbols-outlined {
+            font-size: 32px;
+            cursor: pointer;
+            transition: transform 0.1s ease-in-out, color 0.2s ease;
+        }
+
+        .star-rating .material-symbols-outlined:active {
+            transform: scale(0.9);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 229, 0.5);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #006a38;
+            border-radius: 10px;
+        }
+        
+        .animated-entry {
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md shadow-sm flex items-center justify-between px-container-margin-mobile h-16 w-full">
+<div class="flex items-center gap-3">
+<button class="active:scale-95 duration-150 p-2 text-on-surface-variant" onclick="window.location.href='{{DATA:SCREEN:SCREEN_21}}'">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-tight">GreenCart</h1>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="notifications">notifications</span>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-grow pt-20 pb-32 px-container-margin-mobile max-w-2xl mx-auto w-full">
+<!-- Order Header -->
+<section class="animated-entry mb-stack-lg" style="animation-delay: 0.1s">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-2">How was your order?</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Order #GC-88219 • Delivered Today, 2:15 PM</p>
+</section>
+<!-- Overall Rating Card -->
+<section class="glass-card p-gutter rounded-xl shadow-[0_4px_12px_rgba(26,28,27,0.04)] mb-stack-lg animated-entry" style="animation-delay: 0.2s">
+<div class="flex flex-col items-center text-center">
+<p class="font-title-md text-title-md text-on-surface mb-stack-md">Overall Experience</p>
+<div class="star-rating flex gap-1 mb-stack-md text-ripened-orange" id="overall-stars">
+<span class="material-symbols-outlined" data-star="1">star</span>
+<span class="material-symbols-outlined" data-star="2">star</span>
+<span class="material-symbols-outlined" data-star="3">star</span>
+<span class="material-symbols-outlined" data-star="4">star</span>
+<span class="material-symbols-outlined" data-star="5">star</span>
+</div>
+<p class="font-label-bold text-label-bold text-outline uppercase tracking-widest" id="rating-label">Tap to rate</p>
+</div>
+</section>
+<!-- Items to Rate -->
+<section class="animated-entry" style="animation-delay: 0.3s">
+<h3 class="font-title-md text-title-md text-on-surface mb-stack-md">Rate individual items</h3>
+<div class="space-y-stack-md">
+<!-- Product Card 1 -->
+<div class="glass-card p-4 rounded-xl flex items-center gap-4 hover:shadow-md transition-shadow">
+<div class="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 border border-mist-gray">
+<img alt="Organic Kale" class="w-full h-full object-cover" data-alt="A macro close-up of fresh organic curly kale leaves, with vibrant emerald green hues and intricate textures of the ruffled edges. The lighting is bright and natural, suggesting a high-end farmers market aesthetic. The background is a soft, clean white, reflecting the GreenCart modern organic identity and minimalist visual style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrF-LouD0pZrBm2dAMM8AbJEDxkjtc-izGxtk8w9P_YfaUuyCLVAQfcvMVF6aCGYz-mC02uCuPOvlLwvZ88FHyXNNvjEgQ_Y-YXFa66C13iqPi3WaDKFg-C5UFXg3itfm0tN33S69_sRARCgPnZq4j6AadZAJytHVG97vUyOjIfiHIGQpkypn-AcXED0A1UCr0KuVmRH87UgkknnKAj8JQcAIFTZl1g9feSWcqu532DGR5ZpuSOrGXCWwqmukkmF-qresQgWe-azc">
+</div>
+<div class="flex-grow">
+<h4 class="font-body-lg font-semibold text-on-surface">Fresh Organic Kale</h4>
+<div class="star-rating flex gap-0.5 text-ripened-orange scale-75 origin-left mt-1">
+<span class="material-symbols-outlined" data-star="1">star</span>
+<span class="material-symbols-outlined" data-star="2">star</span>
+<span class="material-symbols-outlined" data-star="3">star</span>
+<span class="material-symbols-outlined" data-star="4">star</span>
+<span class="material-symbols-outlined" data-star="5">star</span>
+</div>
+</div>
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">add_photo_alternate</span>
+</button>
+</div>
+<!-- Product Card 2 -->
+<div class="glass-card p-4 rounded-xl flex items-center gap-4 hover:shadow-md transition-shadow">
+<div class="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 border border-mist-gray">
+<img alt="Hass Avocado" class="w-full h-full object-cover" data-alt="A studio photograph of two perfectly ripe Hass avocados, one whole and one halved showing the creamy green interior and smooth pit. The visual style is crisp and clean, with a focus on natural color saturation and tactile freshness. The setting is a minimalist kitchen counter with soft, directional lighting that enhances the pebbled texture of the skin." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPfTqNeDA9ChGHpG67COprYuGbooiyMgNAcgh6HkpljCGElCpf9Phz1aARnqa8Gg0M6dEVQjSLIcVwxlh4durXbZqTQBEc0w-adN3dC8zp7C5q1fl7XbF86X9n-ZgakbKOABQSAtMasXQ9ouEFrMz7GMzQ7V4OjL3JxnuC_eu3T3brgJg--lz7p6fhd7NQ-fhw_tlQOf0V85yDhJKs-YhwrwCZP4t7UXZFEjZI_D0qI7nq4u8la_qsABu3hKGbZTcYtL1pnX3xQ1Q">
+</div>
+<div class="flex-grow">
+<h4 class="font-body-lg font-semibold text-on-surface">Premium Hass Avocado</h4>
+<div class="star-rating flex gap-0.5 text-ripened-orange scale-75 origin-left mt-1">
+<span class="material-symbols-outlined" data-star="1">star</span>
+<span class="material-symbols-outlined" data-star="2">star</span>
+<span class="material-symbols-outlined" data-star="3">star</span>
+<span class="material-symbols-outlined" data-star="4">star</span>
+<span class="material-symbols-outlined" data-star="5">star</span>
+</div>
+</div>
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">add_photo_alternate</span>
+</button>
+</div>
+<!-- Product Card 3 -->
+<div class="glass-card p-4 rounded-xl flex items-center gap-4 hover:shadow-md transition-shadow">
+<div class="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 border border-mist-gray">
+<img alt="Red Bell Peppers" class="w-full h-full object-cover" data-alt="A vibrant still life of three glossy red bell peppers grouped together on a light mist-gray surface. The peppers have a high-shine finish reflecting soft studio lights. The composition is clean and modern, following the GreenCart gallery approach to product photography. The colors are deep and rich, symbolizing organic vitality and health." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0nltpt2Zs378W14a7RLq8fE6RAvF8TL-8akRApd8XsY2keTYmlOa7YR6m8Nrrahe6nuevMVEYEoxD4YeYaIV3lKF8WRM8wm7KvdBbEnoT4Uzi7G2BqcbiSY_HPrPLXdBVnFBN6hdXtBvjtCaqPVa1srKQuC34VGFx3McufPWZOX7NLxHgOy3rZylU3l7MxlBgK71IeLAb_QFqn9MVsz7vqTUoJ4z1yegGvEFUWKEnsCf1-yNJCsYWiZnxWtA72ssH9hA9MrDgXz8">
+</div>
+<div class="flex-grow">
+<h4 class="font-body-lg font-semibold text-on-surface">Red Bell Peppers (3ct)</h4>
+<div class="star-rating flex gap-0.5 text-ripened-orange scale-75 origin-left mt-1">
+<span class="material-symbols-outlined" data-star="1">star</span>
+<span class="material-symbols-outlined" data-star="2">star</span>
+<span class="material-symbols-outlined" data-star="3">star</span>
+<span class="material-symbols-outlined" data-star="4">star</span>
+<span class="material-symbols-outlined" data-star="5">star</span>
+</div>
+</div>
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">add_photo_alternate</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Feedback Section -->
+<section class="mt-stack-lg animated-entry" style="animation-delay: 0.4s">
+<label class="block font-title-md text-title-md text-on-surface mb-stack-md" for="comment">Any additional feedback?</label>
+<div class="relative">
+<textarea class="w-full bg-mist-gray/30 border-2 border-mist-gray rounded-xl p-4 font-body-lg focus:ring-primary focus:border-primary placeholder:text-outline transition-all" id="comment" placeholder="Tell us what you loved or how we can improve..." rows="4"></textarea>
+<div class="absolute bottom-3 right-3 text-label-bold text-outline-variant">0/500</div>
+</div>
+</section>
+<!-- Submit Button -->
+<div class="mt-stack-lg animated-entry" style="animation-delay: 0.5s">
+<button class="w-full py-4 bg-primary text-white rounded-xl font-title-md hover:bg-primary-container active:scale-[0.98] transition-all shadow-lg flex items-center justify-center gap-2" id="submitBtn" onclick="window.location.href='{{DATA:SCREEN:SCREEN_21}}'">
+<span class="">Submit Review</span>
+<span class="material-symbols-outlined text-body-lg">send</span>
+</button>
+</div>
+</main>
+<!-- Bottom Navigation Shell -->
+<nav class="fixed bottom-0 w-full z-50 bg-surface/80 backdrop-blur-lg border-t border-mist-gray shadow-[0_-4px_12px_rgba(26,28,27,0.04)] flex justify-around items-center h-20 px-2 w-full">
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1 hover:bg-mist-gray/20 transition-colors cursor-pointer">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-bold text-label-bold">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1 hover:bg-mist-gray/20 transition-colors cursor-pointer">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="font-label-bold text-label-bold">Search</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1 hover:bg-mist-gray/20 transition-colors cursor-pointer">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+<span class="font-label-bold text-label-bold">Cart</span>
+</div>
+<div class="flex flex-col items-center justify-center text-primary font-bold bg-succulent-green rounded-xl px-3 py-1 transition-all">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-bold text-label-bold">Orders</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1 hover:bg-mist-gray/20 transition-colors cursor-pointer">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-bold text-label-bold">Profile</span>
+</div>
+</nav>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const starRatings = document.querySelectorAll('.star-rating');
+            
+            starRatings.forEach(container => {
+                const stars = container.querySelectorAll('.material-symbols-outlined');
+                const label = container.id === 'overall-stars' ? document.getElementById('rating-label') : null;
+                const labels = ["Tapping to rate...", "Poor", "Fair", "Good", "Great", "Excellent!"];
+
+                stars.forEach((star, index) => {
+                    star.addEventListener('click', () => {
+                        const rating = index + 1;
+                        
+                        // Set active stars
+                        stars.forEach((s, i) => {
+                            if (i < rating) {
+                                s.style.fontVariationSettings = "'FILL' 1";
+                                s.classList.add('text-ripened-orange');
+                            } else {
+                                s.style.fontVariationSettings = "'FILL' 0";
+                                s.classList.remove('text-ripened-orange');
+                            }
+                        });
+
+                        // Update label if it exists
+                        if (label) {
+                            label.textContent = labels[rating];
+                            label.classList.remove('text-outline');
+                            label.classList.add('text-primary');
+                        }
+                    });
+
+                    // Hover effects
+                    star.addEventListener('mouseenter', () => {
+                        for(let i=0; i<=index; i++) {
+                            stars[i].style.opacity = '0.7';
+                        }
+                    });
+
+                    star.addEventListener('mouseleave', () => {
+                        stars.forEach(s => s.style.opacity = '1');
+                    });
+                });
+            });
+
+            // Character count for textarea
+            const textarea = document.getElementById('comment');
+            const counter = textarea.nextElementSibling;
+            textarea.addEventListener('input', () => {
+                const count = textarea.value.length;
+                counter.textContent = `${count}/500`;
+                if(count > 450) counter.classList.add('text-error');
+                else counter.classList.remove('text-error');
+            });
+
+            // Submit interaction
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.addEventListener('click', () => {
+                const originalContent = submitBtn.innerHTML;
+                submitBtn.innerHTML = `<span class="material-symbols-outlined animate-spin">progress_activity</span> <span>Submitting...</span>`;
+                submitBtn.disabled = true;
+                
+                setTimeout(() => {
+                    submitBtn.innerHTML = `<span class="material-symbols-outlined">check_circle</span> <span>Thank You!</span>`;
+                    submitBtn.classList.replace('bg-primary', 'bg-primary-container');
+                    
+                    // Simple success feedback animation
+                    const confetti = document.createElement('div');
+                    confetti.className = 'fixed inset-0 pointer-events-none flex items-center justify-center z-[100]';
+                    confetti.innerHTML = `<div class="bg-white p-8 rounded-full shadow-2xl scale-0 transition-transform duration-500 flex items-center justify-center" id="success-bubble">
+                        <span class="material-symbols-outlined text-primary text-6xl" style="font-variation-settings: 'FILL' 1">eco</span>
+                    </div>`;
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        document.getElementById('success-bubble').classList.add('scale-100');
+                        setTimeout(() => {
+                            window.location.reload(); // Reset the demo
+                        }, 2000);
+                    }, 50);
+                }, 1500);
+            });
+        });
+    </script>
+
+
+</body></html>
