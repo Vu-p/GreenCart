@@ -1,0 +1,361 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport">
+<title>GreenCart - Fresh Deals</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .product-image-stroke {
+            box-shadow: inset 0 0 0 1px rgba(226, 232, 229, 1);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "succulent-green": "#E9F5EE",
+                        "secondary-fixed-dim": "#ffb951",
+                        "on-background": "#191c1c",
+                        "on-secondary-container": "#704800",
+                        "on-primary-fixed-variant": "#00522a",
+                        "on-tertiary-fixed-variant": "#822335",
+                        "error": "#ba1a1a",
+                        "surface-bright": "#f8faf9",
+                        "primary-fixed": "#8cf9ad",
+                        "deep-forest": "#1E4D34",
+                        "surface-container-highest": "#e1e3e2",
+                        "surface-variant": "#e1e3e2",
+                        "secondary-fixed": "#ffddb3",
+                        "ripened-orange": "#FF9F1C",
+                        "mist-gray": "#E2E8E5",
+                        "on-secondary-fixed": "#291800",
+                        "primary-fixed-dim": "#6fdc93",
+                        "on-error": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "secondary": "#825500",
+                        "background": "#f8faf9",
+                        "inverse-on-surface": "#eff1f0",
+                        "surface-dim": "#d8dada",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#6fdc93",
+                        "on-secondary-fixed-variant": "#633f00",
+                        "on-primary": "#ffffff",
+                        "surface-container": "#eceeed",
+                        "on-surface-variant": "#3e4a40",
+                        "surface-container-high": "#e6e9e8",
+                        "charcoal-ink": "#1A1C1B",
+                        "on-primary-fixed": "#00210d",
+                        "primary-container": "#008648",
+                        "inverse-surface": "#2e3131",
+                        "secondary-container": "#fdb64b",
+                        "outline-variant": "#bdcabd",
+                        "surface-container-low": "#f2f4f3",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "tertiary-container": "#be5061",
+                        "on-tertiary-fixed": "#400010",
+                        "tertiary-fixed-dim": "#ffb2b9",
+                        "tertiary": "#9e3849",
+                        "outline": "#6e7a6f",
+                        "on-surface": "#191c1c",
+                        "tertiary-fixed": "#ffdadc",
+                        "surface": "#f8faf9",
+                        "surface-tint": "#006d39",
+                        "on-tertiary-container": "#fffbff",
+                        "on-primary-container": "#f6fff4",
+                        "primary": "#006a38",
+                        "surface-container-lowest": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-lg": "24px",
+                        "gutter": "16px",
+                        "base": "8px",
+                        "stack-sm": "4px",
+                        "container-margin-desktop": "32px",
+                        "stack-md": "12px",
+                        "container-margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "price-display": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-bold": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "title-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "price-display": ["22px", {"lineHeight": "24px", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-bold": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-lg min-h-screen pb-24">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-charcoal-ink/80 backdrop-blur-md shadow-sm flex items-center justify-between px-container-margin-mobile h-16 w-full">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="eco">eco</span>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary dark:text-primary-fixed tracking-tight">GreenCart</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="active:scale-95 duration-150 text-on-surface-variant hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</div>
+</header>
+<main class="pt-20 px-container-margin-mobile">
+<!-- Hero Section: Limited Time Offer -->
+<section class="mb-stack-lg mt-4">
+<div class="relative w-full h-48 md:h-64 rounded-xl overflow-hidden shadow-[0_4px_12px_rgba(26,28,27,0.04)]">
+<img class="absolute inset-0 w-full h-full object-cover" data-alt="A vibrant, high-quality photograph of fresh seasonal vegetables and fruits arranged artistically on a rustic wooden table. The lighting is soft and natural, emphasizing the bright greens and reds of the organic produce. The aesthetic is modern and fresh, with a light-mode color palette that evokes a feeling of health and vitality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRdjAhlPW9kY7u8nh41YD8E14pRyge1oT4VI433q2B_2f2mZl7GKdREIHHa_2lu-cej3bueg2OeldFQ6prtbA3oYdb3kEmgG_bGngN5HvSqbq0sYg2A-W3M_gHB8mQJnd4cHH1fczWRpkoAaZTBHRetI4q4bj2YATaVh111foVZKZS3MUrWT6Xam3TGCMjpggBhNjsymPIZWHbz1UZyLyKZw0WtAwsx7s09mkyYurg7vgIXbwzdsd3UAt5a6SsH9v7xQAwjYXbJU4">
+<div class="absolute inset-0 bg-gradient-to-r from-charcoal-ink/60 to-transparent flex flex-col justify-center px-6">
+<span class="bg-ripened-orange text-on-primary px-3 py-1 rounded-full w-fit font-label-bold text-label-bold mb-2">LIMITED TIME</span>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-white leading-tight">Flash Sale: Organic <br>Spring Berries</h2>
+<p class="text-white/90 font-body-sm mt-1">Up to 40% OFF - Ends in 4 hours</p>
+<button class="mt-4 bg-primary text-white font-label-bold px-6 py-2 rounded-xl w-fit active:scale-95 transition-transform">Claim Offer</button>
+</div>
+</div>
+</section>
+<!-- Category Horizontal Scroll -->
+<section class="mb-stack-lg">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-title-md text-title-md">Deal Categories</h3>
+<button class="text-primary font-label-bold text-label-bold">View All</button>
+</div>
+<div class="flex gap-4 overflow-x-auto no-scrollbar pb-2">
+<button class="flex flex-col items-center gap-2 shrink-0">
+<div class="w-16 h-16 rounded-full bg-succulent-green flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="nutrition">nutrition</span>
+</div>
+<span class="font-label-bold text-label-bold">Produce</span>
+</button>
+<button class="flex flex-col items-center gap-2 shrink-0">
+<div class="w-16 h-16 rounded-full bg-mist-gray/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-outline" data-icon="egg_alt">egg_alt</span>
+</div>
+<span class="font-label-bold text-label-bold">Dairy</span>
+</button>
+<button class="flex flex-col items-center gap-2 shrink-0">
+<div class="w-16 h-16 rounded-full bg-mist-gray/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-outline" data-icon="bakery_dining">bakery_dining</span>
+</div>
+<span class="font-label-bold text-label-bold">Bakery</span>
+</button>
+<button class="flex flex-col items-center gap-2 shrink-0">
+<div class="w-16 h-16 rounded-full bg-mist-gray/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-outline" data-icon="flatware">flatware</span>
+</div>
+<span class="font-label-bold text-label-bold">Kitchen</span>
+</button>
+<button class="flex flex-col items-center gap-2 shrink-0">
+<div class="w-16 h-16 rounded-full bg-mist-gray/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-outline" data-icon="spa">spa</span>
+</div>
+<span class="font-label-bold text-label-bold">Health</span>
+</button>
+</div>
+</section>
+<!-- Fresh Deals Bento Grid -->
+<section class="mb-stack-lg">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-title-md text-title-md">Today's Fresh Picks</h3>
+<span class="bg-succulent-green text-primary font-label-bold text-label-bold px-3 py-1 rounded-full">32 Deals</span>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<!-- Product Card 1 -->
+<div class="bg-white rounded-xl overflow-hidden shadow-[0_4px_12px_rgba(26,28,27,0.04)] relative flex flex-col hover:shadow-md transition-shadow" onclick="window.location.href='{{DATA:SCREEN:SCREEN_12}}'">
+<div class="relative pt-[100%]">
+<img class="absolute inset-0 w-full h-full object-cover product-image-stroke" data-alt="Close up high-quality photography of vibrant red cherry tomatoes still on the vine. The lighting is crisp and bright, highlighting the glossy texture and deep red color of the tomatoes against a soft, clean white background. The style is minimalist and organic, emphasizing the freshness and health of the produce for the GreenCart brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuChj8I0YcmgPgLow_ROUA8c0oUE-vPBySsxeSUGxT4hbK0TbTJckeWu8ApgUl2hNa4aZSFBTqmWrF37RaOem6UJm9mwEi_JNS0aSIPbejwYja__Z5v1BPJXorOnwgcSTNZrTjLBtEh1VpSvB19itbV577UeGTKS4FnBLCbggkq7_v-qtCpHhhu-V6Chs3aQT9OQGfDpMr49EyKZDkV-IqC4nIwW93Veooi79IVwFjx6aoka7k6z5cN9MF5mQTD3xkUuVkkP_BcSwg0">
+<span class="absolute top-2 left-2 bg-primary text-white font-label-bold text-label-bold px-2 py-1 rounded-lg">SAVE 20%</span>
+</div>
+<div class="p-3 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-body-lg text-on-surface line-clamp-1">Organic Cherry Tomatoes</h4>
+</div>
+<div class="mt-auto flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-primary font-price-display">$3.99</span>
+<span class="text-outline line-through text-[10px] font-label-bold">$4.99</span>
+</div>
+<button class="bg-primary text-white rounded-lg p-2 active:scale-90 transition-transform">
+<span class="material-symbols-outlined !text-[20px]" data-icon="add">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="bg-white rounded-xl overflow-hidden shadow-[0_4px_12px_rgba(26,28,27,0.04)] relative flex flex-col hover:shadow-md transition-shadow" onclick="window.location.href='{{DATA:SCREEN:SCREEN_12}}'">
+<div class="relative pt-[100%]">
+<img class="absolute inset-0 w-full h-full object-cover product-image-stroke" data-alt="A beautiful, high-quality photo of a glass bottle of fresh organic milk standing on a clean kitchen counter. The light is soft and morning-like, casting gentle shadows. The palette is dominated by pure whites and soft greens, creating a sense of reliability, freshness, and local farm quality consistent with the GreenCart aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjW0E9nxlQr-twDlAW1rOZzFf1xlCeyg9eUzRMQdN7M1cMqIuuXct6kM31gD0FX8kL2Oqg9k0F6hsgPkjyQZieVA6Juh9_UFlinVsBa6kA7RzRODR8XsGi0rvaya-5JkX0VHA4Ki8F3vyc8meR1Ww5Tn52hwMZGjcWGRyHsGFVp9c23E48rbyOJVvj4c2UJFcpySJqmNoGZakFVM19qFmBivdluU3boRErquXTCumWWWLnm0zTNQu9iT3aQDF5PSrcb6PC9KFeY00">
+<span class="absolute top-2 left-2 bg-primary text-white font-label-bold text-label-bold px-2 py-1 rounded-lg">SAVE $1.50</span>
+</div>
+<div class="p-3 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-body-lg text-on-surface line-clamp-1">Farm Fresh Whole Milk</h4>
+</div>
+<div class="mt-auto flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-primary font-price-display">$2.49</span>
+<span class="text-outline line-through text-[10px] font-label-bold">$3.99</span>
+</div>
+<button class="bg-primary text-white rounded-lg p-2 active:scale-90 transition-transform">
+<span class="material-symbols-outlined !text-[20px]" data-icon="add">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 3 -->
+<div class="bg-white rounded-xl overflow-hidden shadow-[0_4px_12px_rgba(26,28,27,0.04)] relative flex flex-col hover:shadow-md transition-shadow" onclick="window.location.href='{{DATA:SCREEN:SCREEN_12}}'">
+<div class="relative pt-[100%]">
+<img class="absolute inset-0 w-full h-full object-cover product-image-stroke" data-alt="Close-up of three ripe avocados, one sliced in half showing the creamy green interior and pit. The image is bright and professional, set against a clean, light-gray background. The colors are naturally saturated greens and yellows, perfectly aligning with the organic vitality and freshness of the GreenCart health-conscious brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZpM5iSG-2dksdJpsz1LFwmdKfIIlIaFF3XOXgKFpLZknSLS_qWwGnCZO9y5DOVij9gKfWsawGJMQWQvZMQzm1rcXe4G62iumsa3vy0Xmp_9xj7hbn5N0NS2EsVOstGkg8ng4QUA3zNxCImUFRlovjLuBcLf3zTmgb2WWMBu7St7v7nFnf70O_aCW8h8AJRWnTwBL7d-eSZs_qJ7IPuk92Ykvh0qJcFUr_WE4XEW0q4xgx64wGw6nM_jNihQoFvWmVe_a5J2JHbm0">
+<span class="absolute top-2 left-2 bg-primary text-white font-label-bold text-label-bold px-2 py-1 rounded-lg">2 FOR $3</span>
+</div>
+<div class="p-3 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-body-lg text-on-surface line-clamp-1">Premium Hass Avocado</h4>
+</div>
+<div class="mt-auto flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-primary font-price-display">$1.50</span>
+<span class="text-outline line-through text-[10px] font-label-bold">$2.20</span>
+</div>
+<button class="bg-primary text-white rounded-lg p-2 active:scale-90 transition-transform">
+<span class="material-symbols-outlined !text-[20px]" data-icon="add">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 4 -->
+<div class="bg-white rounded-xl overflow-hidden shadow-[0_4px_12px_rgba(26,28,27,0.04)] relative flex flex-col hover:shadow-md transition-shadow" onclick="window.location.href='{{DATA:SCREEN:SCREEN_12}}'">
+<div class="relative pt-[100%]">
+<img class="absolute inset-0 w-full h-full object-cover product-image-stroke" data-alt="A professional food photograph of a freshly baked sourdough bread loaf with a crispy golden-brown crust. The bread is sitting on a clean surface with a dusting of flour. The lighting is warm yet bright, highlighting the texture of the crust and the artisanal quality of the bakery item. The mood is cozy and high-end, representing fresh daily essentials." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXmSPneUKrzvPxtPCy6x0dUlOOmWQbT9EJhdnuUifrmiz2p29fSjApG8MZJI27xH-81xD7WKXc1zGd5yQC1fhAdYClvyaWqUxeGFV9aCCOnS5S473vS_WIt0fVm7-VnsOf70brYauAX3t1An3Hf3U5OyM-brNn_FrDuzy_eNIce_jXnP6ngJsEecR1sEWOtBwiac1CNc6yE9_pvx3oPJn7rcS2HLzoxJ3vxkPUNDcNPa53txG5Yvv65iu5fI4iRwRUmrUynw_Odjo">
+<span class="absolute top-2 left-2 bg-primary text-white font-label-bold text-label-bold px-2 py-1 rounded-lg">FRESH BAKE</span>
+</div>
+<div class="p-3 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-body-lg text-on-surface line-clamp-1">Artisan Sourdough Loaf</h4>
+</div>
+<div class="mt-auto flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-primary font-price-display">$4.25</span>
+<span class="text-outline line-through text-[10px] font-label-bold">$5.50</span>
+</div>
+<button class="bg-primary text-white rounded-lg p-2 active:scale-90 transition-transform">
+<span class="material-symbols-outlined !text-[20px]" data-icon="add">add</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Shop All Deals Section -->
+<section class="mb-24">
+<div class="bg-deep-forest rounded-2xl p-6 relative overflow-hidden">
+
+<div class="relative z-10">
+<h3 class="text-white font-headline-lg-mobile text-headline-lg-mobile mb-2">Shop All Promotions</h3>
+<p class="text-white/80 font-body-sm mb-6">Browse hundreds of seasonal offers across all aisles.</p>
+<div class="flex flex-wrap gap-2 mb-6">
+<span class="bg-white/10 text-white font-label-bold text-label-bold px-3 py-1 rounded-full border border-white/20">Buy 1 Get 1</span>
+<span class="bg-white/10 text-white font-label-bold text-label-bold px-3 py-1 rounded-full border border-white/20">Weekly Specials</span>
+<span class="bg-white/10 text-white font-label-bold text-label-bold px-3 py-1 rounded-full border border-white/20">Bulk Savings</span>
+</div>
+<button class="w-full bg-white text-primary font-label-bold px-6 py-4 rounded-xl flex items-center justify-center gap-2 active:scale-[0.98] transition-transform" onclick="window.location.href='{{DATA:SCREEN:SCREEN_31}}'">
+                        Explore All 140+ Deals
+                        <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/80 dark:bg-charcoal-ink/80 backdrop-blur-lg border-t border-mist-gray dark:border-on-surface-variant shadow-[0_-4px_12px_rgba(26,28,27,0.04)]">
+<div class="flex justify-around items-center h-20 px-2 w-full">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1 hover:bg-mist-gray/20 dark:hover:bg-on-surface-variant/10 active:scale-90 transition-transform duration-200" href="{{DATA:SCREEN:SCREEN_9}}">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-bold text-label-bold mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed font-bold bg-succulent-green dark:bg-deep-forest rounded-xl px-3 py-1 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="font-label-bold text-label-bold mt-1">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1 hover:bg-mist-gray/20 dark:hover:bg-on-surface-variant/10 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+<span class="font-label-bold text-label-bold mt-1">Cart</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1 hover:bg-mist-gray/20 dark:hover:bg-on-surface-variant/10 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-bold text-label-bold mt-1">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1 hover:bg-mist-gray/20 dark:hover:bg-on-surface-variant/10 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-bold text-label-bold mt-1">Profile</span>
+</a>
+</div>
+</nav>
+<!-- FAB for Contextual Action (only on relevant screens, but we show it here as a "Quick Cart" deal helper) -->
+<button class="fixed bottom-24 right-6 w-14 h-14 bg-primary text-white rounded-2xl shadow-xl flex items-center justify-center active:scale-90 transition-transform duration-150 z-40">
+<span class="material-symbols-outlined" data-icon="shopping_basket">shopping_basket</span>
+</button>
+<script>
+        // Micro-interactions for scrolling effects
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 20) {
+                header.classList.add('shadow-md');
+            } else {
+                header.classList.remove('shadow-md');
+            }
+        });
+
+        // Simple cart counter interaction simulation
+        const addButtons = document.querySelectorAll('button .material-symbols-outlined[data-icon="add"]');
+        addButtons.forEach(btn => {
+            btn.parentElement.addEventListener('click', (e) => {
+                e.preventDefault();
+                const icon = btn.parentElement.querySelector('.material-symbols-outlined');
+                icon.textContent = 'check';
+                setTimeout(() => {
+                    icon.textContent = 'add';
+                }, 1000);
+            });
+        });
+    </script>
+
+
+</body></html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html><html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>GreenCart - Fresh Organic Produce</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .glass-effect {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "outline-variant": "#bdcabd",
+                      "on-primary-fixed": "#00210d",
+                      "on-tertiary-fixed": "#400010",
+                      "surface": "#f8faf9",
+                      "deep-forest": "#1E4D34",
+                      "surface-bright": "#f8faf9",
+                      "surface-dim": "#d8dada",
+                      "on-surface-variant": "#3e4a40",
+                      "surface-container-low": "#f2f4f3",
+                      "on-error": "#ffffff",
+                      "tertiary": "#9e3849",
+                      "on-tertiary": "#ffffff",
+                      "inverse-on-surface": "#eff1f0",
+                      "error-container": "#ffdad6",
+                      "error": "#ba1a1a",
+                      "secondary": "#825500",
+                      "tertiary-container": "#be5061",
+                      "outline": "#6e7a6f",
+                      "tertiary-fixed": "#ffdadc",
+                      "primary-container": "#008648",
+                      "on-secondary-container": "#704800",
+                      "inverse-surface": "#2e3131",
+                      "on-surface": "#191c1c",
+                      "primary": "#006a38",
+                      "on-secondary-fixed": "#291800",
+                      "on-tertiary-fixed-variant": "#822335",
+                      "inverse-primary": "#6fdc93",
+                      "on-primary": "#ffffff",
+                      "charcoal-ink": "#1A1C1B",
+                      "succulent-green": "#E9F5EE",
+                      "surface-container-highest": "#e1e3e2",
+                      "surface-variant": "#e1e3e2",
+                      "on-primary-container": "#f6fff4",
+                      "on-tertiary-container": "#fffbff",
+                      "primary-fixed-dim": "#6fdc93",
+                      "mist-gray": "#E2E8E5",
+                      "surface-container": "#eceeed",
+                      "on-primary-fixed-variant": "#00522a",
+                      "on-background": "#191c1c",
+                      "secondary-fixed": "#ffddb3",
+                      "tertiary-fixed-dim": "#ffb2b9",
+                      "primary-fixed": "#8cf9ad",
+                      "surface-container-high": "#e6e9e8",
+                      "on-error-container": "#93000a",
+                      "secondary-fixed-dim": "#ffb951",
+                      "background": "#f8faf9",
+                      "on-secondary-fixed-variant": "#633f00",
+                      "surface-tint": "#006d39",
+                      "secondary-container": "#fdb64b",
+                      "on-secondary": "#ffffff",
+                      "ripened-orange": "#FF9F1C",
+                      "surface-container-lowest": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "16px",
+                      "base": "8px",
+                      "container-margin-desktop": "32px",
+                      "stack-lg": "24px",
+                      "stack-md": "12px",
+                      "container-margin-mobile": "16px",
+                      "stack-sm": "4px"
+              },
+              "fontFamily": {
+                      "label-bold": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "title-md": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "price-display": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "headline-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "label-bold": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "price-display": ["22px", {"lineHeight": "24px", "fontWeight": "700"}],
+                      "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface font-body-lg text-body-lg">
+<!-- TopAppBar -->
+<header class="w-full sticky top-0 z-50 shadow-sm bg-surface dark:bg-charcoal-ink">
+<div class="flex items-center justify-between px-container-mobile h-16 w-full max-w-7xl mx-auto">
+<h1 class="font-display-lg text-display-lg font-bold text-primary">GreenCart</h1>
+<div class="flex items-center gap-4">
+<a href="{{DATA:SCREEN:SCREEN_31}}" class="transition-transform active:scale-95 hover:bg-mist-gray/20 p-2 rounded-full"><span class="material-symbols-outlined text-primary dark:text-primary-fixed">search</span></a>
+<button class="transition-transform active:scale-95 hover:bg-mist-gray/20 p-2 rounded-full">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed">menu</span>
+</button>
+</div>
+</div>
+<!-- Search Bar Section (Mobile focused for Home) -->
+<div class="px-container-mobile pb-4">
+<a href="{{DATA:SCREEN:SCREEN_31}}" class="flex items-center gap-3 bg-mist-gray/40 rounded-full px-4 py-2 w-full"><span class="material-symbols-outlined text-outline">search</span><span class="bg-transparent border-none w-full text-body-sm font-body-sm text-on-surface-variant/60">Search fresh produce...</span><span class="material-symbols-outlined text-primary">tune</span></a>
+</div>
+</header>
+<main class="pb-24">
+<!-- Hero Carousel Section -->
+<section class="mt-stack-lg px-container-mobile max-w-7xl mx-auto">
+<div class="relative overflow-hidden rounded-xl h-48 md:h-64 shadow-sm bg-mist-gray">
+<div class="flex transition-transform duration-500 ease-out h-full" id="carousel">
+<!-- Slide 1: Fresh Deals -->
+<a href="{{DATA:SCREEN:SCREEN_30}}" class="min-w-full relative block h-full"><img class="absolute inset-0 w-full h-full object-cover" data-alt="A lush and vibrant selection of organic vegetables displayed in wooden crates at a modern farmer's market. The scene is illuminated by soft, natural sunlight highlighting the dewy textures of kale, tomatoes, and bell peppers. The color palette is dominated by fresh greens and earthy browns, creating a healthy and high-end organic atmosphere. Soft background blur keeps focus on the premium quality produce." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXgwBxIL6nyxvpEx4kViGnhqi74gpX_Obnhi6-SvQdaWVj5E7HaUAmGDrFs5-noB6wT_ZnMwyF9GNBLfrSIIK1cOGv_QsQJQ7urKNmPATF1QLy65ezKQV5GvXzEFyh-j7CJD9b6TNPFdjlBA-CnpB0-ogDbXO4AO6grmcd2F3fndiJqAtBFrvlYw0k9h13uXAc0nWZz7UdCNfFje87I6nmBUxJhb_g_QuCqrpBd3OJDW6FWz_9puxzD4JMpXfwlajUQVl2k_MsiWY"><div class="absolute inset-0 bg-gradient-to-r from-charcoal-ink/60 to-transparent flex flex-col justify-center px-6"><span class="text-on-primary-container bg-primary px-3 py-1 rounded-full text-label-bold font-label-bold self-start mb-2">LIMITED TIME</span><h2 class="text-white font-headline-lg-mobile text-headline-lg-mobile md:text-headline-lg mb-1">Fresh Deals</h2><p class="text-white/90 text-body-sm font-body-sm">Up to 30% off on seasonal organics</p></div></a>
+</div>
+<!-- Pagination Dots -->
+<div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+<div class="w-2 h-2 rounded-full bg-white"></div>
+<div class="w-2 h-2 rounded-full bg-white/40"></div>
+</div>
+</div>
+</section>
+<!-- Categories Section -->
+<section class="mt-stack-lg">
+<div class="flex items-center justify-between px-container-mobile max-w-7xl mx-auto mb-4">
+<h3 class="font-title-md text-title-md">Categories</h3>
+<button class="text-primary font-label-bold text-label-bold">View All</button>
+</div>
+<div class="flex gap-4 overflow-x-auto hide-scrollbar px-container-mobile max-w-7xl mx-auto pb-2"><a href="{{DATA:SCREEN:SCREEN_31}}" class="flex flex-col items-center gap-2 flex-shrink-0"><div class="w-16 h-16 rounded-full bg-succulent-green flex items-center justify-center text-primary transition-transform active:scale-95"><span class="material-symbols-outlined text-[32px]">nutrition</span></div><span class="font-label-bold text-label-bold">Fruits</span></a><a href="{{DATA:SCREEN:SCREEN_31}}" class="flex flex-col items-center gap-2 flex-shrink-0"><div class="w-16 h-16 rounded-full bg-succulent-green flex items-center justify-center text-primary transition-transform active:scale-95"><span class="material-symbols-outlined text-[32px]">eco</span></div><span class="font-label-bold text-label-bold">Vegetables</span></a><a href="{{DATA:SCREEN:SCREEN_31}}" class="flex flex-col items-center gap-2 flex-shrink-0"><div class="w-16 h-16 rounded-full bg-succulent-green flex items-center justify-center text-primary transition-transform active:scale-95"><span class="material-symbols-outlined text-[32px]">egg</span></div><span class="font-label-bold text-label-bold">Dairy</span></a><a href="{{DATA:SCREEN:SCREEN_31}}" class="flex flex-col items-center gap-2 flex-shrink-0"><div class="w-16 h-16 rounded-full bg-succulent-green flex items-center justify-center text-primary transition-transform active:scale-95"><span class="material-symbols-outlined text-[32px]">set_meal</span></div><span class="font-label-bold text-label-bold">Meat</span></a><a href="{{DATA:SCREEN:SCREEN_31}}" class="flex flex-col items-center gap-2 flex-shrink-0"><div class="w-16 h-16 rounded-full bg-succulent-green flex items-center justify-center text-primary transition-transform active:scale-95"><span class="material-symbols-outlined text-[32px]">bakery_dining</span></div><span class="font-label-bold text-label-bold">Bakery</span></a></div>
+</section>
+<!-- Shop by Meal Section -->
+<section class="mt-stack-lg px-container-mobile max-w-7xl mx-auto">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-title-md text-title-md">Shop by Meal</h3>
+<span class="material-symbols-outlined text-outline">restaurant_menu</span>
+</div>
+<div class="grid grid-cols-2 gap-4"><a href="{{DATA:SCREEN:SCREEN_27}}" class="relative rounded-xl overflow-hidden aspect-[4/5] shadow-sm hover:shadow-md transition-shadow"><img class="absolute inset-0 w-full h-full object-cover" data-alt="A steaming hot bowl of Sweet and Sour Soup..." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvA1YoRGT-M__tOVT9MadGFffWwI0F0pYUt6ugCdxapfRH8KEaXbNEGdY368piaYQjqDyz5Denmxh7y2-FNH8NdfI_FNGsfJDOnCre0tdm9WUFwzZEmXblngMzsUE4XWctBIIqaKDEU-5XgkpNbG0SDrndi3Pq781zHaSqXlJUcLQK2KrYtpVbfDxsKtM3y7kQPXMKS3goWjBytS6jacPnvIHhc8ZBROc2WhMjCLkvRYKqVe2092wi8PIUmGA3Hw3l_c_IeAqYUEE"><div class="absolute inset-0 bg-gradient-to-t from-charcoal-ink/80 via-transparent to-transparent flex flex-col justify-end p-3"><p class="text-white font-label-bold text-label-bold mb-1">Sweet &amp; Sour Soup</p><span class="bg-white/20 backdrop-blur-md text-white text-[10px] py-1 px-2 rounded-full self-start">Get Ingredients</span></div></a><a href="{{DATA:SCREEN:SCREEN_27}}" class="relative rounded-xl overflow-hidden aspect-[4/5] shadow-sm hover:shadow-md transition-shadow"><img class="absolute inset-0 w-full h-full object-cover" data-alt="Slow-braised pork belly..." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWU_wYM68CC_OU9zQTc7WCwPdm378Jv7lc49lGv_lhpnW_0I8UTNE_uY1A59rk4E_7ky2Gea0Rx54pJ_x39FtCnoW_OPsqkjvrKUbL-KaDBsA1IKZo696AolVyUQ_Y6HpJx692Y9qBY-VTU2qdwyZqAZdxHoCDXJvdBaQGBEoi6jt737q9XUNCG96YKafsroZ0hH2IhVxNAfx7W34O5dZyojEVSdu9qky01QlCcTzYnHph6DCkFKIFdgC9QXntX1ovcK784p3-5d4"><div class="absolute inset-0 bg-gradient-to-t from-charcoal-ink/80 via-transparent to-transparent flex flex-col justify-end p-3"><p class="text-white font-label-bold text-label-bold mb-1">Braised Pork</p><span class="bg-white/20 backdrop-blur-md text-white text-[10px] py-1 px-2 rounded-full self-start">Get Ingredients</span></div></a></div>
+</section>
+<!-- Trending Products Section -->
+<section class="mt-stack-lg px-container-mobile max-w-7xl mx-auto">
+<h3 class="font-title-md text-title-md mb-4">Trending Products</h3>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4"><a href="{{DATA:SCREEN:SCREEN_12}}" class="bg-surface-container-lowest p-3 rounded-xl shadow-sm hover:shadow-md transition-all group border border-mist-gray/30 flex flex-col"><div class="relative aspect-square mb-3 rounded-lg overflow-hidden bg-white"><img class="w-full h-full object-contain border-[1px] border-mist-gray/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCseYMCm0hSr-8JwHj228xwcc5c9iqCiglozcy5IEXoOeY9DQ1mmh_Wo8RxZwZ6MYArFkBHmIAthaQ4SpVcFUAKevShdwWxJInh5LtAgIXmlZw1IPIqqhUC2azIIatY7GJ8VbGQY7uUrbt04jTpOJ9tW3IOzabUUKwgWbz0GD4EJYwlTdREIcyykMrAafyYDFg_0DaRw079U3PzfPRnDAo1us-uJtXHkj9buvvr-Z0uI2kEAVVSgdS5G9X2gejyoF81gS9WrlsT2UY"><div class="absolute bottom-2 right-2 w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center shadow-lg"><span class="material-symbols-outlined">add</span></div></div><div class="flex flex-col gap-1"><h4 class="font-label-bold text-label-bold text-on-surface">Organic Red Apple</h4><div class="flex items-center justify-between"><span class="bg-succulent-green text-primary px-2 py-0.5 rounded-md font-price-display text-label-bold">$4.50</span><span class="text-outline text-[10px]">1kg</span></div></div></a><a href="{{DATA:SCREEN:SCREEN_12}}" class="bg-surface-container-lowest p-3 rounded-xl shadow-sm hover:shadow-md transition-all group border border-mist-gray/30 flex flex-col"><div class="relative aspect-square mb-3 rounded-lg overflow-hidden bg-white"><img class="w-full h-full object-contain border-[1px] border-mist-gray/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0go5kDCWLNSrlAZN8jt1AgaX5SKVBMPJubV-6xkr5V-bKnNCGzP08jz2XZ9HzHkVG6tQilLZAWgDS-IsjcwWj70bva-wQibvzKE6XAqNVK9BlVCs7vZi7zxBkkCnicn2ARlAAgJoYOqq0w9W-OlNnJiYG-Tk4B0D8wyjbaLXZ0Sbnw2ZUmW02HuqCHljr_4bilSU7v7xLo_TJH7NKC6qScLJ4Wz33c7hKZXXApsJcAWbK32xsY5I2BBuXo42wzCyNmfr990fkpus"><div class="absolute bottom-2 right-2 w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center shadow-lg"><span class="material-symbols-outlined">add</span></div></div><div class="flex flex-col gap-1"><h4 class="font-label-bold text-label-bold text-on-surface">Asparagus Bundle</h4><div class="flex items-center justify-between"><span class="bg-succulent-green text-primary px-2 py-0.5 rounded-md font-price-display text-label-bold">$3.20</span><span class="text-outline text-[10px]">250g</span></div></div></a><a href="{{DATA:SCREEN:SCREEN_12}}" class="bg-surface-container-lowest p-3 rounded-xl shadow-sm hover:shadow-md transition-all group border border-mist-gray/30 flex flex-col"><div class="relative aspect-square mb-3 rounded-lg overflow-hidden bg-white"><img class="w-full h-full object-contain border-[1px] border-mist-gray/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHeikLATZbrvZhoRZp3t1_bfuu9ZrMEX8l5PcJ-Fdr7GpUR-dNHCpNENaPkKbzk6C4AbnOVwK5JRBHxQM0oAJum3xhMTc14UQdEgIM5CBwoSlkRHWUtlpHGOP9rR9pfwIXU_CbyMumfNPIwnzZf5gdOPNhm7hhSySZ9h-uHR3ZDORzv0uK2NCeGAmziYqPMcJCCHy3cK-ogGiEoWJnDQ7KI1ThqJuwI491ei50tMi_3HTd2sHTyzzQFgDjcfK24hGFn4kp5Y9JnAw"><div class="absolute bottom-2 right-2 w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center shadow-lg"><span class="material-symbols-outlined">add</span></div></div><div class="flex flex-col gap-1"><h4 class="font-label-bold text-label-bold text-on-surface">Sourdough Loaf</h4><div class="flex items-center justify-between"><span class="bg-succulent-green text-primary px-2 py-0.5 rounded-md font-price-display text-label-bold">$5.80</span><span class="text-outline text-[10px]">500g</span></div></div></a><a href="{{DATA:SCREEN:SCREEN_12}}" class="bg-surface-container-lowest p-3 rounded-xl shadow-sm hover:shadow-md transition-all group border border-mist-gray/30 flex flex-col"><div class="relative aspect-square mb-3 rounded-lg overflow-hidden bg-white"><img class="w-full h-full object-contain border-[1px] border-mist-gray/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLhJtOE_W_Jjn1YMl4j1noTiaSOwBnBDrkZyuKiJgsXgThUlZ5bcEWBs3H2XVumtN9AomgtaD_J3JA9KpzFkaOqBrmwRnIs5VtJqQzQKv89NqJAXMiANmjrK8ZRHbNv8opkEQtBWLo6rpsGa8_HvlPN3-CvvYNXjCKmMfo1LB4nQcyu0eCes8Jpyzv50IVuQJJQXsEfMuHAhie_ZkWZNX52Ar7EZn-466rdH1FKQXd7QP3at91tw_dv65HIxl0XdzGAazid_zHBZU"><div class="absolute bottom-2 right-2 w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center shadow-lg"><span class="material-symbols-outlined">add</span></div></div><div class="flex flex-col gap-1"><h4 class="font-label-bold text-label-bold text-on-surface">Summer Cherries</h4><div class="flex items-center justify-between"><span class="bg-succulent-green text-primary px-2 py-0.5 rounded-md font-price-display text-label-bold">$6.50</span><span class="text-outline text-[10px]">400g</span></div></div></a></div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 bg-surface/80 dark:bg-charcoal-ink/80 backdrop-blur-md shadow-[0_-4px_12px_rgba(26,28,27,0.04)]">
+<div class="flex justify-around items-center h-20 px-4 pb-safe w-full max-w-7xl mx-auto">
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 transition-all duration-200 ease-in-out active:scale-90" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-bold text-label-bold">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-succulent-green transition-all duration-200 ease-in-out active:scale-90" href="{{DATA:SCREEN:SCREEN_31}}">
+<span class="material-symbols-outlined">search</span>
+<span class="font-label-bold text-label-bold">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-succulent-green transition-all duration-200 ease-in-out active:scale-90" href="{{DATA:SCREEN:SCREEN_24}}">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="font-label-bold text-label-bold">Cart</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-succulent-green transition-all duration-200 ease-in-out active:scale-90" href="{{DATA:SCREEN:SCREEN_21}}">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-label-bold text-label-bold">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-succulent-green transition-all duration-200 ease-in-out active:scale-90" href="{{DATA:SCREEN:SCREEN_8}}">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-bold text-label-bold">Profile</span>
+</a>
+</div>
+</nav>
+<script>
+        // Simple micro-interaction for product cards
+        document.querySelectorAll('.group').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-4px)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Basic carousel logic for demonstration
+        let currentSlide = 0;
+        const slides = [
+            {
+                title: "Fresh Deals",
+                desc: "Up to 30% off on seasonal organics",
+                tag: "LIMITED TIME",
+                img: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1280"
+            },
+            {
+                title: "Meal Planner",
+                desc: "Simplify your week with our curated recipes",
+                tag: "NEW FEATURE",
+                img: "https://images.unsplash.com/photo-1506368249639-73a05d6f6488?auto=format&fit=crop&q=80&w=1280"
+            }
+        ];
+
+        const carousel = document.getElementById('carousel');
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % slides.length;
+            // Note: In a real app we'd update DOM here. Keeping it simple as requested.
+        }, 5000);
+    </script>
+
+
+</body></html>

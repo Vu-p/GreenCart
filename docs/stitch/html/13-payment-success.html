@@ -1,0 +1,273 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Order Confirmed | GreenCart</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed-dim": "#ffb951",
+                    "surface-bright": "#f8faf9",
+                    "surface-container-low": "#f2f4f3",
+                    "surface-container-highest": "#e1e3e2",
+                    "tertiary-fixed-dim": "#ffb2b9",
+                    "on-tertiary-fixed": "#400010",
+                    "outline-variant": "#bdcabd",
+                    "on-primary-container": "#f6fff4",
+                    "on-background": "#191c1c",
+                    "primary-fixed-dim": "#6fdc93",
+                    "on-primary": "#ffffff",
+                    "surface-tint": "#006d39",
+                    "primary-fixed": "#8cf9ad",
+                    "tertiary-fixed": "#ffdadc",
+                    "on-surface": "#191c1c",
+                    "on-primary-fixed": "#00210d",
+                    "surface-variant": "#e1e3e2",
+                    "on-error": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container": "#eceeed",
+                    "ripened-orange": "#FF9F1C",
+                    "error-container": "#ffdad6",
+                    "error": "#ba1a1a",
+                    "tertiary-container": "#be5061",
+                    "succulent-green": "#E9F5EE",
+                    "on-tertiary-fixed-variant": "#822335",
+                    "on-secondary-fixed-variant": "#633f00",
+                    "background": "#f8faf9",
+                    "surface": "#f8faf9",
+                    "on-tertiary": "#ffffff",
+                    "deep-forest": "#1E4D34",
+                    "surface-dim": "#d8dada",
+                    "surface-container-high": "#e6e9e8",
+                    "secondary-fixed": "#ffddb3",
+                    "inverse-on-surface": "#eff1f0",
+                    "primary-container": "#008648",
+                    "on-secondary": "#ffffff",
+                    "tertiary": "#9e3849",
+                    "primary": "#006a38",
+                    "on-secondary-container": "#704800",
+                    "inverse-surface": "#2e3131",
+                    "charcoal-ink": "#1A1C1B",
+                    "on-tertiary-container": "#fffbff",
+                    "secondary": "#825500",
+                    "on-error-container": "#93000a",
+                    "on-surface-variant": "#3e4a40",
+                    "on-primary-fixed-variant": "#00522a",
+                    "on-secondary-fixed": "#291800",
+                    "mist-gray": "#E2E8E5",
+                    "inverse-primary": "#6fdc93",
+                    "outline": "#6e7a6f",
+                    "secondary-container": "#fdb64b"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-sm": "4px",
+                    "stack-md": "12px",
+                    "gutter": "16px",
+                    "stack-lg": "24px",
+                    "base": "8px",
+                    "container-margin-mobile": "16px",
+                    "container-margin-desktop": "32px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "price-display": ["Inter"],
+                    "title-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-bold": ["Inter"],
+                    "headline-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "price-display": ["22px", {"lineHeight": "24px", "fontWeight": "700"}],
+                    "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-bold": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .success-float {
+            animation: floating 3s ease-in-out infinite;
+        }
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #006a38;
+            border-radius: 2px;
+            animation: fall linear forwards;
+        }
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-lg overflow-x-hidden">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface dark:bg-surface-dim shadow-sm flex justify-between items-center px-container-margin-mobile h-16">
+<div class="flex items-center gap-4">
+<button class="active:scale-95 transition-transform hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim">menu</span>
+</button>
+<h1 class="font-display-lg text-display-lg text-primary dark:text-primary-fixed-dim tracking-tight">GreenCart</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="active:scale-95 transition-transform hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim">notifications</span>
+</button>
+</div>
+</header>
+<!-- Success Content Area -->
+<main class="flex-grow flex flex-col items-center justify-center px-container-margin-mobile py-24 relative overflow-hidden">
+<!-- Animated Backdrop Elements -->
+<div class="absolute inset-0 pointer-events-none" id="confetti-container"><div class="confetti" style="left: 44.7238vw; background-color: rgb(0, 106, 56); animation-duration: 4.20465s; opacity: 0.446216; width: 7.31614px; height: 10.0558px;"></div><div class="confetti" style="left: 48.4691vw; background-color: rgb(0, 106, 56); animation-duration: 3.33883s; opacity: 0.609898; width: 11.2956px; height: 4.46009px;"></div><div class="confetti" style="left: 33.0447vw; background-color: rgb(233, 245, 238); animation-duration: 3.2121s; opacity: 0.932006; width: 4.74149px; height: 4.97907px;"></div><div class="confetti" style="left: 40.445vw; background-color: rgb(0, 106, 56); animation-duration: 4.67132s; opacity: 0.542946; width: 6.93493px; height: 5.58175px;"></div><div class="confetti" style="left: 34.6397vw; background-color: rgb(255, 159, 28); animation-duration: 4.80191s; opacity: 0.771452; width: 9.23283px; height: 9.69309px;"></div><div class="confetti" style="left: 35.5668vw; background-color: rgb(111, 220, 147); animation-duration: 4.78718s; opacity: 0.305983; width: 4.8374px; height: 5.0008px;"></div><div class="confetti" style="left: 9.85589vw; background-color: rgb(255, 159, 28); animation-duration: 4.00527s; opacity: 0.387468; width: 7.06471px; height: 5.24947px;"></div><div class="confetti" style="left: 32.2717vw; background-color: rgb(233, 245, 238); animation-duration: 4.75358s; opacity: 0.881428; width: 8.27098px; height: 8.43293px;"></div><div class="confetti" style="left: 4.33154vw; background-color: rgb(255, 159, 28); animation-duration: 3.25674s; opacity: 0.176935; width: 7.64686px; height: 5.20641px;"></div><div class="confetti" style="left: 21.5226vw; background-color: rgb(233, 245, 238); animation-duration: 3.99776s; opacity: 0.780721; width: 11.4189px; height: 11.9819px;"></div><div class="confetti" style="left: 49.5773vw; background-color: rgb(233, 245, 238); animation-duration: 3.22768s; opacity: 0.499929; width: 8.1456px; height: 7.78579px;"></div><div class="confetti" style="left: 64.0459vw; background-color: rgb(0, 106, 56); animation-duration: 3.73897s; opacity: 0.220129; width: 10.6211px; height: 6.09462px;"></div><div class="confetti" style="left: 33.0876vw; background-color: rgb(233, 245, 238); animation-duration: 3.63241s; opacity: 0.492154; width: 6.56699px; height: 10.581px;"></div><div class="confetti" style="left: 81.0856vw; background-color: rgb(233, 245, 238); animation-duration: 3.6935s; opacity: 0.625998; width: 11.7336px; height: 7.42146px;"></div><div class="confetti" style="left: 58.7486vw; background-color: rgb(255, 159, 28); animation-duration: 3.06176s; opacity: 0.53532; width: 5.54085px; height: 10.6878px;"></div><div class="confetti" style="left: 86.8705vw; background-color: rgb(0, 106, 56); animation-duration: 4.43878s; opacity: 0.885908; width: 7.02737px; height: 8.93352px;"></div><div class="confetti" style="left: 0.125888vw; background-color: rgb(233, 245, 238); animation-duration: 4.97678s; opacity: 0.90265; width: 6.44396px; height: 10.9831px;"></div><div class="confetti" style="left: 37.1349vw; background-color: rgb(233, 245, 238); animation-duration: 3.67025s; opacity: 0.458398; width: 5.64052px; height: 7.69883px;"></div><div class="confetti" style="left: 37.9374vw; background-color: rgb(255, 159, 28); animation-duration: 4.46683s; opacity: 0.310824; width: 8.07367px; height: 5.53005px;"></div><div class="confetti" style="left: 33.781vw; background-color: rgb(255, 159, 28); animation-duration: 4.97921s; opacity: 0.317082; width: 4.60653px; height: 11.2885px;"></div><div class="confetti" style="left: 79.4169vw; background-color: rgb(111, 220, 147); animation-duration: 4.61752s; opacity: 0.867938; width: 7.63535px; height: 7.21875px;"></div><div class="confetti" style="left: 10.46vw; background-color: rgb(233, 245, 238); animation-duration: 3.61119s; opacity: 0.258708; width: 6.13746px; height: 5.0534px;"></div><div class="confetti" style="left: 96.4311vw; background-color: rgb(255, 159, 28); animation-duration: 3.25536s; opacity: 0.684627; width: 10.7148px; height: 11.7868px;"></div><div class="confetti" style="left: 45.7545vw; background-color: rgb(255, 159, 28); animation-duration: 4.0368s; opacity: 0.376338; width: 9.30062px; height: 5.07022px;"></div><div class="confetti" style="left: 84.6606vw; background-color: rgb(111, 220, 147); animation-duration: 3.72894s; opacity: 0.172481; width: 9.13825px; height: 10.0278px;"></div><div class="confetti" style="left: 15.9118vw; background-color: rgb(233, 245, 238); animation-duration: 4.27971s; opacity: 0.255592; width: 4.05909px; height: 8.43826px;"></div><div class="confetti" style="left: 96.561vw; background-color: rgb(233, 245, 238); animation-duration: 3.40017s; opacity: 0.561462; width: 9.5266px; height: 4.09577px;"></div><div class="confetti" style="left: 50.1184vw; background-color: rgb(255, 159, 28); animation-duration: 3.39026s; opacity: 0.0175425; width: 8.3723px; height: 11.5476px;"></div><div class="confetti" style="left: 26.8715vw; background-color: rgb(111, 220, 147); animation-duration: 3.46853s; opacity: 0.700212; width: 9.75818px; height: 4.33104px;"></div><div class="confetti" style="left: 57.6178vw; background-color: rgb(0, 106, 56); animation-duration: 3.03844s; opacity: 0.157744; width: 7.54371px; height: 10.5315px;"></div><div class="confetti" style="left: 77.8687vw; background-color: rgb(111, 220, 147); animation-duration: 4.76398s; opacity: 0.65455; width: 4.5222px; height: 6.95306px;"></div><div class="confetti" style="left: 12.1212vw; background-color: rgb(255, 159, 28); animation-duration: 4.65448s; opacity: 0.734482; width: 4.98509px; height: 6.92497px;"></div><div class="confetti" style="left: 7.24258vw; background-color: rgb(0, 106, 56); animation-duration: 4.04341s; opacity: 0.468925; width: 4.91775px; height: 11.3089px;"></div><div class="confetti" style="left: 93.7532vw; background-color: rgb(111, 220, 147); animation-duration: 3.40991s; opacity: 0.112058; width: 8.6011px; height: 4.81154px;"></div><div class="confetti" style="left: 33.022vw; background-color: rgb(233, 245, 238); animation-duration: 3.70671s; opacity: 0.780901; width: 11.3602px; height: 7.93456px;"></div><div class="confetti" style="left: 6.56952vw; background-color: rgb(233, 245, 238); animation-duration: 3.89176s; opacity: 0.758405; width: 7.75447px; height: 6.67061px;"></div><div class="confetti" style="left: 44.8995vw; background-color: rgb(111, 220, 147); animation-duration: 3.45703s; opacity: 0.943592; width: 10.114px; height: 8.24361px;"></div><div class="confetti" style="left: 41.0384vw; background-color: rgb(255, 159, 28); animation-duration: 4.09591s; opacity: 0.400105; width: 6.92896px; height: 9.63252px;"></div><div class="confetti" style="left: 32.6476vw; background-color: rgb(111, 220, 147); animation-duration: 4.37948s; opacity: 0.861104; width: 7.64312px; height: 7.60095px;"></div><div class="confetti" style="left: 47.8946vw; background-color: rgb(0, 106, 56); animation-duration: 3.77978s; opacity: 0.103584; width: 7.91185px; height: 8.39816px;"></div><div class="confetti" style="left: 58.8147vw; background-color: rgb(111, 220, 147); animation-duration: 3.82838s; opacity: 0.198629; width: 7.99727px; height: 11.1894px;"></div><div class="confetti" style="left: 28.1603vw; background-color: rgb(255, 159, 28); animation-duration: 3.68616s; opacity: 0.268485; width: 8.96683px; height: 4.8456px;"></div><div class="confetti" style="left: 54.3471vw; background-color: rgb(255, 159, 28); animation-duration: 4.18318s; opacity: 0.197367; width: 10.1937px; height: 10.8381px;"></div><div class="confetti" style="left: 75.8709vw; background-color: rgb(255, 159, 28); animation-duration: 3.55621s; opacity: 0.90979; width: 8.60103px; height: 5.35048px;"></div><div class="confetti" style="left: 20.0193vw; background-color: rgb(0, 106, 56); animation-duration: 4.39827s; opacity: 0.668375; width: 6.17674px; height: 5.70032px;"></div><div class="confetti" style="left: 4.37943vw; background-color: rgb(0, 106, 56); animation-duration: 3.00999s; opacity: 0.885528; width: 10.7571px; height: 7.70337px;"></div><div class="confetti" style="left: 18.2483vw; background-color: rgb(255, 159, 28); animation-duration: 4.53221s; opacity: 0.0706644; width: 11.799px; height: 6.24956px;"></div><div class="confetti" style="left: 56.2867vw; background-color: rgb(111, 220, 147); animation-duration: 4.84968s; opacity: 0.547781; width: 10.4451px; height: 6.64077px;"></div><div class="confetti" style="left: 52.9794vw; background-color: rgb(233, 245, 238); animation-duration: 3.78233s; opacity: 0.310608; width: 11.5644px; height: 6.7838px;"></div><div class="confetti" style="left: 9.92492vw; background-color: rgb(255, 159, 28); animation-duration: 4.61199s; opacity: 0.362846; width: 7.7627px; height: 8.82589px;"></div></div>
+<!-- Success Hero Card -->
+<div class="w-full max-w-md bg-surface-container-lowest rounded-xl p-8 shadow-[0_4px_12px_rgba(26,28,27,0.04)] flex flex-col items-center text-center space-y-stack-lg z-10 border border-mist-gray">
+<!-- Success Illustration -->
+<div class="relative">
+<div class="success-float w-24 h-24 bg-succulent-green rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[64px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<!-- Decorative Circles -->
+<div class="absolute -top-2 -right-2 w-6 h-6 bg-ripened-orange/20 rounded-full animate-pulse"></div>
+<div class="absolute -bottom-4 -left-6 w-8 h-8 bg-primary/10 rounded-full animate-bounce"></div>
+</div>
+<!-- Header Section -->
+<div class="space-y-stack-sm">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-deep-forest">Order Confirmed</h2>
+<p class="text-on-surface-variant font-body-lg">Thank you for your purchase! Your fresh groceries are being packed with care.</p>
+</div>
+<!-- Order Badge -->
+<div class="bg-succulent-green px-6 py-2 rounded-full border border-primary/10">
+<span class="font-label-bold text-label-bold text-primary uppercase tracking-widest">Order #GC-9872</span>
+</div>
+<!-- Info Bento Grid -->
+<div class="grid grid-cols-1 w-full gap-stack-md pt-4">
+<div class="flex items-center justify-between p-4 bg-mist-gray/30 rounded-lg">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">schedule</span>
+<span class="font-title-md text-on-surface-variant text-[14px]">Delivery Time</span>
+</div>
+<span class="font-title-md text-primary text-[16px]">Arriving in 45 mins</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-mist-gray/30 rounded-lg">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">local_shipping</span>
+<span class="font-title-md text-on-surface-variant text-[14px]">Carrier</span>
+</div>
+<span class="font-title-md text-primary text-[16px]">GreenExpress</span>
+</div>
+</div>
+<!-- Primary CTA -->
+<button class="w-full bg-primary text-on-primary font-title-md py-4 rounded-xl shadow-lg active:scale-95 transition-transform hover:bg-primary-container" onclick="window.location.href='{{DATA:SCREEN:SCREEN_28}}'">
+                Track Order
+            </button>
+<!-- Secondary Actions -->
+<div class="flex flex-col w-full gap-stack-sm">
+<button class="w-full py-3 text-on-surface-variant font-title-md text-[16px] border-2 border-mist-gray rounded-xl hover:bg-mist-gray/10 active:scale-95 transition-transform" onclick="window.location.href='{{DATA:SCREEN:SCREEN_21}}'">
+                    View Order Details
+                </button>
+<button class="w-full py-3 text-primary font-label-bold text-[14px] hover:underline active:opacity-70" onclick="window.location.href='{{DATA:SCREEN:SCREEN_9}}'">
+                    Back to Home
+                </button>
+</div>
+</div>
+<!-- Decorative Illustration below card -->
+<div class="mt-stack-lg max-w-sm">
+<img alt="Fresh produce delivery" class="rounded-xl border border-mist-gray opacity-40 grayscale hover:grayscale-0 transition-all duration-700" data-alt="A premium close-up of a delivery basket filled with vibrant organic vegetables like kale, bright red tomatoes, and crunchy carrots. The lighting is soft and natural, emphasizing the freshness and texture of the produce. The background is a clean, modern kitchen with light wood accents, maintaining a minimalist and high-end organic aesthetic that aligns with a healthy lifestyle brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhrJpDLDgagq32pkGPXKWLA5GJ0UnSrm-qB7rLGakktiL1x1eYrxBHxHpK4AxHuDuFiC3bDYQmUBDhPTGKrsMDIb-RwxDM35aN278WEPB3cr1DyPlZ4gBDBSlZp4v4UueMSHI4bZcJ6Sa0frHI3dKr5lLejjm3SAWPipblauzEJmgZqV8eT9eQi8h0-0d7pqqVOAEiJVefMAg1n-6U4K-ltjyUaC61HTC3JrgwkYq_U4J1DQHxFj-A4uE79xFuTmk_KEahq_85M-0">
+</div>
+</main>
+<!-- Bottom Navigation Bar (Mobile) -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-2 pb-safe bg-surface/80 dark:bg-charcoal-ink/80 backdrop-blur-md shadow-[0_-4px_12px_rgba(26,28,27,0.04)] rounded-t-xl md:hidden z-50">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:text-primary active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-bold text-label-bold">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:text-primary active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">search</span>
+<span class="font-label-bold text-label-bold">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:text-primary active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="font-label-bold text-label-bold">Cart</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-succulent-green dark:bg-primary-container text-primary dark:text-on-primary-container rounded-full px-4 py-1 active:scale-90 transition-all duration-200" href="{{DATA:SCREEN:SCREEN_21}}">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+<span class="font-label-bold text-label-bold">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:text-primary active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-bold text-label-bold">Profile</span>
+</a>
+</nav>
+<script>
+        // Simple Confetti Effect
+        function createConfetti() {
+            const container = document.getElementById('confetti-container');
+            const colors = ['#006a38', '#6fdc93', '#FF9F1C', '#E9F5EE'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = (Math.random() * 2 + 3) + 's';
+                confetti.style.opacity = Math.random();
+                confetti.style.width = (Math.random() * 8 + 4) + 'px';
+                confetti.style.height = (Math.random() * 8 + 4) + 'px';
+                container.appendChild(confetti);
+                
+                // Cleanup
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
+        }
+
+        // Run on load
+        window.addEventListener('load', () => {
+            createConfetti();
+            // Optional: Repeat occasionally for a "living" UI feel
+            setInterval(createConfetti, 10000);
+        });
+
+        // Micro-interaction for buttons
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                let ripple = document.createElement('span');
+                ripple.classList.add('ripple');
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+    </script>
+
+
+</body></html>

@@ -46,18 +46,15 @@ public sealed class CartController(AppDbContext dbContext) : ControllerBase
             return Conflict(new { message = "Product is out of stock." });
         }
 
-        var cart = await LoadCartAsync(userId.Value, cancellationToken) ?? new Cart { UserId = userId.Value };
-        if (cart.Id == Guid.Empty)
+        var cart = await dbContext.Carts.SingleOrDefaultAsync(cart => cart.UserId == userId.Value, cancellationToken);
+        if (cart is null)
         {
-            cart.Id = Guid.NewGuid();
-        }
-
-        if (cart.Items.Count == 0 && dbContext.Entry(cart).State == EntityState.Detached)
-        {
+            cart = new Cart { UserId = userId.Value };
             dbContext.Carts.Add(cart);
         }
 
-        var item = cart.Items.SingleOrDefault(item => item.ProductId == product.Id);
+        var item = await dbContext.CartItems
+            .SingleOrDefaultAsync(item => item.CartId == cart.Id && item.ProductId == product.Id, cancellationToken);
         var nextQuantity = (item?.Quantity ?? 0) + request.Quantity;
         if (nextQuantity > product.Stock)
         {
@@ -66,10 +63,10 @@ public sealed class CartController(AppDbContext dbContext) : ControllerBase
 
         if (item is null)
         {
-            cart.Items.Add(new CartItem
+            dbContext.CartItems.Add(new CartItem
             {
+                CartId = cart.Id,
                 ProductId = product.Id,
-                Product = product,
                 Quantity = request.Quantity
             });
         }
@@ -80,7 +77,14 @@ public sealed class CartController(AppDbContext dbContext) : ControllerBase
         }
 
         cart.UpdatedAt = DateTimeOffset.UtcNow;
-        await dbContext.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return Conflict(new { message = "Cart changed while updating. Please retry." });
+        }
 
         return Ok(ApiMappings.ToResponse(await LoadCartAsync(userId.Value, cancellationToken)));
     }

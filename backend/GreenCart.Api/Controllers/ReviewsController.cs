@@ -82,9 +82,10 @@ public sealed class ReviewsController(AppDbContext dbContext) : ControllerBase
     [HttpGet("api/products/{id:guid}/reviews")]
     public async Task<ActionResult<IReadOnlyList<ProductReviewResponse>>> GetProductReviews(Guid id, CancellationToken cancellationToken)
     {
-        var reviews = await dbContext.ProductReviews
+        var reviews = (await dbContext.ProductReviews
             .AsNoTracking()
             .Where(review => review.ProductId == id)
+            .ToListAsync(cancellationToken))
             .OrderByDescending(review => review.CreatedAt)
             .Select(review => new ProductReviewResponse(
                 review.Id,
@@ -92,7 +93,7 @@ public sealed class ReviewsController(AppDbContext dbContext) : ControllerBase
                 review.Rating,
                 review.Comment,
                 review.CreatedAt))
-            .ToListAsync(cancellationToken);
+            .ToList();
 
         return Ok(reviews);
     }

@@ -1,0 +1,316 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>GreenCart - Your Cart</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind Theme Config -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed": "#400010",
+                    "mist-gray": "#E2E8E5",
+                    "tertiary": "#9e3849",
+                    "primary-fixed-dim": "#6fdc93",
+                    "on-primary-container": "#f6fff4",
+                    "surface-container-lowest": "#ffffff",
+                    "succulent-green": "#E9F5EE",
+                    "surface-variant": "#e1e3e2",
+                    "on-error": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "on-tertiary-container": "#fffbff",
+                    "on-secondary-fixed-variant": "#633f00",
+                    "surface-container-low": "#f2f4f3",
+                    "secondary": "#825500",
+                    "error": "#ba1a1a",
+                    "inverse-on-surface": "#eff1f0",
+                    "on-surface-variant": "#3e4a40",
+                    "inverse-primary": "#6fdc93",
+                    "surface-container-highest": "#e1e3e2",
+                    "surface-bright": "#f8faf9",
+                    "on-primary-fixed": "#00210d",
+                    "secondary-container": "#fdb64b",
+                    "surface": "#f8faf9",
+                    "outline-variant": "#bdcabd",
+                    "on-tertiary-fixed-variant": "#822335",
+                    "surface-container": "#eceeed",
+                    "on-error-container": "#93000a",
+                    "on-primary-fixed-variant": "#00522a",
+                    "primary": "#006a38",
+                    "on-background": "#191c1c",
+                    "ripened-orange": "#FF9F1C",
+                    "surface-dim": "#d8dada",
+                    "charcoal-ink": "#1A1C1B",
+                    "on-surface": "#191c1c",
+                    "surface-container-high": "#e6e9e8",
+                    "on-secondary": "#ffffff",
+                    "surface-tint": "#006d39",
+                    "error-container": "#ffdad6",
+                    "background": "#f8faf9",
+                    "secondary-fixed-dim": "#ffb951",
+                    "inverse-surface": "#2e3131",
+                    "secondary-fixed": "#ffddb3",
+                    "tertiary-fixed": "#ffdadc",
+                    "outline": "#6e7a6f",
+                    "on-secondary-fixed": "#291800",
+                    "tertiary-container": "#be5061",
+                    "deep-forest": "#1E4D34",
+                    "on-tertiary": "#ffffff",
+                    "primary-fixed": "#8cf9ad",
+                    "on-secondary-container": "#704800",
+                    "primary-container": "#008648",
+                    "tertiary-fixed-dim": "#ffb2b9"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-sm": "4px",
+                    "gutter": "16px",
+                    "container-margin-desktop": "32px",
+                    "stack-lg": "24px",
+                    "base": "8px",
+                    "stack-md": "12px",
+                    "container-margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "title-md": ["Inter"],
+                    "label-bold": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "price-display": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-bold": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "price-display": ["22px", {"lineHeight": "24px", "fontWeight": "700"}],
+                    "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        .cart-item-shadow { box-shadow: 0 4px 12px rgba(26, 28, 27, 0.04); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-40">
+<!-- Top AppBar (from JSON guidance) -->
+<header class="bg-surface dark:bg-charcoal-ink w-full sticky top-0 z-50 shadow-sm flex items-center justify-between px-container-mobile h-16 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-4">
+<button class="transition-transform active:scale-95 text-on-surface-variant p-2 rounded-full hover:bg-mist-gray/20">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary">Your Cart</h1>
+</div>
+<button class="transition-transform active:scale-95 text-on-surface-variant font-label-bold text-label-bold hover:bg-mist-gray/20 px-3 py-2 rounded-lg">
+            Clear All
+        </button>
+</header>
+<main class="max-w-md mx-auto px-container-mobile pt-stack-lg space-y-stack-lg">
+<!-- Smart Substitution Global Card -->
+<section class="bg-succulent-green rounded-xl p-4 flex items-center justify-between border border-primary-fixed-dim" onclick="window.location.href='{{DATA:SCREEN:SCREEN_19}}'">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">psychology</span>
+<div>
+<h3 class="font-title-md text-[14px] leading-tight text-on-surface">Smart Substitutions</h3>
+<p class="text-body-sm text-on-surface-variant">Allow alternatives if out of stock</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox">
+<div class="w-11 h-6 bg-mist-gray peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</section>
+<!-- Cart Items List -->
+<div class="space-y-stack-md">
+<!-- Item 1: Gala Apples -->
+<div class="bg-surface-container-lowest rounded-xl p-3 flex gap-4 cart-item-shadow transition-all active:scale-[0.98]" onclick="window.location.href='{{DATA:SCREEN:SCREEN_12}}'">
+<div class="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 border border-mist-gray">
+<img class="w-full h-full object-cover" data-alt="A close-up, high-resolution shot of several fresh, crisp Gala apples with vibrant red and yellow skin. The lighting is soft and natural, emphasizing the organic texture and freshness of the fruit. The apples are arranged artfully on a clean, light surface, creating a bright and healthy aesthetic consistent with a premium organic marketplace." src="https://lh3.googleusercontent.com/aida-public/AB6AXuByoX5ir6aySD3Pnj5nNPC4Xm3fxtFJkoBAQck5MB0XXDgGVx9lkHmRnoa0Q8x3Z24WqTQMtt0GS6eI_uLO6TDPNMAwswh7e6lWZFUmkzzx-BAVEmBZ8242Y2wJf-VsERaL3WEYbDac4RSU5a3qi3HMhBT6Aim2Zi_8Zkmk78Fq_A-EReHNFDd2GcUTrLE6i54jwsYUttg7oFrxp_3YSyTsAIeljTFugtdvXFpZ9PpKJeftslTNygOBydL47ARu-Jt8J69f0O-_sYE">
+</div>
+<div class="flex flex-col justify-between flex-grow">
+<div>
+<div class="flex justify-between items-start">
+<h4 class="font-title-md text-[16px] text-on-surface">Gala Apples</h4>
+<span class="font-label-bold text-label-bold text-primary bg-succulent-green px-2 py-0.5 rounded-full">$4.50</span>
+</div>
+<p class="text-body-sm text-on-surface-variant">Organic, 1kg</p>
+</div>
+<div class="flex justify-between items-center mt-2">
+<div class="flex items-center bg-mist-gray/30 rounded-full px-1">
+<button class="p-1 text-primary active:scale-90 transition-transform"><span class="material-symbols-outlined text-[20px]">remove_circle</span></button>
+<span class="px-3 font-title-md text-[14px]">1</span>
+<button class="p-1 text-primary active:scale-90 transition-transform"><span class="material-symbols-outlined text-[20px]">add_circle</span></button>
+</div>
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Item 2: Organic Milk -->
+<div class="bg-surface-container-lowest rounded-xl p-3 flex gap-4 cart-item-shadow transition-all active:scale-[0.98]" onclick="window.location.href='{{DATA:SCREEN:SCREEN_12}}'">
+<div class="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 border border-mist-gray">
+<img class="w-full h-full object-cover" data-alt="A premium glass bottle of fresh organic whole milk sitting on a minimalist wooden countertop. The lighting is warm and morning-like, highlighting the rich, creamy texture of the milk and the clean condensation on the bottle. The setting is a bright, modern kitchen with soft green plant accents in the background, reinforcing a high-end organic brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAl-UmXi2Yrd95MgnmKxiMCGp-Xl1oHrydr_u0bHSU1AJNTD68826uZTQgxVN2q4knAjQWFw111Yynn9q80seojTXb9pXE7L9eHpd7Pv7MyDXTB8DONLYS71o2bBFBiNcr_fV2hY7QCLYqd7TQt4e2oDTodqz1l3uqHZLXJ_QikWa5Hky3J2TX3Zelnem-hFDid3AurR8RnO1O2bknSCTgoCOT7i8T1BJG7AcMI8N16qRKhhspJoIN3mBh7P7J5kyos6TCHT-koWAE">
+</div>
+<div class="flex flex-col justify-between flex-grow">
+<div>
+<div class="flex justify-between items-start">
+<h4 class="font-title-md text-[16px] text-on-surface">Organic Whole Milk</h4>
+<span class="font-label-bold text-label-bold text-primary bg-succulent-green px-2 py-0.5 rounded-full">$3.25</span>
+</div>
+<p class="text-body-sm text-on-surface-variant">Glass Bottle, 1L</p>
+</div>
+<div class="flex justify-between items-center mt-2">
+<div class="flex items-center bg-mist-gray/30 rounded-full px-1">
+<button class="p-1 text-primary active:scale-90 transition-transform"><span class="material-symbols-outlined text-[20px]">remove_circle</span></button>
+<span class="px-3 font-title-md text-[14px]">2</span>
+<button class="p-1 text-primary active:scale-90 transition-transform"><span class="material-symbols-outlined text-[20px]">add_circle</span></button>
+</div>
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Item 3: Sourdough Bread -->
+<div class="bg-surface-container-lowest rounded-xl p-3 flex gap-4 cart-item-shadow transition-all active:scale-[0.98]" onclick="window.location.href='{{DATA:SCREEN:SCREEN_12}}'">
+<div class="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 border border-mist-gray">
+<img class="w-full h-full object-cover" data-alt="An artisanal loaf of sourdough bread with a beautifully dusted flour crust and deep score marks, fresh from the oven. The bread is presented on a minimalist gray linen cloth with a few scattered wheat stalks. The photography style is moody yet clean, with soft directional lighting that brings out the tactile, crunchy texture of the golden crust." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9_QxwCn2fdMHgLUNX2e08pjViCxrPiLaryMll4ufQB83Mze7VMBS9PCaPzCKrMrRTjpMMr6jjIz4VNWNZGxairmcWeCXHiCxGbaEVfAXOx5YEpXNa-txGz8gPrQGzA47SF9WmeQdYDQt0sBFsistRK9zxDVyjp6PxazfHlyHIRGdeU7f06XpQV6zef-gSL9X5_H0T7fj6l0QyTv-Yh_kcguU-77MOaIZWBLoVwViA8EmWzAE1pHQ3ljmR2kWbu4e0oXN_58o8YyA">
+</div>
+<div class="flex flex-col justify-between flex-grow">
+<div>
+<div class="flex justify-between items-start">
+<h4 class="font-title-md text-[16px] text-on-surface">Artisan Sourdough</h4>
+<span class="font-label-bold text-label-bold text-primary bg-succulent-green px-2 py-0.5 rounded-full">$6.50</span>
+</div>
+<p class="text-body-sm text-on-surface-variant">Bakery Fresh, 500g</p>
+</div>
+<div class="flex justify-between items-center mt-2">
+<div class="flex items-center bg-mist-gray/30 rounded-full px-1">
+<button class="p-1 text-primary active:scale-90 transition-transform"><span class="material-symbols-outlined text-[20px]">remove_circle</span></button>
+<span class="px-3 font-title-md text-[14px]">1</span>
+<button class="p-1 text-primary active:scale-90 transition-transform"><span class="material-symbols-outlined text-[20px]">add_circle</span></button>
+</div>
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Order Summary Section -->
+<section class="bg-surface-container-low rounded-2xl p-6 space-y-4">
+<h2 class="font-title-md text-on-surface">Order Summary</h2>
+<div class="space-y-2">
+<div class="flex justify-between text-body-lg text-on-surface-variant">
+<span class="">Subtotal</span>
+<span class="">$17.50</span>
+</div>
+<div class="flex justify-between text-body-lg text-on-surface-variant">
+<span class="">Shipping Fee</span>
+<span class="text-primary font-semibold">FREE</span>
+</div>
+<div class="pt-4 border-t border-mist-gray flex justify-between">
+<span class="font-headline-lg-mobile text-on-surface">Total</span>
+<span class="font-headline-lg-mobile text-primary">$17.50</span>
+</div>
+</div>
+</section>
+<!-- Suggestions Carousel (Mini) -->
+<section class="pb-12">
+<h3 class="font-title-md text-[16px] mb-4 text-on-surface">Forget something?</h3>
+<div class="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+<div class="min-w-[140px] bg-white rounded-xl p-2 border border-mist-gray/50 flex flex-col items-center">
+<img class="w-16 h-16 object-cover rounded-lg mb-2" data-alt="A bunch of vibrant, fresh organic carrots with their green leafy tops still attached. They are laid out on a bright, clean surface. The image is crisp, emphasizing the bright orange color and healthy texture, suitable for a lifestyle organic food brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQl_vl34-wycG1TVnRhwhLAqT5JSc4EL4_sit1_lj_ZUYAwJ-vBRZjV3NyUhTrg8gjn-eJclxOXu6jlG0LziTP4ThBlNV8A2TiG6PbrhZZW3PrFx9qOJhTHGQuEivhGRVLCOWlEny8PUK0RB4M0dzHpcatczzVVbfQG_WoWFItfOwWMd2TsG9ryWXrMkvD0Pd3RHIO7lcaLjWXTUp7vt6D8HT4zUKPUhNsan1AlBT_kjCwelr4fumM--Q7pYww3wcHFIihqcXhe2g">
+<p class="text-body-sm font-semibold">Carrots</p>
+<button class="mt-2 text-primary material-symbols-outlined bg-succulent-green p-1 rounded-full">add</button>
+</div>
+<div class="min-w-[140px] bg-white rounded-xl p-2 border border-mist-gray/50 flex flex-col items-center">
+<img class="w-16 h-16 object-cover rounded-lg mb-2" data-alt="A ripe, perfectly textured Hass avocado halved to show the creamy green interior and the large brown pit. The lighting is soft and top-down, highlighting the buttery richness of the fruit. The overall aesthetic is clean and modern." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA08YTZgSxVvAPfsAxheR9vtHuR4tEXleLOJUWKmgPwcVCulLdRnwOvnhzUXcx1dq-N3devCaPm7LucokREbk4FwPUElfLjNTccmO7E0k-hYdIQCaCb6WD1OosSHTHHrWs2pAsO45E1ay6sCx4Vq5weuWcte9UQKm0ERWopLwN5sPOADxyyM6nLcekP1KzFzyKpAuJI1W8MIslTE5yDVQIih6_1AN-XFEL0-s_ViYe4RaAFWa-akpOjZlSSZXcTDFuKVYEGqJWQJVI">
+<p class="text-body-sm font-semibold">Avocado</p>
+<button class="mt-2 text-primary material-symbols-outlined bg-succulent-green p-1 rounded-full">add</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Action Bar -->
+<div class="fixed bottom-0 left-0 right-0 p-4 bg-surface/80 backdrop-blur-md z-40">
+<button class="w-full bg-primary text-on-primary font-headline-lg-mobile text-[18px] py-4 rounded-2xl shadow-lg shadow-primary/20 transition-all hover:bg-primary-container hover:text-on-primary-container active:scale-[0.97] flex items-center justify-center gap-3" onclick="window.location.href='{{DATA:SCREEN:SCREEN_16}}'">
+<span class="">Proceed to Checkout</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+<!-- BottomNavBar (from JSON guidance) -->
+<nav class="fixed bottom-0 w-full z-50 bg-surface/80 dark:bg-charcoal-ink/80 backdrop-blur-md shadow-[0_-4px_12px_rgba(26,28,27,0.04)] md:hidden">
+<div class="flex justify-around items-center h-20 px-4 pb-safe w-full">
+<a class="flex flex-col items-center justify-center text-on-surface-variant transition-all duration-200 ease-in-out active:scale-90" href="{{DATA:SCREEN:SCREEN_9}}">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-bold text-label-bold">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant transition-all duration-200 ease-in-out active:scale-90" href="{{DATA:SCREEN:SCREEN_31}}">
+<span class="material-symbols-outlined">search</span>
+<span class="font-label-bold text-label-bold">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 transition-all duration-200 ease-in-out active:scale-90" href="#">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="font-label-bold text-label-bold">Cart</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant transition-all duration-200 ease-in-out active:scale-90" href="{{DATA:SCREEN:SCREEN_21}}">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-label-bold text-label-bold">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant transition-all duration-200 ease-in-out active:scale-90" href="{{DATA:SCREEN:SCREEN_8}}">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-bold text-label-bold">Profile</span>
+</a>
+</div>
+</nav>
+<script>
+        // Simple Micro-interactions for quantity controls
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                // Future logic for updating totals would go here
+                console.log('Action performed:', this.innerText || this.querySelector('span')?.innerText);
+            });
+        });
+
+        // Hide BottomNavBar when scrolling down significantly to focus on checkout
+        let lastScroll = 0;
+        const nav = document.querySelector('nav');
+        const checkoutBtn = document.querySelector('.fixed.bottom-0.left-0.right-0');
+        
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            if (currentScroll > lastScroll && currentScroll > 100) {
+                nav.style.transform = 'translateY(100%)';
+                nav.style.transition = 'transform 0.3s ease-in-out';
+            } else {
+                nav.style.transform = 'translateY(0)';
+            }
+            lastScroll = currentScroll;
+        });
+    </script>
+
+
+</body></html>

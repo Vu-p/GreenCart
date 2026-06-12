@@ -30,6 +30,30 @@ class CheckoutScreen extends ConsumerWidget {
           subtitle: 'Confirm delivery and payment',
         ),
       ),
+      bottomNavigationBar: previewState.maybeWhen(
+        data: (preview) => SafeArea(
+          minimum: const EdgeInsets.fromLTRB(16, 10, 16, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ElevatedButton.icon(
+                onPressed: preview.items.isEmpty
+                    ? null
+                    : () => context.push(SubstitutionScreen.routePath),
+                icon: const Icon(Icons.arrow_forward),
+                label: const Text('Place Order'),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'By tapping Place Order you agree to our Terms of Service.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: AppTheme.outline, fontSize: 11),
+              ),
+            ],
+          ),
+        ),
+        orElse: () => null,
+      ),
       body: previewState.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => ListView(
@@ -45,10 +69,12 @@ class CheckoutScreen extends ConsumerWidget {
         ),
         data: (preview) => ListView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 132),
           children: [
+            const _CheckoutStepper(currentStep: 0),
+            const SizedBox(height: 22),
             const AnimatedEntrance(
-              child: SectionHeader(title: 'Delivery Address'),
+              child: SectionHeader(title: 'Shipping Address'),
             ),
             const SizedBox(height: 12),
             AnimatedEntrance(
@@ -62,16 +88,39 @@ class CheckoutScreen extends ConsumerWidget {
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: Text(
-                        preview.deliveryAddress ??
-                            '221B Green Market Street\nDistrict 1, Ho Chi Minh City',
-                        style: const TextStyle(
-                          color: AppTheme.charcoalInk,
-                          fontSize: 16,
-                          height: 1.4,
-                        ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Home',
+                            style: TextStyle(
+                              color: AppTheme.charcoalInk,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            preview.deliveryAddress ??
+                                '42 Green Valley Rd\nHo Chi Minh City, Vietnam',
+                            style: const TextStyle(
+                              color: AppTheme.outline,
+                              fontSize: 13,
+                              height: 1.4,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            preview.deliveryPhone ?? '+1 (555) 000-1234',
+                            style: const TextStyle(
+                              color: AppTheme.outline,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
+                    TextButton(onPressed: () {}, child: const Text('Edit')),
                   ],
                 ),
               ),
@@ -89,28 +138,11 @@ class CheckoutScreen extends ConsumerWidget {
               const SizedBox(height: 10),
             ],
             const SizedBox(height: 12),
-            const SectionHeader(title: 'Payment'),
+            const SectionHeader(title: 'Payment Method'),
             const SizedBox(height: 12),
             const AnimatedEntrance(
               delay: Duration(milliseconds: 420),
-              child: OrganicCard(
-                child: Row(
-                  children: [
-                    Icon(Icons.credit_card, color: AppTheme.primary),
-                    SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        'Visa ending in 4242',
-                        style: TextStyle(
-                          color: AppTheme.charcoalInk,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                    Icon(Icons.check_circle, color: AppTheme.primary),
-                  ],
-                ),
-              ),
+              child: _PaymentMethods(),
             ),
             const SizedBox(height: 22),
             AnimatedEntrance(
@@ -121,20 +153,15 @@ class CheckoutScreen extends ConsumerWidget {
                   children: [
                     _SummaryRow(label: 'Subtotal', value: preview.subtotal),
                     const SizedBox(height: 10),
-                    _SummaryRow(label: 'Delivery', value: preview.deliveryFee),
-                    const Divider(height: 28, color: AppTheme.mistGray),
                     _SummaryRow(
-                      label: 'Total',
+                      label: 'Delivery Fee',
+                      value: preview.deliveryFee,
+                    ),
+                    const Divider(height: 26, color: AppTheme.mistGray),
+                    _SummaryRow(
+                      label: 'Total Amount',
                       value: preview.total,
                       emphasized: true,
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton.icon(
-                      onPressed: preview.items.isEmpty
-                          ? null
-                          : () => context.push(SubstitutionScreen.routePath),
-                      icon: const Icon(Icons.sync_alt),
-                      label: const Text('Review Substitutions'),
                     ),
                   ],
                 ),
@@ -142,6 +169,132 @@ class CheckoutScreen extends ConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _CheckoutStepper extends StatelessWidget {
+  const _CheckoutStepper({required this.currentStep});
+
+  final int currentStep;
+
+  @override
+  Widget build(BuildContext context) {
+    const labels = ['Shipping', 'Delivery', 'Payment'];
+    return Row(
+      children: [
+        for (var i = 0; i < labels.length; i++) ...[
+          Expanded(
+            child: Column(
+              children: [
+                CircleAvatar(
+                  radius: 13,
+                  backgroundColor: i <= currentStep
+                      ? AppTheme.primary
+                      : AppTheme.surfaceContainer,
+                  child: i < currentStep
+                      ? const Icon(Icons.check, color: Colors.white, size: 15)
+                      : Text(
+                          '${i + 1}',
+                          style: TextStyle(
+                            color: i <= currentStep
+                                ? Colors.white
+                                : AppTheme.outline,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  labels[i],
+                  style: TextStyle(
+                    color: i <= currentStep
+                        ? AppTheme.primary
+                        : AppTheme.outline,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (i != labels.length - 1)
+            Expanded(
+              child: Container(
+                height: 1,
+                margin: const EdgeInsets.only(bottom: 24),
+                color: AppTheme.mistGray,
+              ),
+            ),
+        ],
+      ],
+    );
+  }
+}
+
+class _PaymentMethods extends StatelessWidget {
+  const _PaymentMethods();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: const [
+        _PaymentMethodRow(
+          icon: Icons.credit_card,
+          label: 'Credit / Debit Card',
+          selected: true,
+        ),
+        SizedBox(height: 10),
+        _PaymentMethodRow(icon: Icons.apple, label: 'Apple Pay'),
+        SizedBox(height: 10),
+        _PaymentMethodRow(
+          icon: Icons.payments_outlined,
+          label: 'COD (Cash on Delivery)',
+        ),
+      ],
+    );
+  }
+}
+
+class _PaymentMethodRow extends StatelessWidget {
+  const _PaymentMethodRow({
+    required this.icon,
+    required this.label,
+    this.selected = false,
+  });
+
+  final IconData icon;
+  final String label;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    return OrganicCard(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+      color: Colors.white,
+      child: Row(
+        children: [
+          Icon(
+            selected ? Icons.radio_button_checked : Icons.radio_button_off,
+            color: selected ? AppTheme.primary : AppTheme.outline,
+            size: 20,
+          ),
+          const SizedBox(width: 10),
+          Icon(icon, color: AppTheme.charcoalInk, size: 19),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              label,
+              style: const TextStyle(
+                color: AppTheme.charcoalInk,
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
