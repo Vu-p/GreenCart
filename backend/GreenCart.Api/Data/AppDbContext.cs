@@ -21,9 +21,12 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasIndex(user => user.Email).IsUnique();
+            entity.HasIndex(user => user.FirebaseUid).IsUnique();
             entity.Property(user => user.Name).HasMaxLength(120).IsRequired();
             entity.Property(user => user.Email).HasMaxLength(255).IsRequired();
             entity.Property(user => user.PasswordHash).IsRequired();
+            entity.Property(user => user.FirebaseUid).HasMaxLength(128);
+            entity.Property(user => user.AuthProvider).HasMaxLength(32).IsRequired();
             entity.Property(user => user.Role).HasMaxLength(32).IsRequired();
             entity.Property(user => user.Phone).HasMaxLength(32);
             entity.Property(user => user.Address).HasMaxLength(500);

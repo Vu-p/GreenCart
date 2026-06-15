@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:greencart_app/src/core/theme/app_theme.dart';
 import 'package:greencart_app/src/core/utils/currency_formatter.dart';
+import 'package:greencart_app/src/core/widgets/animated_entrance.dart';
 import 'package:greencart_app/src/core/widgets/organic_card.dart';
 import 'package:greencart_app/src/core/widgets/quantity_button.dart';
 import 'package:greencart_app/src/features/cart/data/cart_repository.dart';
@@ -55,18 +56,27 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                 background: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Image.network(
-                      product.imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        color: AppTheme.succulentGreen,
-                        child: const Icon(
-                          Icons.eco_outlined,
-                          color: AppTheme.primary,
-                          size: 72,
+                    TweenAnimationBuilder<double>(
+                      tween: Tween(begin: 1.04, end: 1),
+                      duration: const Duration(milliseconds: 900),
+                      curve: Curves.easeOutCubic,
+                      builder: (context, scale, child) {
+                        return Transform.scale(scale: scale, child: child);
+                      },
+                      child: Image.network(
+                        product.imageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            Container(
+                              color: AppTheme.succulentGreen,
+                              child: const Icon(
+                                Icons.eco_outlined,
+                                color: AppTheme.primary,
+                                size: 72,
+                              ),
+                            ),
                         ),
                       ),
-                    ),
                     const DecoratedBox(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
@@ -84,11 +94,13 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 28),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
-                  OrganicCard(
-                    radius: AppTheme.radiusLg,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                  AnimatedEntrance(
+                    offset: const Offset(0, 28),
+                    child: OrganicCard(
+                      radius: AppTheme.radiusLg,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                         Wrap(
                           spacing: 8,
                           runSpacing: 8,
@@ -225,7 +237,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                             product.inStock ? 'Add to Cart' : 'Out of Stock',
                           ),
                         ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ]),

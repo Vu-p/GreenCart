@@ -11,7 +11,10 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace GreenCart.Api.Services;
 
-public sealed class AuthService(AppDbContext dbContext, IOptions<JwtOptions> jwtOptions) : IAuthService
+public sealed class AuthService(
+    AppDbContext dbContext,
+    IOptions<JwtOptions> jwtOptions,
+    IFirebaseTokenVerifier firebaseTokenVerifier) : IAuthService
 {
     private readonly JwtOptions _jwtOptions = jwtOptions.Value;
 
@@ -29,6 +32,7 @@ public sealed class AuthService(AppDbContext dbContext, IOptions<JwtOptions> jwt
             Name = request.Name.Trim(),
             Email = normalizedEmail,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
+            AuthProvider = "Password",
             Role = UserRoles.Customer
         };
 
@@ -42,11 +46,60 @@ public sealed class AuthService(AppDbContext dbContext, IOptions<JwtOptions> jwt
     {
         var normalizedEmail = NormalizeEmail(request.Email);
         var user = await dbContext.Users.SingleOrDefaultAsync(user => user.Email == normalizedEmail, cancellationToken);
-        if (user is null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+        if (user is null || !user.PasswordHash.StartsWith("$2", StringComparison.Ordinal) || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
         {
             throw new UnauthorizedAccessException("Invalid email or password.");
         }
 
+        return new AuthResponse(CreateToken(user), ToResponse(user));
+    }
+
+    public async Task<AuthResponse> FirebaseLoginAsync(string idToken, CancellationToken cancellationToken)
+    {
+        var firebaseUser = await firebaseTokenVerifier.VerifyAsync(idToken, cancellationToken);
+
+        var user = await dbContext.Users.SingleOrDefaultAsync(
+            user => user.FirebaseUid == firebaseUser.Uid,
+            cancellationToken);
+
+        if (user is null)
+        {
+            user = await dbContext.Users.SingleOrDefaultAsync(
+                user => user.Email == firebaseUser.Email,
+                cancellationToken);
+
+            if (user is not null && !firebaseUser.EmailVerified)
+            {
+                throw new UnauthorizedAccessException("Firebase email must be verified before linking this account.");
+            }
+        }
+
+        if (user is null)
+        {
+            user = new User
+            {
+                Name = firebaseUser.Name,
+                Email = firebaseUser.Email,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(Guid.NewGuid().ToString("N")),
+                FirebaseUid = firebaseUser.Uid,
+                AuthProvider = "Firebase",
+                EmailVerified = firebaseUser.EmailVerified,
+                AvatarUrl = firebaseUser.AvatarUrl,
+                Role = UserRoles.Customer
+            };
+
+            dbContext.Users.Add(user);
+        }
+        else
+        {
+            user.FirebaseUid ??= firebaseUser.Uid;
+            user.AuthProvider = user.AuthProvider == "Password" ? "Password,Firebase" : "Firebase";
+            user.EmailVerified = firebaseUser.EmailVerified;
+            user.Name = string.IsNullOrWhiteSpace(user.Name) ? firebaseUser.Name : user.Name;
+            user.AvatarUrl ??= firebaseUser.AvatarUrl;
+        }
+
+        await dbContext.SaveChangesAsync(cancellationToken);
         return new AuthResponse(CreateToken(user), ToResponse(user));
     }
 

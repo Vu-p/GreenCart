@@ -1,8 +1,10 @@
 using System.Security.Claims;
+using Google.Apis.Auth;
 using GreenCart.Api.Contracts;
 using GreenCart.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace GreenCart.Api.Controllers;
 
@@ -31,6 +33,41 @@ public sealed class AuthController(IAuthService authService) : ControllerBase
             return Ok(await authService.LoginAsync(request, cancellationToken));
         }
         catch (UnauthorizedAccessException exception)
+        {
+            return Unauthorized(new { message = exception.Message });
+        }
+    }
+
+    [HttpPost("firebase-login")]
+    public async Task<ActionResult<AuthResponse>> FirebaseLogin(FirebaseLoginRequest request, CancellationToken cancellationToken)
+    {
+        var idToken = ExtractBearerToken() ?? request.IdToken;
+        if (string.IsNullOrWhiteSpace(idToken))
+        {
+            return BadRequest(new { message = "Firebase id token is required." });
+        }
+
+        try
+        {
+            return Ok(await authService.FirebaseLoginAsync(idToken, cancellationToken));
+        }
+        catch (InvalidOperationException exception)
+        {
+            return BadRequest(new { message = exception.Message });
+        }
+        catch (UnauthorizedAccessException exception)
+        {
+            return Unauthorized(new { message = exception.Message });
+        }
+        catch (InvalidJwtException exception)
+        {
+            return Unauthorized(new { message = exception.Message });
+        }
+        catch (SecurityTokenException exception)
+        {
+            return Unauthorized(new { message = exception.Message });
+        }
+        catch (Exception exception)
         {
             return Unauthorized(new { message = exception.Message });
         }
@@ -79,5 +116,14 @@ public sealed class AuthController(IAuthService authService) : ControllerBase
     {
         var rawId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         return Guid.TryParse(rawId, out var userId) ? userId : null;
+    }
+
+    private string? ExtractBearerToken()
+    {
+        var authorization = Request.Headers.Authorization.ToString();
+        const string bearerPrefix = "Bearer ";
+        return authorization.StartsWith(bearerPrefix, StringComparison.OrdinalIgnoreCase)
+            ? authorization[bearerPrefix.Length..].Trim()
+            : null;
     }
 }

@@ -6,6 +6,9 @@ public sealed class User
     public required string Name { get; set; }
     public required string Email { get; set; }
     public required string PasswordHash { get; set; }
+    public string? FirebaseUid { get; set; }
+    public string AuthProvider { get; set; } = "Password";
+    public bool EmailVerified { get; set; }
     public string Role { get; set; } = UserRoles.Customer;
     public string? Phone { get; set; }
     public string? Address { get; set; }

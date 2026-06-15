@@ -95,3 +95,6 @@ app.*.map.json
 **/ios/Runner.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
 **/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
 **/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+
+.code-review-graph/
+

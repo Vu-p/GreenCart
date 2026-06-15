@@ -42,6 +42,8 @@ Authorization: Bearer {jwt}
 ### Business Requirements
 
 - Customer can register, login, restore session, update profile, and logout.
+- Mobile uses Firebase Auth for email/password session persistence and Google Sign-In, then exchanges Firebase ID token for GreenCart API JWT.
+- Firebase SDK keeps the user signed in across app launches; Splash restores Firebase session and refreshes the GreenCart API JWT.
 - Email is normalized to lowercase.
 - Password minimum length is 8 characters.
 - JWT is stateless; logout on backend is a no-op for compatibility, mobile clears local token.
@@ -86,7 +88,7 @@ Errors:
 
 ### `POST /api/auth/login`
 
-Status: `DONE`, `MOBILE`
+Status: `DONE`, `LEGACY`
 
 Authenticates an existing account.
 
@@ -104,6 +106,42 @@ Response: same as register.
 Errors:
 
 - `401`: invalid email/password
+
+### `POST /api/auth/firebase-login`
+
+Status: `DONE`, `MOBILE`
+
+Verifies a Firebase ID token, creates or links the local GreenCart user, and returns GreenCart API JWT + user profile. This is the primary mobile auth path for Firebase email/password and Google Sign-In.
+
+Headers:
+
+```http
+Authorization: Bearer {firebase_id_token}
+```
+
+Alternative request body:
+
+```json
+{
+  "idToken": "firebase-id-token"
+}
+```
+
+Response `200`: same as login/register.
+
+Business behavior:
+
+- Validate Firebase token audience against `Firebase:ProjectId`.
+- Require Firebase token issuer `https://securetoken.google.com/{projectId}`.
+- Match existing user by `FirebaseUid`.
+- If no Firebase UID match and verified email matches an existing user, link Firebase UID to that user.
+- If no user exists, create a customer user using Firebase profile data.
+- Return GreenCart API JWT for existing protected endpoints.
+
+Errors:
+
+- `400`: Firebase project id missing or token missing
+- `401`: Firebase token invalid or unverified email cannot be linked
 
 ### `GET /api/auth/me`
 
