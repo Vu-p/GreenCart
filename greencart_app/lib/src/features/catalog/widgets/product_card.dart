@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:greencart_app/src/core/theme/app_theme.dart';
 import 'package:greencart_app/src/core/utils/currency_formatter.dart';
+import 'package:greencart_app/src/core/widgets/animated_pressable.dart';
 import 'package:greencart_app/src/features/catalog/models/product.dart';
 import 'package:greencart_app/src/features/catalog/screens/product_detail_screen.dart';
 
@@ -13,7 +14,7 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return AnimatedPressable(
       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
       onTap: () => context.push(ProductDetailScreen.pathFor(product.id)),
       child: Container(

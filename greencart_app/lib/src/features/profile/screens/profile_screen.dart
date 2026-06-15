@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:greencart_app/src/core/theme/app_theme.dart';
+import 'package:greencart_app/src/core/widgets/animated_entrance.dart';
 import 'package:greencart_app/src/core/widgets/mobile_page_title.dart';
 import 'package:greencart_app/src/core/widgets/organic_action_icon.dart';
 import 'package:greencart_app/src/core/widgets/organic_card.dart';
@@ -106,162 +107,187 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: const EdgeInsets.fromLTRB(16, 10, 16, 28),
         children: [
-          Column(
-            children: [
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  CircleAvatar(
-                    radius: 44,
-                    backgroundColor: AppTheme.succulentGreen,
-                    child: Text(
-                      user.name.isEmpty ? 'G' : user.name[0].toUpperCase(),
-                      style: const TextStyle(
-                        color: AppTheme.primary,
-                        fontSize: 34,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
-                  const Positioned(
-                    right: 0,
-                    bottom: 2,
-                    child: CircleAvatar(
-                      radius: 13,
-                      backgroundColor: AppTheme.primary,
-                      child: Icon(Icons.check, color: Colors.white, size: 15),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Text(
-                user.name,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 3),
-              Text(
-                user.email,
-                textAlign: TextAlign.center,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.copyWith(color: AppTheme.outline),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          const OrganicPromoBanner(
-            eyebrow: 'GREENCART PRIME',
-            title: 'Save \$124.50 this month',
-            subtitle: 'Free delivery on every organic order.',
-            icon: Icons.local_shipping_outlined,
-          ),
-          const SizedBox(height: 20),
-          const SectionHeader(title: 'Account & Privacy'),
-          const SizedBox(height: 10),
-          OrganicCard(
-            padding: EdgeInsets.zero,
-            radius: AppTheme.radiusLg,
+          AnimatedEntrance(
             child: Column(
               children: [
-                const _SettingsRow(
-                  icon: Icons.manage_accounts_outlined,
-                  label: 'Account Settings',
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    TweenAnimationBuilder<double>(
+                      tween: Tween(begin: 0.92, end: 1),
+                      duration: const Duration(milliseconds: 620),
+                      curve: Curves.easeOutBack,
+                      builder: (context, scale, child) {
+                        return Transform.scale(scale: scale, child: child);
+                      },
+                      child: CircleAvatar(
+                        radius: 44,
+                        backgroundColor: AppTheme.succulentGreen,
+                        child: Text(
+                          user.name.isEmpty ? 'G' : user.name[0].toUpperCase(),
+                          style: const TextStyle(
+                            color: AppTheme.primary,
+                            fontSize: 34,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const Positioned(
+                      right: 0,
+                      bottom: 2,
+                      child: CircleAvatar(
+                        radius: 13,
+                        backgroundColor: AppTheme.primary,
+                        child: Icon(Icons.check, color: Colors.white, size: 15),
+                      ),
+                    ),
+                  ],
                 ),
-                const Divider(height: 1, color: AppTheme.mistGray),
-                const _SettingsRow(
-                  icon: Icons.bookmark_border,
-                  label: 'Saved Addresses',
+                const SizedBox(height: 12),
+                Text(
+                  user.name,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
-                const Divider(height: 1, color: AppTheme.mistGray),
-                const _SettingsRow(
-                  icon: Icons.credit_card,
-                  label: 'Payment Methods',
-                ),
-                const Divider(height: 1, color: AppTheme.mistGray),
-                _SettingsRow(
-                  icon: Icons.restaurant_menu,
-                  label: 'Meal Planner',
-                  onTap: () => context.push(MealPlannerScreen.routePath),
+                const SizedBox(height: 3),
+                Text(
+                  user.email,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: AppTheme.outline),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 22),
-          const SectionHeader(title: 'Delivery Profile'),
+          const SizedBox(height: 20),
+          const AnimatedEntrance(
+            delay: Duration(milliseconds: 120),
+            child: OrganicPromoBanner(
+              eyebrow: 'GREENCART PRIME',
+              title: 'Save \$124.50 this month',
+              subtitle: 'Free delivery on every organic order.',
+              icon: Icons.local_shipping_outlined,
+            ),
+          ),
+          const SizedBox(height: 20),
+          const AnimatedEntrance(
+            delay: Duration(milliseconds: 200),
+            child: SectionHeader(title: 'Account & Privacy'),
+          ),
           const SizedBox(height: 10),
-          OrganicCard(
-            radius: AppTheme.radiusLg,
-            child: Column(
-              children: [
-                TextField(
-                  controller: _nameController,
-                  textInputAction: TextInputAction.next,
-                  onSubmitted: (_) => _phoneFocusNode.requestFocus(),
-                  decoration: const InputDecoration(
-                    labelText: 'Name',
-                    prefixIcon: Icon(Icons.person_outline),
+          AnimatedEntrance(
+            delay: const Duration(milliseconds: 260),
+            child: OrganicCard(
+              padding: EdgeInsets.zero,
+              radius: AppTheme.radiusLg,
+              child: Column(
+                children: [
+                  const _SettingsRow(
+                    icon: Icons.manage_accounts_outlined,
+                    label: 'Account Settings',
                   ),
-                ),
-                const SizedBox(height: 14),
-                TextField(
-                  controller: _phoneController,
-                  focusNode: _phoneFocusNode,
-                  keyboardType: TextInputType.phone,
-                  textInputAction: TextInputAction.next,
-                  onSubmitted: (_) => _addressFocusNode.requestFocus(),
-                  decoration: const InputDecoration(
-                    labelText: 'Phone',
-                    prefixIcon: Icon(Icons.phone_outlined),
+                  const Divider(height: 1, color: AppTheme.mistGray),
+                  const _SettingsRow(
+                    icon: Icons.bookmark_border,
+                    label: 'Saved Addresses',
                   ),
-                ),
-                const SizedBox(height: 14),
-                TextField(
-                  controller: _addressController,
-                  focusNode: _addressFocusNode,
-                  textInputAction: TextInputAction.done,
-                  onSubmitted: (_) {
-                    if (!authState.isLoading) {
-                      _save();
-                    }
-                  },
-                  decoration: const InputDecoration(
-                    labelText: 'Address',
-                    prefixIcon: Icon(Icons.location_on_outlined),
+                  const Divider(height: 1, color: AppTheme.mistGray),
+                  const _SettingsRow(
+                    icon: Icons.credit_card,
+                    label: 'Payment Methods',
                   ),
-                ),
-                if (authState.errorMessage != null) ...[
-                  const SizedBox(height: 14),
-                  Text(
-                    authState.errorMessage!,
-                    style: const TextStyle(color: Colors.red),
+                  const Divider(height: 1, color: AppTheme.mistGray),
+                  _SettingsRow(
+                    icon: Icons.restaurant_menu,
+                    label: 'Meal Planner',
+                    onTap: () => context.push(MealPlannerScreen.routePath),
                   ),
                 ],
-                const SizedBox(height: 20),
-                ElevatedButton.icon(
-                  onPressed: authState.isLoading ? null : _save,
-                  icon: authState.isLoading
-                      ? const SizedBox.shrink()
-                      : const Icon(Icons.save_outlined),
-                  label: authState.isLoading
-                      ? const SizedBox(
-                          width: 22,
-                          height: 22,
-                          child: CircularProgressIndicator(strokeWidth: 2.5),
-                        )
-                      : const Text('Save Profile'),
-                ),
-                const SizedBox(height: 16),
-                OutlinedButton.icon(
-                  onPressed: _logout,
-                  icon: const Icon(Icons.logout, color: Colors.red),
-                  label: const Text(
-                    'Logout',
-                    style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ),
+          const SizedBox(height: 22),
+          const AnimatedEntrance(
+            delay: Duration(milliseconds: 340),
+            child: SectionHeader(title: 'Delivery Profile'),
+          ),
+          const SizedBox(height: 10),
+          AnimatedEntrance(
+            delay: const Duration(milliseconds: 400),
+            child: OrganicCard(
+              radius: AppTheme.radiusLg,
+              child: Column(
+                children: [
+                  TextField(
+                    controller: _nameController,
+                    textInputAction: TextInputAction.next,
+                    onSubmitted: (_) => _phoneFocusNode.requestFocus(),
+                    decoration: const InputDecoration(
+                      labelText: 'Name',
+                      prefixIcon: Icon(Icons.person_outline),
+                    ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 14),
+                  TextField(
+                    controller: _phoneController,
+                    focusNode: _phoneFocusNode,
+                    keyboardType: TextInputType.phone,
+                    textInputAction: TextInputAction.next,
+                    onSubmitted: (_) => _addressFocusNode.requestFocus(),
+                    decoration: const InputDecoration(
+                      labelText: 'Phone',
+                      prefixIcon: Icon(Icons.phone_outlined),
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  TextField(
+                    controller: _addressController,
+                    focusNode: _addressFocusNode,
+                    textInputAction: TextInputAction.done,
+                    onSubmitted: (_) {
+                      if (!authState.isLoading) {
+                        _save();
+                      }
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'Address',
+                      prefixIcon: Icon(Icons.location_on_outlined),
+                    ),
+                  ),
+                  if (authState.errorMessage != null) ...[
+                    const SizedBox(height: 14),
+                    Text(
+                      authState.errorMessage!,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  ],
+                  const SizedBox(height: 20),
+                  ElevatedButton.icon(
+                    onPressed: authState.isLoading ? null : _save,
+                    icon: authState.isLoading
+                        ? const SizedBox.shrink()
+                        : const Icon(Icons.save_outlined),
+                    label: authState.isLoading
+                        ? const SizedBox(
+                            width: 22,
+                            height: 22,
+                            child: CircularProgressIndicator(strokeWidth: 2.5),
+                          )
+                        : const Text('Save Profile'),
+                  ),
+                  const SizedBox(height: 16),
+                  OutlinedButton.icon(
+                    onPressed: _logout,
+                    icon: const Icon(Icons.logout, color: Colors.red),
+                    label: const Text(
+                      'Logout',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

@@ -18,6 +18,15 @@ greencart_app/android/app/google-services.json
 
 6. If building iOS, download `GoogleService-Info.plist` into the iOS Runner target.
 
+For local Android debugging, rebuild the app after replacing
+`google-services.json`. If Google Sign-In reports a client configuration error
+or cannot return an ID token, pass the Web client ID from `google-services.json`
+as a Dart define:
+
+```bash
+flutter run --dart-define=GOOGLE_SERVER_CLIENT_ID=your-web-client-id.apps.googleusercontent.com
+```
+
 ## Backend
 
 Set Firebase project id:
@@ -48,4 +57,3 @@ dotnet ef database update --project backend/GreenCart.Api/GreenCart.Api.csproj
 ```
 
 If the API is running, stop/restart it so the new migration and config are loaded.
-

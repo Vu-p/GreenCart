@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:greencart_app/src/core/theme/app_theme.dart';
 import 'package:greencart_app/src/core/widgets/auth_scaffold.dart';
 import 'package:greencart_app/src/core/widgets/brand_mark.dart';
-import 'package:greencart_app/src/core/widgets/organic_card.dart';
 import 'package:greencart_app/src/features/auth/application/auth_controller.dart';
 import 'package:greencart_app/src/features/catalog/screens/home_screen.dart';
 
@@ -67,155 +66,148 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     return AuthScaffold(
       children: [
-        const SizedBox(height: 4),
-        const BrandMark(),
-        const SizedBox(height: 12),
+        const BrandMark(compact: true),
+        const SizedBox(height: 8),
         Text(
           'Freshness delivered to your door.',
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: AppTheme.outline,
             fontWeight: FontWeight.w500,
           ),
         ),
-        const SizedBox(height: 30),
-        OrganicCard(
-          radius: AppTheme.radiusLg,
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  'Email Address',
-                  style: Theme.of(context).textTheme.bodyLarge,
+        const SizedBox(height: 26),
+        Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const AuthFieldLabel('Email Address'),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) => _passwordFocusNode.requestFocus(),
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.mail_outline, size: 20),
                 ),
-                const SizedBox(height: 10),
-                TextFormField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
-                  onFieldSubmitted: (_) => _passwordFocusNode.requestFocus(),
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.mail_outline),
-                    hintText: 'name@example.com',
-                  ),
-                  validator: (value) {
-                    if (value == null || !value.contains('@')) {
-                      return 'Enter a valid email address.';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 22),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Password',
-                      style: Theme.of(context).textTheme.bodyLarge,
+                validator: (value) {
+                  if (value == null || !value.contains('@')) {
+                    return 'Enter a valid email address.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 18),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const AuthFieldLabel('Password'),
+                  TextButton(
+                    onPressed: null,
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    TextButton(
-                      onPressed: null,
-                      child: Text(
-                        'Forgot Password?',
-                        style: TextStyle(color: AppTheme.primary),
-                      ),
-                    ),
-                  ],
-                ),
-                TextFormField(
-                  controller: _passwordController,
-                  focusNode: _passwordFocusNode,
-                  obscureText: _obscurePassword,
-                  textInputAction: TextInputAction.done,
-                  onFieldSubmitted: (_) {
-                    if (!authState.isLoading) {
-                      _submit();
-                    }
-                  },
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.lock_outline),
-                    hintText: 'Password',
-                    suffixIcon: IconButton(
-                      onPressed: () =>
-                          setState(() => _obscurePassword = !_obscurePassword),
-                      icon: Icon(
-                        _obscurePassword
-                            ? Icons.visibility_outlined
-                            : Icons.visibility_off_outlined,
-                      ),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.length < 8) {
-                      return 'Password must be at least 8 characters.';
-                    }
-                    return null;
-                  },
-                ),
-                if (authState.errorMessage != null) ...[
-                  const SizedBox(height: 16),
-                  Text(
-                    authState.errorMessage!,
-                    style: const TextStyle(color: Colors.red),
+                    child: const Text('Forgot Password?'),
                   ),
                 ],
-                const SizedBox(height: 28),
-                ElevatedButton.icon(
-                  onPressed: authState.isLoading ? null : _submit,
-                  icon: authState.isLoading
-                      ? const SizedBox.shrink()
-                      : const Icon(Icons.login),
-                  label: authState.isLoading
-                      ? const SizedBox(
-                          width: 22,
-                          height: 22,
-                          child: CircularProgressIndicator(strokeWidth: 2.5),
-                        )
-                      : const Text('Login'),
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _passwordController,
+                focusNode: _passwordFocusNode,
+                obscureText: _obscurePassword,
+                textInputAction: TextInputAction.done,
+                onFieldSubmitted: (_) {
+                  if (!authState.isLoading) {
+                    _submit();
+                  }
+                },
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.lock_outline, size: 20),
+                  suffixIcon: IconButton(
+                    tooltip: _obscurePassword
+                        ? 'Show password'
+                        : 'Hide password',
+                    onPressed: () =>
+                        setState(() => _obscurePassword = !_obscurePassword),
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined,
+                      size: 20,
+                    ),
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.length < 8) {
+                    return 'Password must be at least 8 characters.';
+                  }
+                  return null;
+                },
+              ),
+              if (authState.errorMessage != null) ...[
+                const SizedBox(height: 16),
+                Text(
+                  authState.errorMessage!,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
               ],
-            ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: authState.isLoading ? null : _submit,
+                child: authState.isLoading
+                    ? const SizedBox(
+                        width: 22,
+                        height: 22,
+                        child: CircularProgressIndicator(strokeWidth: 2.5),
+                      )
+                    : const Text('Login'),
+              ),
+            ],
           ),
         ),
-        const SizedBox(height: 28),
-        const Text(
-          'OR CONTINUE WITH',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: AppTheme.outline,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 3,
-          ),
-        ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 22),
+        const AuthDivider(text: 'OR CONTINUE WITH'),
+        const SizedBox(height: 20),
         Row(
           children: [
             Expanded(
-              child: OutlinedButton.icon(
+              child: SocialAuthButton(
                 onPressed: authState.isLoading ? null : _googleLogin,
-                icon: const Icon(Icons.g_mobiledata),
-                label: const Text('Google'),
+                icon: const Text(
+                  'G',
+                  style: TextStyle(
+                    color: AppTheme.primary,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                label: 'Google',
               ),
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: OutlinedButton.icon(
+            const SizedBox(width: 12),
+            const Expanded(
+              child: SocialAuthButton(
                 onPressed: null,
-                icon: const Icon(Icons.grid_view),
-                label: const Text('Apple'),
+                icon: Icon(Icons.apps, size: 18),
+                label: 'Apple',
               ),
             ),
           ],
         ),
-        const SizedBox(height: 28),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        const SizedBox(height: 22),
+        Wrap(
+          alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             Text(
               "Don't have an account?",
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: AppTheme.outline),
             ),
             TextButton(
               onPressed: () => context.go(RegisterScreen.routePath),
@@ -224,6 +216,78 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           ],
         ),
       ],
+    );
+  }
+}
+
+class AuthFieldLabel extends StatelessWidget {
+  const AuthFieldLabel(this.text, {super.key});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: Theme.of(context).textTheme.labelLarge?.copyWith(
+        color: AppTheme.outline,
+        letterSpacing: 0,
+      ),
+    );
+  }
+}
+
+class AuthDivider extends StatelessWidget {
+  const AuthDivider({required this.text, super.key});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        const Expanded(child: Divider(color: AppTheme.mistGray)),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          child: Text(
+            text,
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+              color: AppTheme.outline,
+              letterSpacing: 2,
+            ),
+          ),
+        ),
+        const Expanded(child: Divider(color: AppTheme.mistGray)),
+      ],
+    );
+  }
+}
+
+class SocialAuthButton extends StatelessWidget {
+  const SocialAuthButton({
+    required this.onPressed,
+    required this.icon,
+    required this.label,
+    super.key,
+  });
+
+  final VoidCallback? onPressed;
+  final Widget icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton(
+      onPressed: onPressed,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          icon,
+          const SizedBox(width: 8),
+          Flexible(child: Text(label, overflow: TextOverflow.ellipsis)),
+        ],
+      ),
     );
   }
 }

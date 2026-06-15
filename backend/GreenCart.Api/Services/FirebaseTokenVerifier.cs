@@ -1,11 +1,20 @@
-using Google.Apis.Auth;
+using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http.Json;
+using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 using GreenCart.Api.Options;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 namespace GreenCart.Api.Services;
 
-public sealed class FirebaseTokenVerifier(IOptions<FirebaseOptions> firebaseOptions) : IFirebaseTokenVerifier
+public sealed class FirebaseTokenVerifier(
+    IOptions<FirebaseOptions> firebaseOptions,
+    HttpClient httpClient) : IFirebaseTokenVerifier
 {
+    private const string FirebaseCertificatesUrl =
+        "https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com";
+
     private readonly FirebaseOptions _firebaseOptions = firebaseOptions.Value;
 
     public async Task<FirebaseUserInfo> VerifyAsync(string idToken, CancellationToken cancellationToken)
@@ -15,37 +24,81 @@ public sealed class FirebaseTokenVerifier(IOptions<FirebaseOptions> firebaseOpti
             throw new InvalidOperationException("Firebase project id is not configured.");
         }
 
-        var settings = new GoogleJsonWebSignature.ValidationSettings
+        var expectedIssuer = $"https://securetoken.google.com/{_firebaseOptions.ProjectId}";
+        var tokenHandler = new JwtSecurityTokenHandler { MapInboundClaims = false };
+        var token = tokenHandler.ReadJwtToken(idToken);
+        if (!string.Equals(token.Header.Alg, SecurityAlgorithms.RsaSha256, StringComparison.Ordinal))
         {
-            Audience = [_firebaseOptions.ProjectId]
+            throw new SecurityTokenInvalidAlgorithmException("Firebase token algorithm must be RS256.");
+        }
+
+        var keyId = token.Header.Kid;
+        if (string.IsNullOrWhiteSpace(keyId))
+        {
+            throw new SecurityTokenException("Firebase token key id is missing.");
+        }
+
+        var certificates = await GetFirebaseCertificatesAsync(cancellationToken);
+        if (!certificates.TryGetValue(keyId, out var certificatePem))
+        {
+            throw new SecurityTokenInvalidSigningKeyException("Firebase token key id is not trusted.");
+        }
+
+        using var certificate = X509Certificate2.CreateFromPem(certificatePem);
+        var validationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = expectedIssuer,
+            ValidateAudience = true,
+            ValidAudience = _firebaseOptions.ProjectId,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new X509SecurityKey(certificate) { KeyId = keyId },
+            ClockSkew = TimeSpan.FromMinutes(2),
+            ValidAlgorithms = [SecurityAlgorithms.RsaSha256]
         };
 
-        var payload = await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
-        var expectedIssuer = $"https://securetoken.google.com/{_firebaseOptions.ProjectId}";
-        if (!string.Equals(payload.Issuer, expectedIssuer, StringComparison.Ordinal))
+        var principal = tokenHandler.ValidateToken(
+            idToken,
+            validationParameters,
+            out _);
+
+        var subject = principal.FindFirstValue(JwtRegisteredClaimNames.Sub);
+        if (string.IsNullOrWhiteSpace(subject))
         {
-            throw new InvalidJwtException("Firebase token issuer is invalid.");
+            throw new SecurityTokenException("Firebase token subject is missing.");
         }
 
-        if (string.IsNullOrWhiteSpace(payload.Subject))
+        var email = principal.FindFirstValue(JwtRegisteredClaimNames.Email);
+        if (string.IsNullOrWhiteSpace(email))
         {
-            throw new InvalidJwtException("Firebase token subject is missing.");
+            throw new SecurityTokenException("Firebase token email is missing.");
         }
 
-        if (string.IsNullOrWhiteSpace(payload.Email))
-        {
-            throw new InvalidJwtException("Firebase token email is missing.");
-        }
-
-        var name = string.IsNullOrWhiteSpace(payload.Name)
-            ? payload.Email.Split('@', 2)[0]
-            : payload.Name.Trim();
+        var rawName = principal.FindFirstValue("name");
+        var name = string.IsNullOrWhiteSpace(rawName)
+            ? email.Split('@', 2)[0]
+            : rawName.Trim();
+        var emailVerified = bool.TryParse(
+            principal.FindFirstValue("email_verified"),
+            out var parsedEmailVerified) && parsedEmailVerified;
 
         return new FirebaseUserInfo(
-            payload.Subject,
-            payload.Email.Trim().ToLowerInvariant(),
+            subject,
+            email.Trim().ToLowerInvariant(),
             name,
-            string.IsNullOrWhiteSpace(payload.Picture) ? null : payload.Picture.Trim(),
-            payload.EmailVerified);
+            principal.FindFirstValue("picture")?.Trim(),
+            emailVerified);
+    }
+
+    private async Task<Dictionary<string, string>> GetFirebaseCertificatesAsync(CancellationToken cancellationToken)
+    {
+        var certificates = await httpClient.GetFromJsonAsync<Dictionary<string, string>>(
+            FirebaseCertificatesUrl,
+            cancellationToken);
+
+        return certificates is { Count: > 0 }
+            ? certificates
+            : throw new InvalidOperationException("Firebase public certificates could not be loaded.");
     }
 }

@@ -1,8 +1,10 @@
 using System.Security.Claims;
+using Google.Apis.Auth;
 using GreenCart.Api.Contracts;
 using GreenCart.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace GreenCart.Api.Controllers;
 
@@ -57,9 +59,17 @@ public sealed class AuthController(IAuthService authService) : ControllerBase
         {
             return Unauthorized(new { message = exception.Message });
         }
-        catch
+        catch (InvalidJwtException exception)
         {
-            return Unauthorized(new { message = "Firebase token is invalid." });
+            return Unauthorized(new { message = exception.Message });
+        }
+        catch (SecurityTokenException exception)
+        {
+            return Unauthorized(new { message = exception.Message });
+        }
+        catch (Exception exception)
+        {
+            return Unauthorized(new { message = exception.Message });
         }
     }
 

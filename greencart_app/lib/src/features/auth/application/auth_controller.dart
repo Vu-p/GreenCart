@@ -1,5 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../data/auth_repository.dart';
 import '../models/app_user.dart';
@@ -99,6 +102,47 @@ class AuthController extends StateNotifier<AuthState> {
   }
 
   String _messageFor(Object error) {
+    if (error is FirebaseAuthException) {
+      return switch (error.code) {
+        'account-exists-with-different-credential' =>
+          'This email is already linked to another sign-in method.',
+        'credential-already-in-use' =>
+          'This Google account is already linked to another GreenCart account.',
+        'invalid-credential' =>
+          'Google credential is invalid. Check Firebase OAuth setup and SHA fingerprints.',
+        'network-request-failed' =>
+          'Network error while signing in with Firebase.',
+        'operation-not-allowed' =>
+          'Google Sign-In is disabled in Firebase Authentication.',
+        'user-disabled' => 'This account has been disabled.',
+        _ =>
+          error.message ?? 'Firebase sign-in failed with code ${error.code}.',
+      };
+    }
+
+    if (error is GoogleSignInException) {
+      return switch (error.code) {
+        GoogleSignInExceptionCode.canceled => 'Google sign-in was canceled.',
+        GoogleSignInExceptionCode.clientConfigurationError =>
+          'Google Sign-In is not configured correctly. Check google-services.json, package name, and SHA fingerprints.',
+        GoogleSignInExceptionCode.providerConfigurationError =>
+          'Google provider is not configured correctly in Firebase Console.',
+        GoogleSignInExceptionCode.interrupted =>
+          'Google sign-in was interrupted. Please try again.',
+        GoogleSignInExceptionCode.uiUnavailable =>
+          'Google Sign-In UI is unavailable on this device.',
+        GoogleSignInExceptionCode.userMismatch =>
+          'Google account mismatch. Sign out and try again.',
+        GoogleSignInExceptionCode.unknownError =>
+          error.description ?? 'Google sign-in failed.',
+      };
+    }
+
+    if (error is PlatformException) {
+      return error.message ??
+          'Platform sign-in failed with code ${error.code}.';
+    }
+
     if (error is DioException) {
       final data = error.response?.data;
       if (data is Map<String, dynamic> && data['message'] is String) {

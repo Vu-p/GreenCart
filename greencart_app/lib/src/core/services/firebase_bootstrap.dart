@@ -10,8 +10,14 @@ class FirebaseBootstrap {
   FirebaseBootstrap._();
 
   static final instance = FirebaseBootstrap._();
+  static const _googleServerClientId = String.fromEnvironment(
+    'GOOGLE_SERVER_CLIENT_ID',
+  );
 
   Future<bool>? _initialization;
+  Object? _initializationError;
+
+  Object? get initializationError => _initializationError;
 
   Future<bool> ensureInitialized() {
     return _initialization ??= _initialize();
@@ -20,9 +26,14 @@ class FirebaseBootstrap {
   Future<bool> _initialize() async {
     try {
       await Firebase.initializeApp();
-      await GoogleSignIn.instance.initialize();
+      await GoogleSignIn.instance.initialize(
+        serverClientId: _googleServerClientId.isEmpty
+            ? null
+            : _googleServerClientId,
+      );
       return true;
-    } catch (_) {
+    } catch (error) {
+      _initializationError = error;
       return false;
     }
   }

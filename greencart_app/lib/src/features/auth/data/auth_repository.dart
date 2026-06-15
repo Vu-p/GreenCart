@@ -85,16 +85,7 @@ class AuthRepository {
       throw StateError('Google Sign-In is not supported on this platform.');
     }
 
-    final googleAccount = await GoogleSignIn.instance.authenticate();
-    final googleIdToken = googleAccount.authentication.idToken;
-    if (googleIdToken == null || googleIdToken.isEmpty) {
-      throw StateError('Google Sign-In did not return an id token.');
-    }
-
-    final credential = GoogleAuthProvider.credential(idToken: googleIdToken);
-    final firebaseCredential = await FirebaseAuth.instance.signInWithCredential(
-      credential,
-    );
+    final firebaseCredential = await _signInWithGoogleCredential();
     return _loginBackendWithFirebaseUser(firebaseCredential.user);
   }
 
@@ -127,9 +118,43 @@ class AuthRepository {
 
   Future<void> _requireFirebase() async {
     if (!await _firebaseBootstrap.ensureInitialized()) {
+      final details = _firebaseBootstrap.initializationError;
       throw StateError(
-        'Firebase is not configured. Add google-services.json/GoogleService-Info.plist and FlutterFire options.',
+        details == null
+            ? 'Firebase is not configured. Add google-services.json/GoogleService-Info.plist and FlutterFire options.'
+            : 'Firebase is not configured: $details',
       );
+    }
+  }
+
+  bool _isNoCredentialAvailable(GoogleSignInException error) {
+    return error.code == GoogleSignInExceptionCode.unknownError &&
+        (error.description ?? '').toLowerCase().contains(
+          'no credential available',
+        );
+  }
+
+  Future<UserCredential> _signInWithGoogleCredential() async {
+    try {
+      final googleAccount = await GoogleSignIn.instance.authenticate(
+        scopeHint: const ['email', 'profile'],
+      );
+      final googleIdToken = googleAccount.authentication.idToken;
+      if (googleIdToken == null || googleIdToken.isEmpty) {
+        throw StateError('Google Sign-In did not return an id token.');
+      }
+
+      final credential = GoogleAuthProvider.credential(idToken: googleIdToken);
+      return FirebaseAuth.instance.signInWithCredential(credential);
+    } on GoogleSignInException catch (error) {
+      if (!_isNoCredentialAvailable(error)) {
+        rethrow;
+      }
+
+      final provider = GoogleAuthProvider()
+        ..addScope('email')
+        ..addScope('profile');
+      return FirebaseAuth.instance.signInWithProvider(provider);
     }
   }
 

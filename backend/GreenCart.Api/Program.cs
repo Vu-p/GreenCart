@@ -14,7 +14,7 @@ builder.Services.Configure<FirebaseOptions>(builder.Configuration.GetSection(Fir
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IFirebaseTokenVerifier, FirebaseTokenVerifier>();
+builder.Services.AddHttpClient<IFirebaseTokenVerifier, FirebaseTokenVerifier>();
 builder.Services.AddScoped<IDatabaseSeeder, DatabaseSeeder>();
 
 builder.Services.AddCors(options =>
@@ -64,6 +64,7 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     await dbContext.Database.MigrateAsync();
+    await EnsureFirebaseUserColumnsAsync(dbContext);
 
     var seeder = scope.ServiceProvider.GetRequiredService<IDatabaseSeeder>();
     await seeder.SeedAsync();
@@ -78,3 +79,61 @@ app.MapControllers();
 app.MapHub<OrderHub>("/hubs/orders");
 
 app.Run();
+
+static async Task EnsureFirebaseUserColumnsAsync(AppDbContext dbContext)
+{
+    if (!dbContext.Database.IsSqlite())
+    {
+        return;
+    }
+
+    var columns = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+    var connection = dbContext.Database.GetDbConnection();
+    var shouldClose = connection.State == System.Data.ConnectionState.Closed;
+
+    if (shouldClose)
+    {
+        await connection.OpenAsync();
+    }
+
+    try
+    {
+        await using (var command = connection.CreateCommand())
+        {
+            command.CommandText = "PRAGMA table_info(\"Users\");";
+            await using var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                columns.Add(reader.GetString(1));
+            }
+        }
+
+        if (!columns.Contains("AuthProvider"))
+        {
+            await dbContext.Database.ExecuteSqlRawAsync(
+                "ALTER TABLE \"Users\" ADD COLUMN \"AuthProvider\" TEXT NOT NULL DEFAULT 'Password';");
+        }
+
+        if (!columns.Contains("EmailVerified"))
+        {
+            await dbContext.Database.ExecuteSqlRawAsync(
+                "ALTER TABLE \"Users\" ADD COLUMN \"EmailVerified\" INTEGER NOT NULL DEFAULT 0;");
+        }
+
+        if (!columns.Contains("FirebaseUid"))
+        {
+            await dbContext.Database.ExecuteSqlRawAsync(
+                "ALTER TABLE \"Users\" ADD COLUMN \"FirebaseUid\" TEXT NULL;");
+        }
+
+        await dbContext.Database.ExecuteSqlRawAsync(
+            "CREATE UNIQUE INDEX IF NOT EXISTS \"IX_Users_FirebaseUid\" ON \"Users\" (\"FirebaseUid\");");
+    }
+    finally
+    {
+        if (shouldClose)
+        {
+            await connection.CloseAsync();
+        }
+    }
+}
