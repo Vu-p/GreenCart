@@ -94,63 +94,6 @@ namespace GreenCart.Api.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("GreenCart.Api.Models.MealPlan", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(1000)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ImageUrl")
-                        .HasMaxLength(1000)
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Minutes")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(160)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("MealPlans");
-                });
-
-            modelBuilder.Entity("GreenCart.Api.Models.MealPlanIngredient", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("MealPlanId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("QuantityLabel")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MealPlanId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("MealPlanIngredients");
-                });
-
             modelBuilder.Entity("GreenCart.Api.Models.Order", b =>
                 {
                     b.Property<Guid>("Id")
@@ -471,25 +414,6 @@ namespace GreenCart.Api.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("GreenCart.Api.Models.MealPlanIngredient", b =>
-                {
-                    b.HasOne("GreenCart.Api.Models.MealPlan", "MealPlan")
-                        .WithMany("Ingredients")
-                        .HasForeignKey("MealPlanId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GreenCart.Api.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("MealPlan");
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("GreenCart.Api.Models.Order", b =>
                 {
                     b.HasOne("GreenCart.Api.Models.User", "User")
@@ -576,11 +500,6 @@ namespace GreenCart.Api.Migrations
             modelBuilder.Entity("GreenCart.Api.Models.Category", b =>
                 {
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("GreenCart.Api.Models.MealPlan", b =>
-                {
-                    b.Navigation("Ingredients");
                 });
 
             modelBuilder.Entity("GreenCart.Api.Models.Order", b =>
