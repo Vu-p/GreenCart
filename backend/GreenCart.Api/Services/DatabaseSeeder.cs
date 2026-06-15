@@ -10,6 +10,7 @@ public sealed class DatabaseSeeder(AppDbContext dbContext, IConfiguration config
     {
         await SeedAdminAsync();
         await SeedProductsAsync();
+        await SeedMealPlansAsync();
     }
 
     private async Task SeedAdminAsync()
@@ -74,6 +75,76 @@ public sealed class DatabaseSeeder(AppDbContext dbContext, IConfiguration config
             Product("Sourdough Loaf", "Naturally leavened bread with a crisp crust and soft center.", 4.99m, 16, categoryByName["Bakery"], "https://images.unsplash.com/photo-1509440159596-0249088772ff", false, true),
             Product("Cold Pressed Juice", "Bright green juice with apple, cucumber, spinach, and lime.", 3.99m, 28, categoryByName["Beverages"], "https://images.unsplash.com/photo-1613478223719-2ab802602423", true, false),
             Product("Free Range Eggs", "Dozen free range eggs for breakfast, baking, and weekly staples.", 4.49m, 35, categoryByName["Dairy"], "https://images.unsplash.com/photo-1506976785307-8732e854ad03", false, true));
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    private async Task SeedMealPlansAsync()
+    {
+        if (await dbContext.MealPlans.AnyAsync())
+            return;
+
+        var products = await dbContext.Products.ToListAsync();
+
+        var chicken = products.FirstOrDefault(x => x.Name == "Chicken Breast");
+        var tomato = products.FirstOrDefault(x => x.Name == "Vine Tomatoes");
+        var milk = products.FirstOrDefault(x => x.Name == "TH Fresh Milk");
+        var eggs = products.FirstOrDefault(x => x.Name == "Free Range Eggs");
+
+        if (chicken is null || tomato is null || milk is null || eggs is null)
+            return;
+
+        var healthyBreakfast = new MealPlan
+        {
+            Name = "Healthy Breakfast",
+            Description = "Protein rich breakfast plan",
+            ImageUrl = "https://images.unsplash.com/photo-1482049016688-2d3e1b311543"
+        };
+
+        var healthyLunch = new MealPlan
+        {
+            Name = "Healthy Lunch",
+            Description = "Balanced lunch meal",
+            ImageUrl = "https://images.unsplash.com/photo-1547592180-85f173990554"
+        };
+
+        dbContext.MealPlans.AddRange(
+            healthyBreakfast,
+            healthyLunch
+        );
+
+        await dbContext.SaveChangesAsync();
+
+        dbContext.MealPlanIngredients.AddRange(
+
+            new MealPlanIngredient
+            {
+                MealPlanId = healthyBreakfast.Id,
+                ProductId = eggs.Id,
+                QuantityLabel = "4 eggs"
+            },
+
+            new MealPlanIngredient
+            {
+                MealPlanId = healthyBreakfast.Id,
+                ProductId = milk.Id,
+                QuantityLabel = "1 bottle"
+            },
+
+            new MealPlanIngredient
+            {
+                MealPlanId = healthyLunch.Id,
+                ProductId = chicken.Id,
+                QuantityLabel = "500g"
+            },
+
+            new MealPlanIngredient
+            {
+                MealPlanId = healthyLunch.Id,
+                ProductId = tomato.Id,
+                QuantityLabel = "2 tomatoes"
+            }
+        );
 
         await dbContext.SaveChangesAsync();
     }
