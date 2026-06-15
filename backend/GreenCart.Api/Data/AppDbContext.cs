@@ -15,17 +15,18 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<OrderReview> OrderReviews => Set<OrderReview>();
     public DbSet<ProductReview> ProductReviews => Set<ProductReview>();
     public DbSet<RealtimeEvent> RealtimeEvents => Set<RealtimeEvent>();
-    public DbSet<MealPlan> MealPlans => Set<MealPlan>();
-    public DbSet<MealPlanIngredient> MealPlanIngredients => Set<MealPlanIngredient>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasIndex(user => user.Email).IsUnique();
+            entity.HasIndex(user => user.FirebaseUid).IsUnique();
             entity.Property(user => user.Name).HasMaxLength(120).IsRequired();
             entity.Property(user => user.Email).HasMaxLength(255).IsRequired();
             entity.Property(user => user.PasswordHash).IsRequired();
+            entity.Property(user => user.FirebaseUid).HasMaxLength(128);
+            entity.Property(user => user.AuthProvider).HasMaxLength(32).IsRequired();
             entity.Property(user => user.Role).HasMaxLength(32).IsRequired();
             entity.Property(user => user.Phone).HasMaxLength(32);
             entity.Property(user => user.Address).HasMaxLength(500);
@@ -141,35 +142,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             entity.Property(realtimeEvent => realtimeEvent.Payload).HasMaxLength(4000).IsRequired();
             entity.HasIndex(realtimeEvent => realtimeEvent.OrderId);
             entity.HasIndex(realtimeEvent => realtimeEvent.UserId);
-        });
-
-        modelBuilder.Entity<MealPlan>(entity =>
-        {
-            entity.Property(x => x.Name)
-                .HasMaxLength(160)
-                .IsRequired();
-
-            entity.Property(x => x.Description)
-                .HasMaxLength(1000);
-
-            entity.Property(x => x.ImageUrl)
-                .HasMaxLength(1000);
-        });
-
-        modelBuilder.Entity<MealPlanIngredient>(entity =>
-        {
-            entity.Property(x => x.QuantityLabel)
-                .HasMaxLength(100);
-
-            entity.HasOne(x => x.MealPlan)
-                .WithMany(x => x.Ingredients)
-                .HasForeignKey(x => x.MealPlanId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasOne(x => x.Product)
-                .WithMany()
-                .HasForeignKey(x => x.ProductId)
-                .OnDelete(DeleteBehavior.Restrict);
         });
     }
 }

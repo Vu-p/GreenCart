@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:greencart_app/src/core/theme/app_theme.dart';
+import 'package:greencart_app/src/core/widgets/animated_entrance.dart';
+import 'package:greencart_app/src/core/widgets/animated_pressable.dart';
 import 'package:greencart_app/src/core/widgets/organic_state_message.dart';
 import 'package:greencart_app/src/features/catalog/data/product_repository.dart';
 import 'package:greencart_app/src/features/catalog/models/category.dart';
@@ -39,45 +41,65 @@ class HomeScreen extends ConsumerWidget {
                 child: ListView(
                   padding: const EdgeInsets.fromLTRB(16, 20, 16, 28),
                   children: [
-                    const _HeroBanner(),
+                    const AnimatedEntrance(child: _HeroBanner()),
                     const SizedBox(height: 24),
-                    _SectionTitle(
-                      title: 'Categories',
-                      actionLabel: 'View All',
-                      onAction: () => context.go(SearchScreen.routePath),
+                    AnimatedEntrance(
+                      delay: const Duration(milliseconds: 80),
+                      child: _SectionTitle(
+                        title: 'Categories',
+                        actionLabel: 'View All',
+                        onAction: () => context.go(SearchScreen.routePath),
+                      ),
                     ),
                     const SizedBox(height: 14),
-                    categories.when(
-                      data: (items) => _CategoryList(categories: items),
-                      loading: () => const SizedBox(
-                        height: 92,
-                        child: Center(child: CircularProgressIndicator()),
-                      ),
-                      error: (error, stackTrace) => _InlineError(
-                        message: 'Could not load categories.',
-                        onRetry: () => ref.invalidate(categoriesProvider),
+                    AnimatedEntrance(
+                      delay: const Duration(milliseconds: 140),
+                      child: categories.when(
+                        data: (items) => _CategoryList(categories: items),
+                        loading: () => const SizedBox(
+                          height: 92,
+                          child: Center(child: CircularProgressIndicator()),
+                        ),
+                        error: (error, stackTrace) => _InlineError(
+                          message: 'Could not load categories.',
+                          onRetry: () => ref.invalidate(categoriesProvider),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 26),
-                    _SectionTitle(
-                      title: 'Shop by Meal',
-                      trailingIcon: Icons.restaurant_menu,
-                      onAction: () => context.push(MealPlannerScreen.routePath),
+                    AnimatedEntrance(
+                      delay: const Duration(milliseconds: 200),
+                      child: _SectionTitle(
+                        title: 'Shop by Meal',
+                        trailingIcon: Icons.restaurant_menu,
+                        onAction: () =>
+                            context.push(MealPlannerScreen.routePath),
+                      ),
                     ),
                     const SizedBox(height: 14),
-                    const _MealGrid(),
+                    const AnimatedEntrance(
+                      delay: Duration(milliseconds: 260),
+                      child: _MealGrid(),
+                    ),
                     const SizedBox(height: 26),
-                    const _SectionTitle(title: 'Trending Products'),
+                    const AnimatedEntrance(
+                      delay: Duration(milliseconds: 320),
+                      child: _SectionTitle(title: 'Trending Products'),
+                    ),
                     const SizedBox(height: 14),
-                    products.when(
-                      data: (items) => _ProductGrid(products: items),
-                      loading: () => const Padding(
-                        padding: EdgeInsets.only(top: 40),
-                        child: Center(child: CircularProgressIndicator()),
-                      ),
-                      error: (error, stackTrace) => _InlineError(
-                        message: 'Could not load products.',
-                        onRetry: () => ref.invalidate(featuredProductsProvider),
+                    AnimatedEntrance(
+                      delay: const Duration(milliseconds: 380),
+                      child: products.when(
+                        data: (items) => _ProductGrid(products: items),
+                        loading: () => const Padding(
+                          padding: EdgeInsets.only(top: 40),
+                          child: Center(child: CircularProgressIndicator()),
+                        ),
+                        error: (error, stackTrace) => _InlineError(
+                          message: 'Could not load products.',
+                          onRetry: () =>
+                              ref.invalidate(featuredProductsProvider),
+                        ),
                       ),
                     ),
                   ],
@@ -153,7 +175,7 @@ class _HeroBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return AnimatedPressable(
       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
       onTap: () => context.push(DealsScreen.routePath),
       child: AspectRatio(
@@ -345,7 +367,7 @@ class _CategoryBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return AnimatedPressable(
       borderRadius: BorderRadius.circular(999),
       onTap: () => context.go(
         '${SearchScreen.routePath}?categoryId=${category.id}&categoryName=${Uri.encodeComponent(category.name)}',
@@ -432,7 +454,7 @@ class _MealCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return AnimatedPressable(
       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
       onTap: onTap,
       child: ClipRRect(

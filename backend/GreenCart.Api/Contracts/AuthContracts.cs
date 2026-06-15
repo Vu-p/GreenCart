@@ -11,6 +11,8 @@ public sealed record LoginRequest(
     [Required, EmailAddress, MaxLength(255)] string Email,
     [Required, MinLength(8), MaxLength(128)] string Password);
 
+public sealed record FirebaseLoginRequest([MaxLength(4096)] string? IdToken);
+
 public sealed record ChangePasswordRequest(
     [Required, MinLength(8), MaxLength(128)] string CurrentPassword,
     [Required, MinLength(8), MaxLength(128)] string NewPassword);

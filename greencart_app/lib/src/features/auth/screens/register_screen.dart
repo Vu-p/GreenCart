@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:greencart_app/src/core/theme/app_theme.dart';
 import 'package:greencart_app/src/core/widgets/auth_scaffold.dart';
 import 'package:greencart_app/src/core/widgets/brand_mark.dart';
-import 'package:greencart_app/src/core/widgets/organic_card.dart';
 import 'package:greencart_app/src/features/auth/application/auth_controller.dart';
 import 'package:greencart_app/src/features/catalog/screens/home_screen.dart';
 
@@ -22,11 +21,12 @@ class RegisterScreen extends ConsumerStatefulWidget {
 
 class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final _nameController = TextEditingController(text: 'Alex Green');
+  final _emailController = TextEditingController(text: 'alex@example.com');
+  final _passwordController = TextEditingController(text: 'password123');
   final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
+  bool _obscurePassword = true;
 
   @override
   void dispose() {
@@ -63,105 +63,125 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
     return AuthScaffold(
       children: [
-        const BrandMark(),
-        const SizedBox(height: 18),
+        const BrandMark(compact: true),
+        const SizedBox(height: 8),
         Text(
           'Create your GreenCart account',
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleLarge,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: AppTheme.outline,
+            fontWeight: FontWeight.w500,
+          ),
         ),
-        const SizedBox(height: 28),
-        OrganicCard(
-          radius: AppTheme.radiusLg,
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                TextFormField(
-                  controller: _nameController,
-                  textInputAction: TextInputAction.next,
-                  onFieldSubmitted: (_) => _emailFocusNode.requestFocus(),
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.person_outline),
-                    hintText: 'Full name',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().length < 2) {
-                      return 'Name must be at least 2 characters.';
-                    }
-                    return null;
-                  },
+        const SizedBox(height: 26),
+        Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const AuthFieldLabel('Full Name'),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _nameController,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) => _emailFocusNode.requestFocus(),
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.person_outline, size: 20),
                 ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _emailController,
-                  focusNode: _emailFocusNode,
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
-                  onFieldSubmitted: (_) => _passwordFocusNode.requestFocus(),
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.mail_outline),
-                    hintText: 'Email address',
-                  ),
-                  validator: (value) {
-                    if (value == null || !value.contains('@')) {
-                      return 'Enter a valid email address.';
-                    }
-                    return null;
-                  },
+                validator: (value) {
+                  if (value == null || value.trim().length < 2) {
+                    return 'Name must be at least 2 characters.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 18),
+              const AuthFieldLabel('Email Address'),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _emailController,
+                focusNode: _emailFocusNode,
+                keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) => _passwordFocusNode.requestFocus(),
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.mail_outline, size: 20),
                 ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _passwordController,
-                  focusNode: _passwordFocusNode,
-                  obscureText: true,
-                  textInputAction: TextInputAction.done,
-                  onFieldSubmitted: (_) {
-                    if (!authState.isLoading) {
-                      _submit();
-                    }
-                  },
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.lock_outline),
-                    hintText: 'Password',
+                validator: (value) {
+                  if (value == null || !value.contains('@')) {
+                    return 'Enter a valid email address.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 18),
+              const AuthFieldLabel('Password'),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _passwordController,
+                focusNode: _passwordFocusNode,
+                obscureText: _obscurePassword,
+                textInputAction: TextInputAction.done,
+                onFieldSubmitted: (_) {
+                  if (!authState.isLoading) {
+                    _submit();
+                  }
+                },
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.lock_outline, size: 20),
+                  suffixIcon: IconButton(
+                    tooltip: _obscurePassword
+                        ? 'Show password'
+                        : 'Hide password',
+                    onPressed: () =>
+                        setState(() => _obscurePassword = !_obscurePassword),
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined,
+                      size: 20,
+                    ),
                   ),
-                  validator: (value) {
-                    if (value == null || value.length < 8) {
-                      return 'Password must be at least 8 characters.';
-                    }
-                    return null;
-                  },
+                ),
+                validator: (value) {
+                  if (value == null || value.length < 8) {
+                    return 'Password must be at least 8 characters.';
+                  }
+                  return null;
+                },
+              ),
+              if (authState.errorMessage != null) ...[
+                const SizedBox(height: 16),
+                Text(
+                  authState.errorMessage!,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
               ],
-            ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: authState.isLoading ? null : _submit,
+                child: authState.isLoading
+                    ? const SizedBox(
+                        width: 22,
+                        height: 22,
+                        child: CircularProgressIndicator(strokeWidth: 2.5),
+                      )
+                    : const Text('Sign Up'),
+              ),
+            ],
           ),
         ),
-        if (authState.errorMessage != null) ...[
-          const SizedBox(height: 16),
-          Text(
-            authState.errorMessage!,
-            style: const TextStyle(color: Colors.red),
-          ),
-        ],
-        const SizedBox(height: 28),
-        ElevatedButton.icon(
-          onPressed: authState.isLoading ? null : _submit,
-          icon: authState.isLoading
-              ? const SizedBox.shrink()
-              : const Icon(Icons.person_add_alt_1),
-          label: authState.isLoading
-              ? const SizedBox(
-                  width: 22,
-                  height: 22,
-                  child: CircularProgressIndicator(strokeWidth: 2.5),
-                )
-              : const Text('Sign Up'),
-        ),
-        const SizedBox(height: 24),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        const SizedBox(height: 22),
+        Wrap(
+          alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            const Text('Already have an account?'),
+            Text(
+              'Already have an account?',
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: AppTheme.outline),
+            ),
             TextButton(
               onPressed: () => context.go(LoginScreen.routePath),
               child: const Text('Login'),

@@ -1,0 +1,196 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>GreenCart - Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#bdcabd",
+                        "on-primary-fixed": "#00210d",
+                        "on-tertiary-fixed": "#400010",
+                        "surface": "#f8faf9",
+                        "deep-forest": "#1E4D34",
+                        "surface-bright": "#f8faf9",
+                        "surface-dim": "#d8dada",
+                        "on-surface-variant": "#3e4a40",
+                        "surface-container-low": "#f2f4f3",
+                        "on-error": "#ffffff",
+                        "tertiary": "#9e3849",
+                        "on-tertiary": "#ffffff",
+                        "inverse-on-surface": "#eff1f0",
+                        "error-container": "#ffdad6",
+                        "error": "#ba1a1a",
+                        "secondary": "#825500",
+                        "tertiary-container": "#be5061",
+                        "outline": "#6e7a6f",
+                        "tertiary-fixed": "#ffdadc",
+                        "primary-container": "#008648",
+                        "on-secondary-container": "#704800",
+                        "inverse-surface": "#2e3131",
+                        "on-surface": "#191c1c",
+                        "primary": "#006a38",
+                        "on-secondary-fixed": "#291800",
+                        "on-tertiary-fixed-variant": "#822335",
+                        "inverse-primary": "#6fdc93",
+                        "on-primary": "#ffffff",
+                        "charcoal-ink": "#1A1C1B",
+                        "succulent-green": "#E9F5EE",
+                        "surface-container-highest": "#e1e3e2",
+                        "surface-variant": "#e1e3e2",
+                        "on-primary-container": "#f6fff4",
+                        "on-tertiary-container": "#fffbff",
+                        "primary-fixed-dim": "#6fdc93",
+                        "mist-gray": "#E2E8E5",
+                        "surface-container": "#eceeed",
+                        "on-primary-fixed-variant": "#00522a",
+                        "on-background": "#191c1c",
+                        "secondary-fixed": "#ffddb3",
+                        "tertiary-fixed-dim": "#ffb2b9",
+                        "primary-fixed": "#8cf9ad",
+                        "surface-container-high": "#e6e9e8",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed-dim": "#ffb951",
+                        "background": "#f8faf9",
+                        "on-secondary-fixed-variant": "#633f00",
+                        "surface-tint": "#006d39",
+                        "secondary-container": "#fdb64b",
+                        "on-secondary": "#ffffff",
+                        "ripened-orange": "#FF9F1C",
+                        "surface-container-lowest": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "base": "8px",
+                        "container-margin-desktop": "32px",
+                        "stack-lg": "24px",
+                        "stack-md": "12px",
+                        "container-margin-mobile": "16px",
+                        "stack-sm": "4px"
+                    },
+                    "fontFamily": {
+                        "label-bold": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "title-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "price-display": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>.material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24
+    }
+.bg-login-hero {
+    background-image: linear-gradient(to bottom, rgba(248, 250, 249, 0.85), rgba(248, 250, 249, 0.95)), url(https://lh3.googleusercontent.com/aida-public/AB6AXuDdVfi1MIbzbcmX_sh7OxlwVm_hjtp5yBqD_o_R8U9ANWCQclmTju0p6vy3rSGBRkvYLPGWt7cTh9UirZqk8z9GRHxNIqUY9q-utcKBIMPJqThHOGIRlovnN3K0s07ygc9P16cKgXvac57jNaexHz6D34_UM-vF-d52InAsBoYLS8vS_Kzg5b_KpWOJRUjeOoyhHAUbuLKxoIDYoj_e9bru1A6erPB2uOWBJ4QdS3HOC0xWxh3PbpWpCCUnv1R94GVuagJqJmEf81k);
+    background-size: cover;
+    background-position: center
+    }
+.organic-shadow {
+    box-shadow: 0 12px 48px -12px rgba(26, 28, 27, 0.08)
+    }</style>
+</head>
+<body class="bg-surface font-body-lg text-on-surface selection:bg-primary/20">
+<main class="min-h-screen w-full flex items-center justify-center p-container-mobile bg-login-hero" data-alt="A high-quality, top-down photograph of a lush arrangement of fresh organic vegetables including vibrant kale, bright heirloom tomatoes, and crisp bell peppers. The image is overlayed with a soft white mist-gray wash to create a clean, modern UI background that feels airy and premium. The lighting is natural and bright, emphasizing the textures of the produce while maintaining a professional and health-conscious aesthetic typical of a luxury grocery app.">
+<div class="w-full max-w-md bg-surface-container-lowest p-8 md:p-10 rounded-[32px] organic-shadow animate-in fade-in slide-in-from-bottom-8 duration-700">
+<div class="flex flex-col items-center mb-stack-lg">
+<div class="mb-4 text-primary">
+<span class="material-symbols-outlined text-[48px]" style="font-variation-settings: 'FILL' 1;">shopping_basket</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-primary tracking-tight">GreenCart</h1>
+<p class="font-body-lg text-on-surface-variant mt-2 text-center">Freshness delivered to your door.</p>
+</div>
+<form class="space-y-6" onsubmit="event.preventDefault();">
+<div class="space-y-2">
+<label class="font-label-bold text-label-bold text-on-surface-variant px-1" for="email">Email Address</label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-on-surface-variant group-focus-within:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">mail</span>
+</div>
+<input class="w-full h-14 pl-12 pr-4 bg-mist-gray/30 border-2 border-transparent rounded-2xl focus:border-primary/20 focus:bg-white focus:ring-0 transition-all outline-none font-body-lg text-on-surface placeholder:text-outline/60" id="email" placeholder="name@example.com" type="email">
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between items-center px-1">
+<label class="font-label-bold text-label-bold text-on-surface-variant" for="password">Password</label>
+<a class="font-label-bold text-label-bold text-primary hover:underline transition-all" href="#">Forgot Password?</a>
+</div>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-on-surface-variant group-focus-within:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">lock</span>
+</div>
+<input class="w-full h-14 pl-12 pr-12 bg-mist-gray/30 border-2 border-transparent rounded-2xl focus:border-primary/20 focus:bg-white focus:ring-0 transition-all outline-none font-body-lg text-on-surface placeholder:text-outline/60" id="password" placeholder="••••••••" type="password">
+<button class="absolute inset-y-0 right-0 pr-4 flex items-center text-on-surface-variant hover:text-on-surface transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</div>
+<a href="{{DATA:SCREEN:SCREEN_9}}" class="w-full h-14 bg-primary hover:bg-on-primary-fixed-variant text-on-primary font-title-md text-title-md rounded-2xl transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20 flex items-center justify-center">
+                    Login
+                </a>
+</form>
+<div class="relative my-8">
+<div class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-mist-gray"></div>
+</div>
+<div class="relative flex justify-center text-label-bold font-label-bold uppercase tracking-widest text-outline bg-surface-container-lowest px-4">
+                    Or continue with
+                </div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center h-14 border-2 border-mist-gray rounded-2xl hover:bg-mist-gray/10 transition-all active:scale-95">
+<img alt="Google" class="w-6 h-6 mr-3" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCf1NAC3vMu2dywDlcd7o9BwZQfl3ZGh5Gtygu1KnZHFI6xiwv2dvrkD6V6w3IkgUWTAL33ie3gWid33ytl0bRvKMWNbNZsmb9Bs5wefzp4X6zrepkTpNUg0CRoJ6D8FeXsQcZh2fJoLKiDGOqwdCs1r7_1uB7MnxGY-rVtzCT56S2Z9ubM5XZqpuBjmLjKtLjnc6GiB1XHtjQuy7ugTNo1H5RH4Gcnl8BezY8aqfd3YKbKoWbOXkV6eFda92E7ztnvTW5oiu-g42Q">
+<span class="font-label-bold text-label-bold text-on-surface">Google</span>
+</button>
+<button class="flex items-center justify-center h-14 border-2 border-mist-gray rounded-2xl hover:bg-mist-gray/10 transition-all active:scale-95">
+<span class="material-symbols-outlined text-[24px] mr-3" style="font-variation-settings: 'FILL' 1;">apps</span>
+<span class="font-label-bold text-label-bold text-on-surface">Apple</span>
+</button>
+</div>
+<p class="mt-8 text-center font-body-sm text-body-sm text-on-surface-variant">
+                Don't have an account? 
+                <a class="font-label-bold text-primary hover:underline ml-1" href="{{DATA:SCREEN:SCREEN_9}}">Sign Up</a>
+</p>
+</div>
+</main>
+<script>
+        // Micro-interaction for the password visibility toggle
+        const toggleBtn = document.querySelector('button[type="button"]');
+        const passwordInput = document.getElementById('password');
+        const visibilityIcon = toggleBtn.querySelector('.material-symbols-outlined');
+
+        toggleBtn.addEventListener('click', () => {
+            const isPassword = passwordInput.type === 'password';
+            passwordInput.type = isPassword ? 'text' : 'password';
+            visibilityIcon.textContent = isPassword ? 'visibility_off' : 'visibility';
+        });
+
+        // Add subtle hover lift to input containers
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', () => {
+                input.closest('.relative').classList.add('scale-[1.01]');
+            });
+            input.addEventListener('blur', () => {
+                input.closest('.relative').classList.remove('scale-[1.01]');
+            });
+        });
+    </script>
+
+
+</body></html>

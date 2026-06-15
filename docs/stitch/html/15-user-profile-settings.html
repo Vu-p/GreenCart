@@ -1,0 +1,293 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>User Profile | GreenCart</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#ffb951",
+                        "surface-bright": "#f8faf9",
+                        "surface-container-low": "#f2f4f3",
+                        "surface-container-highest": "#e1e3e2",
+                        "tertiary-fixed-dim": "#ffb2b9",
+                        "on-tertiary-fixed": "#400010",
+                        "outline-variant": "#bdcabd",
+                        "on-primary-container": "#f6fff4",
+                        "on-background": "#191c1c",
+                        "primary-fixed-dim": "#6fdc93",
+                        "on-primary": "#ffffff",
+                        "surface-tint": "#006d39",
+                        "primary-fixed": "#8cf9ad",
+                        "tertiary-fixed": "#ffdadc",
+                        "on-surface": "#191c1c",
+                        "on-primary-fixed": "#00210d",
+                        "surface-variant": "#e1e3e2",
+                        "on-error": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container": "#eceeed",
+                        "ripened-orange": "#FF9F1C",
+                        "error-container": "#ffdad6",
+                        "error": "#ba1a1a",
+                        "tertiary-container": "#be5061",
+                        "succulent-green": "#E9F5EE",
+                        "on-tertiary-fixed-variant": "#822335",
+                        "on-secondary-fixed-variant": "#633f00",
+                        "background": "#f8faf9",
+                        "surface": "#f8faf9",
+                        "on-tertiary": "#ffffff",
+                        "deep-forest": "#1E4D34",
+                        "surface-dim": "#d8dada",
+                        "surface-container-high": "#e6e9e8",
+                        "secondary-fixed": "#ffddb3",
+                        "inverse-on-surface": "#eff1f0",
+                        "primary-container": "#008648",
+                        "on-secondary": "#ffffff",
+                        "tertiary": "#9e3849",
+                        "primary": "#006a38",
+                        "on-secondary-container": "#704800",
+                        "inverse-surface": "#2e3131",
+                        "charcoal-ink": "#1A1C1B",
+                        "on-tertiary-container": "#fffbff",
+                        "secondary": "#825500",
+                        "on-error-container": "#93000a",
+                        "on-surface-variant": "#3e4a40",
+                        "on-primary-fixed-variant": "#00522a",
+                        "on-secondary-fixed": "#291800",
+                        "mist-gray": "#E2E8E5",
+                        "inverse-primary": "#6fdc93",
+                        "outline": "#6e7a6f",
+                        "secondary-container": "#fdb64b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-sm": "4px",
+                        "stack-md": "12px",
+                        "gutter": "16px",
+                        "stack-lg": "24px",
+                        "base": "8px",
+                        "container-margin-mobile": "16px",
+                        "container-margin-desktop": "32px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "price-display": ["Inter"],
+                        "title-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-bold": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "price-display": ["22px", {"lineHeight": "24px", "fontWeight": "700"}],
+                        "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-bold": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .canvas-shadow {
+            box-shadow: 0 4px 12px rgba(26, 28, 27, 0.04);
+        }
+        .prime-badge-gradient {
+            background: linear-gradient(135deg, #006a38 0%, #008648 100%);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface shadow-sm flex justify-between items-center px-container-margin-mobile h-16">
+<div class="flex items-center gap-4">
+<button class="active:scale-95 transition-transform text-primary">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-display-lg text-display-lg text-primary tracking-tight">GreenCart</h1>
+</div>
+<button class="active:scale-95 transition-transform text-primary">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</header>
+<main class="mt-20 px-container-margin-mobile space-y-stack-lg max-w-2xl mx-auto">
+<!-- User Header Section -->
+<section class="flex flex-col items-center gap-stack-md py-4">
+<div class="relative">
+<div class="w-24 h-24 rounded-full overflow-hidden border-2 border-primary-fixed bg-mist-gray">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="A professional and friendly portrait of a young man with a warm smile, set against a clean, soft-focus natural background. The lighting is bright and airy, reflecting a modern light-mode UI aesthetic. The composition is centered, highlighting the subject's healthy and vibrant appearance, consistent with a premium wellness and grocery brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPaWnIcXpyxAwd1GAk-BLRYmtwnsBqLBpIX4d_RdgEhVdxvOHyMKHM0sOsv8_D9MrCm9gCijZtkwxXs7tawh_3wL-UTPmSZF1UpWbDMXvacstaIDi_W_ksDtCryXDTdjzadOJswv5UpHwTA3XadlHrdjuWUfeA2qg9MTbLXtsLh6tw3BI0cDD_133qBqNoT01G7JVOz-J5QqID_H7myP1v8xFLP8_z201iN8I7YZBIyDm057mZHJJ2iGFeIrtL_DfXU4XZPK-y5AU">
+</div>
+<div class="absolute bottom-0 right-0 bg-primary text-on-primary p-1.5 rounded-full border-2 border-surface active:scale-90 transition-transform cursor-pointer">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</div>
+</div>
+<div class="text-center">
+<h2 class="font-title-md text-title-md text-on-surface">Alex Thompson</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">alex.thompson@example.com</p>
+</div>
+</section>
+<!-- GreenCart Prime Badge / Loyalty Card -->
+<section class="prime-badge-gradient rounded-xl p-5 text-on-primary-container shadow-lg flex justify-between items-center relative overflow-hidden">
+<!-- Decorative circle -->
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full"></div>
+<div class="z-10">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+<span class="font-label-bold text-label-bold tracking-widest uppercase">GreenCart Prime</span>
+</div>
+<h3 class="font-title-md text-title-md font-bold mb-2">Save $124.50 this month</h3>
+<p class="font-body-sm text-body-sm opacity-90">Free delivery on every organic order.</p>
+</div>
+<button class="z-10 bg-white text-primary px-4 py-2 rounded-full font-label-bold text-label-bold active:scale-95 transition-all shadow-sm">
+                MANAGE
+            </button>
+</section>
+<!-- Profile Menu Sections (Bento-style list) -->
+<div class="space-y-stack-md">
+<!-- Group: Account & Security -->
+<div class="bg-surface-container-lowest rounded-xl canvas-shadow overflow-hidden">
+<div class="px-4 py-3 border-b border-mist-gray">
+<h4 class="font-label-bold text-label-bold text-outline uppercase">Account &amp; Privacy</h4>
+</div>
+<a class="flex items-center justify-between p-4 hover:bg-succulent-green transition-colors active:scale-[0.99] origin-center" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">person_outline</span>
+<span class="font-body-lg text-body-lg text-on-surface">Account Settings</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</a>
+<a class="flex items-center justify-between p-4 hover:bg-succulent-green transition-colors active:scale-[0.99] border-t border-mist-gray/30" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">location_on</span>
+<span class="font-body-lg text-body-lg text-on-surface">Saved Addresses</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</a>
+<a class="flex items-center justify-between p-4 hover:bg-succulent-green transition-colors active:scale-[0.99] border-t border-mist-gray/30" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">payments</span>
+<span class="font-body-lg text-body-lg text-on-surface">Payment Methods</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</a>
+</div>
+<!-- Group: Preferences -->
+<div class="bg-surface-container-lowest rounded-xl canvas-shadow overflow-hidden">
+<div class="px-4 py-3 border-b border-mist-gray">
+<h4 class="font-label-bold text-label-bold text-outline uppercase">Preferences</h4>
+</div>
+<a class="flex items-center justify-between p-4 hover:bg-succulent-green transition-colors active:scale-[0.99]" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">notifications_active</span>
+<span class="font-body-lg text-body-lg text-on-surface">Notification Preferences</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</a>
+<a class="flex items-center justify-between p-4 hover:bg-succulent-green transition-colors active:scale-[0.99] border-t border-mist-gray/30" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">spa</span>
+<span class="font-body-lg text-body-lg text-on-surface">Dietary Preferences</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</a>
+</div>
+<!-- Group: Support -->
+<div class="bg-surface-container-lowest rounded-xl canvas-shadow overflow-hidden">
+<div class="px-4 py-3 border-b border-mist-gray">
+<h4 class="font-label-bold text-label-bold text-outline uppercase">Resources</h4>
+</div>
+<a class="flex items-center justify-between p-4 hover:bg-succulent-green transition-colors active:scale-[0.99]" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">help_outline</span>
+<span class="font-body-lg text-body-lg text-on-surface">Help &amp; Support</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</a>
+<a class="flex items-center justify-between p-4 hover:bg-succulent-green transition-colors active:scale-[0.99] border-t border-mist-gray/30" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">policy</span>
+<span class="font-body-lg text-body-lg text-on-surface">Privacy Policy</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</a>
+</div>
+</div>
+<!-- Logout Action -->
+<div class="pt-4">
+<button class="w-full py-4 rounded-xl font-title-md text-title-md text-error bg-error-container/20 border border-error/10 active:scale-95 transition-all flex items-center justify-center gap-2" onclick="window.location.href='{{DATA:SCREEN:SCREEN_33}}'">
+<span class="material-symbols-outlined">logout</span>
+                Logout
+            </button>
+<p class="text-center font-label-bold text-label-bold text-on-surface-variant/40 mt-6 pb-4">Version 2.4.1 (Organic Release)</p>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-2 pb-safe bg-surface/80 backdrop-blur-md shadow-[0_-4px_12px_rgba(26,28,27,0.04)] z-50 rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-200 ease-out active:scale-90" href="{{DATA:SCREEN:SCREEN_9}}">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-bold text-label-bold mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-200 ease-out active:scale-90" href="{{DATA:SCREEN:SCREEN_31}}">
+<span class="material-symbols-outlined">search</span>
+<span class="font-label-bold text-label-bold mt-1">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-200 ease-out active:scale-90" href="{{DATA:SCREEN:SCREEN_24}}">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="font-label-bold text-label-bold mt-1">Cart</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-200 ease-out active:scale-90" href="{{DATA:SCREEN:SCREEN_21}}">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-label-bold text-label-bold mt-1">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-succulent-green text-primary rounded-full px-4 py-1 transition-all duration-200 ease-out active:scale-90" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-bold text-label-bold mt-1">Profile</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for feedback on click
+        document.querySelectorAll('a, button').forEach(elem => {
+            elem.addEventListener('click', (e) => {
+                // Subtle haptic-like effect logic would go here
+            });
+        });
+
+        // Dynamic greeting based on time
+        const updateGreeting = () => {
+            const now = new Date();
+            const hours = now.getHours();
+            let greeting = "Welcome back,";
+            if(hours < 12) greeting = "Good morning,";
+            else if(hours < 18) greeting = "Good afternoon,";
+            else greeting = "Good evening,";
+            
+            // This could be injected into a greeting element if one existed
+        };
+        updateGreeting();
+    </script>
+
+
+</body></html>

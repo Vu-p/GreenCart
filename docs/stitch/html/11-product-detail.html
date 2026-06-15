@@ -1,0 +1,263 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport">
+<title>GreenCart - Organic Milk</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#bdcabd",
+                    "on-primary-fixed": "#00210d",
+                    "on-tertiary-fixed": "#400010",
+                    "surface": "#f8faf9",
+                    "deep-forest": "#1E4D34",
+                    "surface-bright": "#f8faf9",
+                    "surface-dim": "#d8dada",
+                    "on-surface-variant": "#3e4a40",
+                    "surface-container-low": "#f2f4f3",
+                    "on-error": "#ffffff",
+                    "tertiary": "#9e3849",
+                    "on-tertiary": "#ffffff",
+                    "inverse-on-surface": "#eff1f0",
+                    "error-container": "#ffdad6",
+                    "error": "#ba1a1a",
+                    "secondary": "#825500",
+                    "tertiary-container": "#be5061",
+                    "outline": "#6e7a6f",
+                    "tertiary-fixed": "#ffdadc",
+                    "primary-container": "#008648",
+                    "on-primary-container": "#f6fff4",
+                    "on-secondary-container": "#704800",
+                    "inverse-surface": "#2e3131",
+                    "on-surface": "#191c1c",
+                    "primary": "#006a38",
+                    "on-secondary-fixed": "#291800",
+                    "on-tertiary-fixed-variant": "#822335",
+                    "inverse-primary": "#6fdc93",
+                    "on-primary": "#ffffff",
+                    "charcoal-ink": "#1A1C1B",
+                    "succulent-green": "#E9F5EE",
+                    "surface-container-highest": "#e1e3e2",
+                    "surface-variant": "#e1e3e2",
+                    "on-primary-container": "#f6fff4",
+                    "on-tertiary-container": "#fffbff",
+                    "primary-fixed-dim": "#6fdc93",
+                    "mist-gray": "#E2E8E5",
+                    "surface-container": "#eceeed",
+                    "on-primary-fixed-variant": "#00522a",
+                    "on-background": "#191c1c",
+                    "secondary-fixed": "#ffddb3",
+                    "tertiary-fixed-dim": "#ffb2b9",
+                    "primary-fixed": "#8cf9ad",
+                    "surface-container-high": "#e6e9e8",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed-dim": "#ffb951",
+                    "background": "#f8faf9",
+                    "on-secondary-fixed-variant": "#633f00",
+                    "surface-tint": "#006d39",
+                    "secondary-container": "#fdb64b",
+                    "on-secondary": "#ffffff",
+                    "ripened-orange": "#FF9F1C",
+                    "surface-container-lowest": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "16px",
+                    "base": "8px",
+                    "container-margin-desktop": "32px",
+                    "stack-lg": "24px",
+                    "stack-md": "12px",
+                    "container-margin-mobile": "16px",
+                    "stack-sm": "4px"
+            },
+            "fontFamily": {
+                    "label-bold": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "title-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "price-display": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "headline-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "label-bold": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "price-display": ["22px", {"lineHeight": "24px", "fontWeight": "700"}],
+                    "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scroll-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .active-scale:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-lg text-body-lg min-h-screen flex flex-col scroll-hide">
+<!-- Top App Bar (Sticky Header Overlay Style) -->
+<header class="w-full sticky top-0 z-50 transition-all duration-300" id="main-header">
+<div class="flex items-center justify-between px-container-mobile h-16 w-full max-w-7xl mx-auto">
+<button aria-label="Go back" class="w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center text-on-surface shadow-sm transition-transform active:scale-95" onclick="window.location.href='{{DATA:SCREEN:SCREEN_31}}'">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div class="flex gap-2">
+<button class="w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center text-on-surface shadow-sm transition-transform active:scale-95" onclick="window.location.href='{{DATA:SCREEN:SCREEN_31}}'">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+<button class="w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center text-on-surface shadow-sm transition-transform active:scale-95">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-grow -mt-16">
+<!-- Product Image Hero -->
+<section class="relative w-full aspect-[4/5] md:aspect-video overflow-hidden">
+<img alt="Organic Milk" class="w-full h-full object-cover" data-alt="A premium high-resolution studio photograph of a classic glass bottle filled with fresh organic milk, resting on a rustic light wood surface. The lighting is soft and natural, emphasizing the creamy texture and pure white color of the milk. Small condensation droplets are visible on the cold glass, creating a sense of immediate freshness. The background is a soft-focus minimalist kitchen with hints of succulent green plants, maintaining a modern organic aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHZdnMiVeVzssgn78HNhqLo7cnfC8nNZj5ke4mcfZAKDKw_34KLLpRTaohDdvuJQm3F606N1J5CC9Xn3Cp99Kr4pFtm8V6ubaJOzhgfrX3lDGUJWon6Jap6olWpXO-yWyspfve3y6T2E3ptFw-xNkgnFvcHtV7_eDyD7Oy7KvFVOpHvkiDTCjfaPTT3A_TjmRgiXM-0XlMMDyt0ihbCnZyvPb7swdyAFM-M4mmhQQY6yeudexq7W3c7GcaWr-85_qrBvCvKUUGHRk">
+</section>
+<!-- Product Details Container -->
+<div class="bg-surface rounded-t-[32px] -mt-8 relative z-10 px-container-mobile pt-stack-lg pb-40 max-w-3xl mx-auto shadow-[0_-12px_24px_rgba(26,28,27,0.04)]">
+<!-- Substitution Indicator Banner -->
+<div class="bg-succulent-green rounded-xl p-3 mb-stack-lg flex items-center gap-3 border border-primary/10 cursor-pointer" onclick="window.location.href='{{DATA:SCREEN:SCREEN_19}}'">
+<span class="material-symbols-outlined text-primary text-[20px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<p class="font-label-bold text-label-bold text-on-primary-fixed-variant">
+                    Smart Substitution available if out of stock
+                </p>
+</div>
+<!-- Title & Price Row -->
+<div class="flex justify-between items-start mb-2">
+<div class="flex-1">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface mb-1">Organic Milk</h1>
+<div class="flex items-center gap-1">
+<div class="flex text-ripened-orange">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 0.5;">star_half</span>
+</div>
+<span class="font-label-bold text-label-bold text-on-surface-variant">4.5 (128 reviews)</span>
+</div>
+</div>
+<div class="bg-succulent-green px-3 py-1 rounded-lg">
+<span class="font-price-display text-price-display text-primary">$4.99</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-stack-lg">
+                1 Gallon • Locally Sourced
+            </p>
+<!-- Description -->
+<div class="space-y-stack-md mb-stack-lg">
+<h3 class="font-title-md text-title-md text-on-surface">Description</h3>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+                    Fresh organic milk from local farms, delivered cold to your doorstep. Our cows are pasture-raised and never treated with synthetic hormones or antibiotics. This whole milk retains its natural richness and creaminess, making it perfect for your morning cereal, coffee, or a refreshing glass on its own.
+                </p>
+</div>
+<!-- Nutrition/Details Grid -->
+<div class="grid grid-cols-3 gap-stack-md mb-stack-lg">
+<div class="bg-surface-container-low p-3 rounded-xl flex flex-col items-center text-center">
+<span class="font-label-bold text-label-bold text-on-surface-variant">FAT</span>
+<span class="font-title-md text-title-md text-primary">8g</span>
+</div>
+<div class="bg-surface-container-low p-3 rounded-xl flex flex-col items-center text-center">
+<span class="font-label-bold text-label-bold text-on-surface-variant">PROTEIN</span>
+<span class="font-title-md text-title-md text-primary">8g</span>
+</div>
+<div class="bg-surface-container-low p-3 rounded-xl flex flex-col items-center text-center">
+<span class="font-label-bold text-label-bold text-on-surface-variant">CALORIES</span>
+<span class="font-title-md text-title-md text-primary">150</span>
+</div>
+</div>
+<!-- More Details Accordion (Visual Placeholder) -->
+<div class="border-t border-mist-gray py-4 flex justify-between items-center group cursor-pointer">
+<span class="font-title-md text-title-md text-on-surface">Nutritional Information</span>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+<div class="border-t border-mist-gray py-4 flex justify-between items-center group cursor-pointer">
+<span class="font-title-md text-title-md text-on-surface">Farm Traceability</span>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+</div>
+</main>
+<!-- Bottom Sticky Action Bar -->
+<footer class="fixed bottom-0 left-0 right-0 bg-surface/80 backdrop-blur-md z-50 p-container-mobile border-t border-mist-gray/30">
+<div class="max-w-3xl mx-auto flex items-center gap-stack-lg">
+<!-- Quantity Selector -->
+<div class="flex items-center bg-mist-gray/40 rounded-full p-1 h-14">
+<button aria-label="Decrease quantity" class="w-12 h-12 flex items-center justify-center rounded-full hover:bg-mist-gray active:scale-90 transition-all" onclick="updateQty(-1)">
+<span class="material-symbols-outlined">remove</span>
+</button>
+<span class="w-10 text-center font-title-md text-title-md" id="qty-count">1</span>
+<button aria-label="Increase quantity" class="w-12 h-12 flex items-center justify-center rounded-full hover:bg-mist-gray active:scale-90 transition-all" onclick="updateQty(1)">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<!-- Add to Cart Button -->
+<button class="flex-grow h-14 bg-primary text-on-primary rounded-full font-title-md text-title-md shadow-lg shadow-primary/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2" onclick="window.location.href='{{DATA:SCREEN:SCREEN_24}}'">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shopping_cart</span>
+                Add to Cart
+            </button>
+</div>
+</footer>
+<script>
+        // Quantity Logic
+        function updateQty(delta) {
+            const qtyElement = document.getElementById('qty-count');
+            let currentQty = parseInt(qtyElement.textContent);
+            currentQty = Math.max(1, currentQty + delta);
+            qtyElement.textContent = currentQty;
+        }
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('main-header');
+            if (window.scrollY > 100) {
+                header.classList.add('bg-surface/90', 'backdrop-blur-md', 'shadow-sm');
+                header.querySelector('.px-container-mobile').classList.add('border-b', 'border-mist-gray/20');
+            } else {
+                header.classList.remove('bg-surface/90', 'backdrop-blur-md', 'shadow-sm');
+                header.querySelector('.px-container-mobile').classList.remove('border-b', 'border-mist-gray/20');
+            }
+        });
+
+        // Simple feedback for "Add to Cart"
+        document.querySelector('button.bg-primary').addEventListener('click', function() {
+            const originalContent = this.innerHTML;
+            this.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Added!';
+            this.classList.replace('bg-primary', 'bg-primary-container');
+            this.classList.replace('text-on-primary', 'text-on-primary-container');
+            
+            setTimeout(() => {
+                this.innerHTML = originalContent;
+                this.classList.replace('bg-primary-container', 'bg-primary');
+                this.classList.replace('text-on-primary-container', 'text-on-primary');
+            }, 2000);
+        });
+    </script>
+
+
+</body></html>

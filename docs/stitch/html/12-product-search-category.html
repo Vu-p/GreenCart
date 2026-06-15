@@ -1,0 +1,353 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>GreenCart - Fresh Organic Produce</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "secondary-fixed-dim": "#ffb951",
+            "surface-bright": "#f8faf9",
+            "surface-container-low": "#f2f4f3",
+            "surface-container-highest": "#e1e3e2",
+            "tertiary-fixed-dim": "#ffb2b9",
+            "on-tertiary-fixed": "#400010",
+            "outline-variant": "#bdcabd",
+            "on-primary-container": "#f6fff4",
+            "on-background": "#191c1c",
+            "primary-fixed-dim": "#6fdc93",
+            "on-primary": "#ffffff",
+            "surface-tint": "#006d39",
+            "primary-fixed": "#8cf9ad",
+            "tertiary-fixed": "#ffdadc",
+            "on-surface": "#191c1c",
+            "on-primary-fixed": "#00210d",
+            "surface-variant": "#e1e3e2",
+            "on-error": "#ffffff",
+            "surface-container-lowest": "#ffffff",
+            "surface-container": "#eceeed",
+            "ripened-orange": "#FF9F1C",
+            "error-container": "#ffdad6",
+            "error": "#ba1a1a",
+            "tertiary-container": "#be5061",
+            "succulent-green": "#E9F5EE",
+            "on-tertiary-fixed-variant": "#822335",
+            "on-secondary-fixed-variant": "#633f00",
+            "background": "#f8faf9",
+            "surface": "#f8faf9",
+            "on-tertiary": "#ffffff",
+            "deep-forest": "#1E4D34",
+            "surface-dim": "#d8dada",
+            "surface-container-high": "#e6e9e8",
+            "secondary-fixed": "#ffddb3",
+            "inverse-on-surface": "#eff1f0",
+            "primary-container": "#008648",
+            "on-secondary": "#ffffff",
+            "tertiary": "#9e3849",
+            "primary": "#006a38",
+            "on-secondary-container": "#704800",
+            "inverse-surface": "#2e3131",
+            "charcoal-ink": "#1A1C1B",
+            "on-tertiary-container": "#fffbff",
+            "secondary": "#825500",
+            "on-error-container": "#93000a",
+            "on-surface-variant": "#3e4a40",
+            "on-primary-fixed-variant": "#00522a",
+            "on-secondary-fixed": "#291800",
+            "mist-gray": "#E2E8E5",
+            "inverse-primary": "#6fdc93",
+            "outline": "#6e7a6f",
+            "secondary-container": "#fdb64b"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "stack-sm": "4px",
+            "stack-md": "12px",
+            "gutter": "16px",
+            "stack-lg": "24px",
+            "base": "8px",
+            "container-margin-mobile": "16px",
+            "container-margin-desktop": "32px"
+          },
+          "fontFamily": {
+            "display-lg": ["Inter"],
+            "body-sm": ["Inter"],
+            "price-display": ["Inter"],
+            "title-md": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "body-lg": ["Inter"],
+            "label-bold": ["Inter"],
+            "headline-lg": ["Inter"]
+          },
+          "fontSize": {
+            "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+            "price-display": ["22px", {"lineHeight": "24px", "fontWeight": "700"}],
+            "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+            "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+            "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+            "label-bold": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+            "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+    .glass-nav { backdrop-filter: blur(12px); }
+    .product-card-shadow { box-shadow: 0 4px 12px rgba(26, 28, 27, 0.04); }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface shadow-sm h-16 flex justify-between items-center px-container-margin-mobile">
+<div class="flex items-center gap-4">
+<button class="text-primary hover:opacity-80 transition-opacity active:scale-95 transition-transform">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-display-lg text-display-lg text-primary tracking-tight">GreenCart</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-primary hover:opacity-80 transition-opacity active:scale-95 transition-transform">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+</header>
+<main class="pt-20 px-container-margin-mobile max-w-7xl mx-auto">
+<!-- Hero Search Section -->
+<section class="mt-stack-lg">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full h-14 pl-12 pr-4 bg-mist-gray rounded-full border-none focus:ring-2 focus:ring-primary/20 transition-all font-body-lg text-body-lg" placeholder="Search for fresh produce..." type="text">
+<button class="absolute right-3 top-1/2 -translate-y-1/2 bg-primary text-on-primary p-2 rounded-full active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[20px]">tune</span>
+</button>
+</div>
+</section>
+<!-- Category Filters -->
+<section class="mt-stack-lg overflow-x-auto no-scrollbar flex gap-3 pb-2">
+<button class="flex-shrink-0 px-6 py-2 rounded-full bg-primary text-on-primary font-label-bold text-label-bold transition-all shadow-md">All</button>
+<button class="flex-shrink-0 px-6 py-2 rounded-full bg-succulent-green text-on-surface-variant font-label-bold text-label-bold hover:bg-mist-gray transition-all">Produce</button>
+<button class="flex-shrink-0 px-6 py-2 rounded-full bg-succulent-green text-on-surface-variant font-label-bold text-label-bold hover:bg-mist-gray transition-all">Dairy</button>
+<button class="flex-shrink-0 px-6 py-2 rounded-full bg-succulent-green text-on-surface-variant font-label-bold text-label-bold hover:bg-mist-gray transition-all">Bakery</button>
+<button class="flex-shrink-0 px-6 py-2 rounded-full bg-succulent-green text-on-surface-variant font-label-bold text-label-bold hover:bg-mist-gray transition-all">Pantry</button>
+<button class="flex-shrink-0 px-6 py-2 rounded-full bg-succulent-green text-on-surface-variant font-label-bold text-label-bold hover:bg-mist-gray transition-all">Meat</button>
+</section>
+<!-- Sorting/Filter Header -->
+<div class="mt-stack-lg flex justify-between items-end mb-stack-md">
+<div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Fresh Results</h2>
+<p class="font-body-sm text-body-sm text-outline">142 items found in Produce</p>
+</div>
+<div class="flex gap-2">
+<button class="flex items-center gap-1 text-primary font-label-bold text-label-bold border border-mist-gray px-3 py-1.5 rounded-lg active:scale-95">
+<span class="material-symbols-outlined text-[18px]">sort</span>
+          Sort
+        </button>
+</div>
+</div>
+<!-- Product Grid -->
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-gutter mt-4">
+<!-- Product Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-3 flex flex-col product-card-shadow border border-mist-gray/30 group cursor-pointer" onclick="window.location.href='{{DATA:SCREEN:SCREEN_12}}'">
+<div class="relative w-full aspect-square bg-surface-container-low rounded-lg overflow-hidden mb-3">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A macro close-up photograph of a bunch of crisp, bright green organic spinach leaves. The lighting is high-key and natural, emphasizing the vibrant green texture and dewdrops on the leaves. The setting is clean and minimalist, following a modern organic aesthetic with a soft gray background. The overall mood is fresh and premium." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBibx8mhFEUNBPYAeJjpLYCgdBSfy8nMr88FHm0EqKZUSWgNtxtGutxVrCoKGIBjd-RbAxQ-ALnlpq4e_zbhbDPMzkbjWF0Eg4Aw_wNGHacBqhUVNZDyuPbLXjoA-SHuTS6y5HBA2vt7TNtxV8YsdAdEpm2c2iwHcjMrz2djrbZ3xc39uclU6GbpeoDLpuQLoRPqpkAo3xbDDvIp17MEkewrXzfGy_q0Z3rBbmoDkQ0NWWNEAP7jY2ee1Pi1gB3RF8sOPXTM2Wxs5I">
+<div class="absolute top-2 left-2 flex flex-col gap-1">
+<span class="bg-primary-container text-on-primary-container text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Organic</span>
+</div>
+</div>
+<div class="flex flex-col flex-grow">
+<h3 class="font-title-md text-title-md text-on-surface line-clamp-1">Fresh Spinach</h3>
+<p class="font-body-sm text-body-sm text-outline mt-1">10 oz bunch</p>
+<div class="mt-auto flex items-center justify-between pt-2">
+<div>
+<span class="bg-succulent-green text-primary px-2 py-0.5 rounded font-price-display text-price-display">$3.99</span>
+</div>
+<button class="w-10 h-10 bg-primary text-on-primary rounded-full flex items-center justify-center active:scale-90 transition-transform shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-3 flex flex-col product-card-shadow border border-mist-gray/30 group cursor-pointer" onclick="window.location.href='{{DATA:SCREEN:SCREEN_12}}'">
+<div class="relative w-full aspect-square bg-surface-container-low rounded-lg overflow-hidden mb-3">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A professional studio photograph of a pint of glowing, deep red organic strawberries on a clean, light gray surface. Soft, diffused overhead lighting creates subtle highlights and gentle shadows, highlighting the seeds and fresh texture. The atmosphere is health-focused and sophisticated, using a bright, high-clarity visual style consistent with a premium grocery app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6zbIy-hHZsx74bNy99aYj4DPz7102SyiliEPICCVzDc5n1i0Ct_gudhk7KTHcEETPC-g8j4qPyeLSsw4rSLdLZja5P5hQlOwxzD_FHaWdfhyf6YEfOPsbYX-toDwG3qw1UGs9E_eFOms2lWf_KjkQsA4ME37sZvJ6nKA70Ae5w3DZB8f-AXwqU_xhpro_kjJdqq8fHmoU7zwiyLp_tmABLvxnckKTtGEo8o0SMLeSeWjRNNmYL_GKkQG-utFBMrCXXq_xRtcM4cY">
+<div class="absolute top-2 left-2 flex flex-col gap-1">
+<span class="bg-primary-container text-on-primary-container text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Organic</span>
+</div>
+</div>
+<div class="flex flex-col flex-grow">
+<h3 class="font-title-md text-title-md text-on-surface line-clamp-1">Honeoye Strawberries</h3>
+<p class="font-body-sm text-body-sm text-outline mt-1">1 lb package</p>
+<div class="mt-auto flex items-center justify-between pt-2">
+<div>
+<span class="bg-succulent-green text-primary px-2 py-0.5 rounded font-price-display text-price-display">$5.49</span>
+</div>
+<button class="w-10 h-10 bg-primary text-on-primary rounded-full flex items-center justify-center active:scale-90 transition-transform shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 3 -->
+<div class="bg-surface-container-lowest rounded-xl p-3 flex flex-col product-card-shadow border border-mist-gray/30 group cursor-pointer" onclick="window.location.href='{{DATA:SCREEN:SCREEN_12}}'">
+<div class="relative w-full aspect-square bg-surface-container-low rounded-lg overflow-hidden mb-3">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Vibrant, multi-colored heirloom tomatoes arranged beautifully in a wooden basket. The scene is lit by warm, afternoon sunlight through a window, creating a rich and tactile farmer's market feel. Deep greens, bright oranges, and ruby reds dominate the color palette against the natural wood. The photography is sharp and detailed, emphasizing the organic quality of the vegetables." src="https://lh3.googleusercontent.com/aida-public/AB6AXuANtBNsqpcbBZaLE7afeD8nz5d0K2U2kFtuUaGsCMZFkLlTZgAMFkXoi4_pbAIWeHsXQFiE2Ie-sDhpdqv5wJCXcNHWZnlrY0pRnq6RALk6Ij0_7e-mCU47AhexDDCEt-1GzCYwKSvQ3WCzjN_Z8xGHBTI946LE5Ii-NTTPnyNUVTQHsuIHp8B_vAW6ggcOd6E5Um8XGTAdFvhNYDm-GCR2I0OmuRJ_gPyCCA9iVEAv8dWy5TBpnrA_ZJXF3FPLfAlxgJkJc7foO8A">
+<div class="absolute top-2 left-2 flex flex-col gap-1">
+<span class="bg-secondary-container text-on-secondary-container text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Local</span>
+</div>
+</div>
+<div class="flex flex-col flex-grow">
+<h3 class="font-title-md text-title-md text-on-surface line-clamp-1">Heirloom Tomato Mix</h3>
+<p class="font-body-sm text-body-sm text-outline mt-1">$4.99 / lb</p>
+<div class="mt-auto flex items-center justify-between pt-2">
+<div>
+<span class="bg-succulent-green text-primary px-2 py-0.5 rounded font-price-display text-price-display">$4.99</span>
+</div>
+<button class="w-10 h-10 bg-primary text-on-primary rounded-full flex items-center justify-center active:scale-90 transition-transform shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 4 -->
+<div class="bg-surface-container-lowest rounded-xl p-3 flex flex-col product-card-shadow border border-mist-gray/30 group cursor-pointer" onclick="window.location.href='{{DATA:SCREEN:SCREEN_12}}'">
+<div class="relative w-full aspect-square bg-surface-container-low rounded-lg overflow-hidden mb-3">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A clean, minimalist shot of a single glass bottle of fresh organic milk and a small dish of creamy Greek yogurt. The scene is bright and airy with high-key lighting on a white marble countertop. Cool blues and crisp whites create a sense of purity and hygiene. The focus is sharp on the product labels, evoking a feeling of reliability and high-quality dairy production." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkJL1z3cdTos3K8JhN2VhdvypoeUtB1OmJUfS_XtFrGTVKBm2SYm_ZUCq6tQqu1cByyLNPFeu4iLQbjTLQxsAC99TjVZpLaqzKaudN3AJ0VpikZJNJ8pa1qghoE2I-t3DHDTjvekHTr_9SU_J7jFp_Vd7yAC_MX3zNYxbSj5BWLA65KxSEB0C6kpqvB8wrebd5rBDFSGk_0R_FvPgyN1ZUIEZO253yl81ROscQO_0o_TwAOdD1SEB7KJrvVrCxbhJdZQN0kX-jUFk">
+<div class="absolute top-2 left-2 flex flex-col gap-1">
+<span class="bg-tertiary-container text-on-tertiary-container text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Gluten-Free</span>
+</div>
+</div>
+<div class="flex flex-col flex-grow">
+<h3 class="font-title-md text-title-md text-on-surface line-clamp-1">Grass-Fed Whole Milk</h3>
+<p class="font-body-sm text-body-sm text-outline mt-1">64 fl oz</p>
+<div class="mt-auto flex items-center justify-between pt-2">
+<div>
+<span class="bg-succulent-green text-primary px-2 py-0.5 rounded font-price-display text-price-display">$6.25</span>
+</div>
+<button class="w-10 h-10 bg-primary text-on-primary rounded-full flex items-center justify-center active:scale-90 transition-transform shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 5 -->
+<div class="bg-surface-container-lowest rounded-xl p-3 flex flex-col product-card-shadow border border-mist-gray/30 group cursor-pointer" onclick="window.location.href='{{DATA:SCREEN:SCREEN_12}}'">
+<div class="relative w-full aspect-square bg-surface-container-low rounded-lg overflow-hidden mb-3">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A rustic, top-down photograph of a fresh, crusty sourdough bread loaf sliced open to reveal a perfect airy texture. Flour is lightly dusted on a dark slate background, creating a high-contrast and artisanal mood. The lighting is dramatic and warm, highlighting the golden-brown crust. The visual style is premium and evocative of a high-end local bakery." src="https://lh3.googleusercontent.com/aida-public/AB6AXuADaubmZSmhbEs7W_BTRKLB6RuEgJoQs7Ikfse1h67FPej6B07e6xSugsSdWCmhDE8u7P-myDeciOXyUgCegf9qnZdVFjlMOHjIrSk0Gqod8ZwFZQt4kpIznHwwt_BAyrMMO-eEL3iiSCHi9jHUCU1eH03svi-FvM_dOqpWqwk-mOZF8gfu9FuHkfgcJJQrlCkVoYldgAM_cR4rtAKglbxLXDE3zv9XkRj7t4ER6kqHr6ljQ4XomcavM20PMDqTCkz3MifuchO7Fcs">
+<div class="absolute top-2 left-2 flex flex-col gap-1">
+<span class="bg-primary-container text-on-primary-container text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Organic</span>
+</div>
+</div>
+<div class="flex flex-col flex-grow">
+<h3 class="font-title-md text-title-md text-on-surface line-clamp-1">Artisan Sourdough</h3>
+<p class="font-body-sm text-body-sm text-outline mt-1">Daily Baked Loaf</p>
+<div class="mt-auto flex items-center justify-between pt-2">
+<div>
+<span class="bg-succulent-green text-primary px-2 py-0.5 rounded font-price-display text-price-display">$7.50</span>
+</div>
+<button class="w-10 h-10 bg-primary text-on-primary rounded-full flex items-center justify-center active:scale-90 transition-transform shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 6 -->
+<div class="bg-surface-container-lowest rounded-xl p-3 flex flex-col product-card-shadow border border-mist-gray/30 group cursor-pointer" onclick="window.location.href='{{DATA:SCREEN:SCREEN_12}}'">
+<div class="relative w-full aspect-square bg-surface-container-low rounded-lg overflow-hidden mb-3">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A clean, vibrant photography of a bundle of fresh organic carrots with their green tops intact. The carrots are bright orange with realistic soil textures, set against a pristine, soft-white background. The lighting is bright and even, creating a professional e-commerce aesthetic. The overall mood is fresh, healthy, and trustworthy, perfectly fitting an organic grocery shopping platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1_ot7-HhBtL2p0Xn-ZkIDjWG30HPcNCRBj1ken9VzjYJ_EqrbIX3JQJqzalaCnAnTSi5U744xrZNL7qWsnP4Yf4-NopwLOXpjeq0Fdj_DEMAtNOzF_iEYYIpeJB9cOZcXx816ne2MflIc5XTdm7A3DUXwLEMgPTXzz562hI5RLtTVQ1FTpibcXeskDa8Q4QjgMZoYyzCyC8N_mnuG0bokOfutAWYyIKhji3y6QcL_tcs4bj98cbLxk6Ubkl231HUUUcuRFXyzr8M">
+<div class="absolute top-2 left-2 flex flex-col gap-1">
+<span class="bg-primary-container text-on-primary-container text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Organic</span>
+</div>
+</div>
+<div class="flex flex-col flex-grow">
+<h3 class="font-title-md text-title-md text-on-surface line-clamp-1">Sweet Garden Carrots</h3>
+<p class="font-body-sm text-body-sm text-outline mt-1">2 lb bunch</p>
+<div class="mt-auto flex items-center justify-between pt-2">
+<div>
+<span class="bg-succulent-green text-primary px-2 py-0.5 rounded font-price-display text-price-display">$2.99</span>
+</div>
+<button class="w-10 h-10 bg-primary text-on-primary rounded-full flex items-center justify-center active:scale-90 transition-transform shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action Button for Filter -->
+<button class="fixed right-6 bottom-24 bg-charcoal-ink text-surface-bright p-4 rounded-2xl shadow-2xl flex items-center gap-2 active:scale-90 transition-all z-40">
+<span class="material-symbols-outlined">filter_alt</span>
+<span class="font-label-bold text-label-bold">Filters</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full glass-nav bg-surface/80 flex justify-around items-center px-4 py-2 pb-safe z-50 rounded-t-xl shadow-[0_-4px_12px_rgba(26,28,27,0.04)]">
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-200 ease-out active:scale-90 cursor-pointer" onclick="window.location.href='{{DATA:SCREEN:SCREEN_9}}'">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-bold text-label-bold mt-1">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-succulent-green text-primary rounded-full px-6 py-1 active:scale-90 transition-all duration-200 ease-out cursor-pointer">
+<span class="material-symbols-outlined">search</span>
+<span class="font-label-bold text-label-bold mt-1">Search</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-200 ease-out active:scale-90 cursor-pointer relative" onclick="window.location.href='{{DATA:SCREEN:SCREEN_24}}'">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="font-label-bold text-label-bold mt-1">Cart</span>
+<div class="absolute -top-1 -right-1 bg-ripened-orange text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">2</div>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-200 ease-out active:scale-90 cursor-pointer" onclick="window.location.href='{{DATA:SCREEN:SCREEN_21}}'">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-label-bold text-label-bold mt-1">Orders</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-200 ease-out active:scale-90 cursor-pointer" onclick="window.location.href='{{DATA:SCREEN:SCREEN_8}}'">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-bold text-label-bold mt-1">Profile</span>
+</div>
+</nav>
+<script>
+    // Micro-interactions for adding items
+    document.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        if (this.innerText.includes('add')) {
+          const originalIcon = this.innerHTML;
+          this.innerHTML = '<span class="material-symbols-outlined">check</span>';
+          this.classList.replace('bg-primary', 'bg-ripened-orange');
+          setTimeout(() => {
+            this.innerHTML = originalIcon;
+            this.classList.replace('bg-ripened-orange', 'bg-primary');
+          }, 1500);
+        }
+      });
+    });
+
+    // Horizontal category selection interaction
+    const catBtns = document.querySelectorAll('section[class*="overflow-x-auto"] button');
+    catBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        catBtns.forEach(b => {
+          b.classList.remove('bg-primary', 'text-on-primary', 'shadow-md');
+          b.classList.add('bg-succulent-green', 'text-on-surface-variant');
+        });
+        btn.classList.remove('bg-succulent-green', 'text-on-surface-variant');
+        btn.classList.add('bg-primary', 'text-on-primary', 'shadow-md');
+      });
+    });
+  </script>
+
+
+</body></html>
