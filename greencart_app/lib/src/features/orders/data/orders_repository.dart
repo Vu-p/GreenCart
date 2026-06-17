@@ -35,4 +35,12 @@ class OrdersRepository {
     );
     return OrderItem.fromJson(response.data as Map<String, dynamic>);
   }
+
+  Future<OrderItem> cancelOrder(String orderId) async {
+    final response = await _apiClient.post(
+      '/api/orders/$orderId/cancel',
+      authorized: true,
+    );
+    return OrderItem.fromJson(response.data as Map<String, dynamic>);
+  }
 }
