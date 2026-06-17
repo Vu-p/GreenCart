@@ -31,7 +31,11 @@ class CartScreen extends ConsumerWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => ref.invalidate(cartProvider),
+            onPressed: cartState.maybeWhen(
+              data: (cart) =>
+                  cart.isEmpty ? null : () => _clearCart(context, ref),
+              orElse: () => null,
+            ),
             child: const Text('Clear All'),
           ),
           Padding(
@@ -101,6 +105,24 @@ class CartScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _clearCart(BuildContext context, WidgetRef ref) async {
+    try {
+      await ref.read(cartRepositoryProvider).clear();
+      ref.invalidate(cartProvider);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Cart cleared.')),
+        );
+      }
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not clear cart.')),
+        );
+      }
+    }
   }
 }
 
