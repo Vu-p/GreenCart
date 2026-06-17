@@ -35,4 +35,34 @@ class OrdersRepository {
     );
     return OrderItem.fromJson(response.data as Map<String, dynamic>);
   }
+
+  Future<void> submitReview({
+    required String orderId,
+    required int rating,
+    String? comment,
+    required Map<String, int> productRatings,
+  }) async {
+    final trimmedComment = comment?.trim();
+    final productReviews = productRatings.entries
+        .map(
+          (entry) => {
+            'productId': entry.key,
+            'rating': entry.value,
+            'comment': null,
+          },
+        )
+        .toList();
+
+    await _apiClient.post(
+      '/api/orders/$orderId/review',
+      authorized: true,
+      data: {
+        'rating': rating,
+        'comment': trimmedComment == null || trimmedComment.isEmpty
+            ? null
+            : trimmedComment,
+        'productReviews': productReviews,
+      },
+    );
+  }
 }
