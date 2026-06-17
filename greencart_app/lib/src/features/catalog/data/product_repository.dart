@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/services/api_client.dart';
 import '../models/category.dart';
 import '../models/product.dart';
+import '../models/product_review.dart';
 
 final productRepositoryProvider = Provider<ProductRepository>((ref) {
   return ProductRepository(ref.watch(apiClientProvider));
@@ -22,6 +23,11 @@ final productDetailProvider = FutureProvider.family<Product, String>((
 ) {
   return ref.watch(productRepositoryProvider).getProduct(productId);
 });
+
+final productReviewsProvider = FutureProvider.autoDispose
+    .family<List<ProductReview>, String>((ref, productId) {
+      return ref.watch(productRepositoryProvider).getProductReviews(productId);
+    });
 
 class ProductRepository {
   ProductRepository(this._apiClient);
@@ -69,5 +75,13 @@ class ProductRepository {
   Future<Product> getProduct(String productId) async {
     final response = await _apiClient.get('/api/products/$productId');
     return Product.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  Future<List<ProductReview>> getProductReviews(String productId) async {
+    final response = await _apiClient.get('/api/products/$productId/reviews');
+    final list = response.data as List<dynamic>;
+    return list
+        .map((item) => ProductReview.fromJson(item as Map<String, dynamic>))
+        .toList();
   }
 }

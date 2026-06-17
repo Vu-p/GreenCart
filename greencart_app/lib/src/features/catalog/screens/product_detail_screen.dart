@@ -8,6 +8,7 @@ import 'package:greencart_app/src/core/widgets/organic_card.dart';
 import 'package:greencart_app/src/core/widgets/quantity_button.dart';
 import 'package:greencart_app/src/features/cart/data/cart_repository.dart';
 import 'package:greencart_app/src/features/catalog/data/product_repository.dart';
+import 'package:greencart_app/src/features/catalog/models/product_review.dart';
 
 class ProductDetailScreen extends ConsumerStatefulWidget {
   const ProductDetailScreen({required this.productId, super.key});
@@ -29,6 +30,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final productState = ref.watch(productDetailProvider(widget.productId));
+    final reviewsState = ref.watch(productReviewsProvider(widget.productId));
 
     return Scaffold(
       body: productState.when(
@@ -241,6 +243,12 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 18),
+                  AnimatedEntrance(
+                    delay: const Duration(milliseconds: 120),
+                    offset: const Offset(0, 24),
+                    child: _ProductReviewsSection(reviewsState: reviewsState),
+                  ),
                 ]),
               ),
             ),
@@ -278,6 +286,142 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ProductReviewsSection extends StatelessWidget {
+  const _ProductReviewsSection({required this.reviewsState});
+
+  final AsyncValue<List<ProductReview>> reviewsState;
+
+  @override
+  Widget build(BuildContext context) {
+    return OrganicCard(
+      radius: AppTheme.radiusLg,
+      child: reviewsState.when(
+        loading: () => const Center(
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 18),
+            child: CircularProgressIndicator(),
+          ),
+        ),
+        error: (error, stackTrace) => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Reviews', style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 10),
+            const Text('Could not load product reviews.'),
+          ],
+        ),
+        data: (reviews) {
+          if (reviews.isEmpty) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Reviews', style: Theme.of(context).textTheme.titleMedium),
+                const SizedBox(height: 10),
+                Text(
+                  'No reviews yet.',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AppTheme.outline,
+                      ),
+                ),
+              ],
+            );
+          }
+
+          final visibleReviews = reviews.take(5).toList(growable: false);
+          final average = reviews.fold<int>(
+                0,
+                (total, review) => total + review.rating,
+              ) /
+              reviews.length;
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    'Reviews',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const Spacer(),
+                  const Icon(
+                    Icons.star_rounded,
+                    color: AppTheme.ripenedOrange,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    '${average.toStringAsFixed(1)} (${reviews.length})',
+                    style: const TextStyle(fontWeight: FontWeight.w800),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 14),
+              for (final review in visibleReviews) ...[
+                _ProductReviewTile(
+                  rating: review.rating,
+                  comment: review.comment,
+                  createdAt: review.createdAt,
+                ),
+                if (review != visibleReviews.last)
+                  const Divider(height: 22, color: AppTheme.mistGray),
+              ],
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _ProductReviewTile extends StatelessWidget {
+  const _ProductReviewTile({
+    required this.rating,
+    required this.comment,
+    required this.createdAt,
+  });
+
+  final int rating;
+  final String? comment;
+  final DateTime createdAt;
+
+  @override
+  Widget build(BuildContext context) {
+    final body = comment?.trim().isEmpty ?? true
+        ? 'Freshness rated $rating out of 5.'
+        : comment!.trim();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            for (var index = 1; index <= 5; index++)
+              Icon(
+                index <= rating
+                    ? Icons.star_rounded
+                    : Icons.star_outline_rounded,
+                color: index <= rating
+                    ? AppTheme.ripenedOrange
+                    : AppTheme.outline,
+                size: 18,
+              ),
+            const Spacer(),
+            Text(
+              '${createdAt.month}/${createdAt.day}/${createdAt.year}',
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: AppTheme.outline),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Text(body, style: Theme.of(context).textTheme.bodyMedium),
+      ],
     );
   }
 }
