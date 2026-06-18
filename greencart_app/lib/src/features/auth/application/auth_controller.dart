@@ -1,8 +1,9 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 import '../data/auth_repository.dart';
 import '../models/app_user.dart';
@@ -44,9 +45,16 @@ class AuthController extends StateNotifier<AuthState> {
 
   Future<bool> restoreSession() async {
     state = state.copyWith(isLoading: true, clearError: true);
-    final user = await _repository.restoreSession();
-    state = AuthState(user: user);
-    return user != null;
+    try {
+      final user = await _repository.restoreSession().timeout(
+        const Duration(seconds: 8),
+      );
+      state = AuthState(user: user);
+      return user != null;
+    } catch (error) {
+      state = AuthState(errorMessage: _messageFor(error));
+      return false;
+    }
   }
 
   Future<bool> login(String email, String password) async {
@@ -66,7 +74,20 @@ class AuthController extends StateNotifier<AuthState> {
   }
 
   Future<bool> loginWithGoogle() async {
-    return _runAuthAction(_repository.loginWithGoogle);
+    return _runAuthAction(
+      () => _repository.loginWithGoogle().timeout(
+        const Duration(seconds: 45),
+        onTimeout: () {
+          throw TimeoutException(
+            'Google sign-in took too long. Close the Google window and try again.',
+          );
+        },
+      ),
+    );
+  }
+
+  void clearError() {
+    state = state.copyWith(clearError: true);
   }
 
   Future<bool> updateProfile({
@@ -120,24 +141,6 @@ class AuthController extends StateNotifier<AuthState> {
       };
     }
 
-    if (error is GoogleSignInException) {
-      return switch (error.code) {
-        GoogleSignInExceptionCode.canceled => 'Google sign-in was canceled.',
-        GoogleSignInExceptionCode.clientConfigurationError =>
-          'Google Sign-In is not configured correctly. Check google-services.json, package name, and SHA fingerprints.',
-        GoogleSignInExceptionCode.providerConfigurationError =>
-          'Google provider is not configured correctly in Firebase Console.',
-        GoogleSignInExceptionCode.interrupted =>
-          'Google sign-in was interrupted. Please try again.',
-        GoogleSignInExceptionCode.uiUnavailable =>
-          'Google Sign-In UI is unavailable on this device.',
-        GoogleSignInExceptionCode.userMismatch =>
-          'Google account mismatch. Sign out and try again.',
-        GoogleSignInExceptionCode.unknownError =>
-          error.description ?? 'Google sign-in failed.',
-      };
-    }
-
     if (error is PlatformException) {
       return error.message ??
           'Platform sign-in failed with code ${error.code}.';
@@ -155,6 +158,11 @@ class AuthController extends StateNotifier<AuthState> {
 
     if (error is StateError) {
       return error.message;
+    }
+
+    if (error is TimeoutException) {
+      return error.message ??
+          'Session restore timed out. Please continue to login.';
     }
 
     return 'Something went wrong. Please try again.';

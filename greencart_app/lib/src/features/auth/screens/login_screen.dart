@@ -51,9 +51,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   Future<void> _googleLogin() async {
     FocusManager.instance.primaryFocus?.unfocus();
-    final success = await ref
-        .read(authControllerProvider.notifier)
-        .loginWithGoogle();
+    final controller = ref.read(authControllerProvider.notifier);
+    controller.clearError();
+
+    final success = await controller.loginWithGoogle();
 
     if (success && mounted) {
       context.go(HomeScreen.routePath);
