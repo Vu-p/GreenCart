@@ -66,17 +66,16 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                       child: Image.network(
                         product.imageUrl,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) =>
-                            Container(
-                              color: AppTheme.succulentGreen,
-                              child: const Icon(
-                                Icons.eco_outlined,
-                                color: AppTheme.primary,
-                                size: 72,
-                              ),
-                            ),
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          color: AppTheme.succulentGreen,
+                          child: const Icon(
+                            Icons.eco_outlined,
+                            color: AppTheme.primary,
+                            size: 72,
+                          ),
                         ),
                       ),
+                    ),
                     const DecoratedBox(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
@@ -101,142 +100,147 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: [
-                            Chip(label: Text(product.categoryName)),
-                            if (product.isOrganic)
-                              const Chip(
-                                label: Text('ORGANIC'),
-                                avatar: Icon(Icons.eco_outlined),
-                              ),
-                            Chip(
-                              backgroundColor: product.inStock
-                                  ? AppTheme.succulentGreen
-                                  : AppTheme.surfaceContainer,
-                              label: Text(
-                                product.inStock
-                                    ? '${product.stock} in stock'
-                                    : 'Out of stock',
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                product.name,
-                                style: Theme.of(context).textTheme.titleLarge,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppTheme.succulentGreen,
-                                borderRadius: BorderRadius.circular(999),
-                              ),
-                              child: Text(
-                                formatCurrency(product.price),
-                                style: const TextStyle(
-                                  color: AppTheme.primary,
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w800,
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: [
+                              Chip(label: Text(product.categoryName)),
+                              if (product.isOrganic)
+                                const Chip(
+                                  label: Text('ORGANIC'),
+                                  avatar: Icon(Icons.eco_outlined),
+                                ),
+                              Chip(
+                                backgroundColor: product.inStock
+                                    ? AppTheme.succulentGreen
+                                    : AppTheme.surfaceContainer,
+                                label: Text(
+                                  product.inStock
+                                      ? '${product.stock} in stock'
+                                      : 'Out of stock',
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 18),
-                        Text(
-                          product.description,
-                          style: Theme.of(context).textTheme.bodyLarge
-                              ?.copyWith(color: AppTheme.outline),
-                        ),
-                        const SizedBox(height: 24),
-                        Row(
-                          children: [
-                            QuantityButton(
-                              icon: Icons.remove,
-                              enabled: _quantity > 1,
-                              onPressed: () => setState(() => _quantity--),
-                            ),
-                            Container(
-                              width: 56,
-                              alignment: Alignment.center,
-                              child: Text(
-                                '$_quantity',
-                                style: Theme.of(context).textTheme.titleMedium,
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  product.name,
+                                  style: Theme.of(context).textTheme.titleLarge,
+                                ),
                               ),
-                            ),
-                            QuantityButton(
-                              icon: Icons.add,
-                              enabled:
-                                  product.inStock && _quantity < product.stock,
-                              onPressed: () => setState(() => _quantity++),
-                            ),
-                            const Spacer(),
-                            Text(
-                              product.inStock ? 'Ready to add' : 'Unavailable',
-                              style: TextStyle(
-                                color: product.inStock
-                                    ? AppTheme.primary
-                                    : AppTheme.outline,
-                                fontWeight: FontWeight.w700,
+                              const SizedBox(width: 12),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.succulentGreen,
+                                  borderRadius: BorderRadius.circular(999),
+                                ),
+                                child: Text(
+                                  formatCurrency(product.price),
+                                  style: const TextStyle(
+                                    color: AppTheme.primary,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 24),
-                        ElevatedButton.icon(
-                          onPressed: product.inStock
-                              ? () async {
-                                  try {
-                                    await ref
-                                        .read(cartRepositoryProvider)
-                                        .addItem(
-                                          productId: product.id,
-                                          quantity: _quantity,
+                            ],
+                          ),
+                          const SizedBox(height: 18),
+                          Text(
+                            product.description,
+                            style: Theme.of(context).textTheme.bodyLarge
+                                ?.copyWith(color: AppTheme.outline),
+                          ),
+                          const SizedBox(height: 24),
+                          Row(
+                            children: [
+                              QuantityButton(
+                                icon: Icons.remove,
+                                enabled: _quantity > 1,
+                                onPressed: () => setState(() => _quantity--),
+                              ),
+                              Container(
+                                width: 56,
+                                alignment: Alignment.center,
+                                child: Text(
+                                  '$_quantity',
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.titleMedium,
+                                ),
+                              ),
+                              QuantityButton(
+                                icon: Icons.add,
+                                enabled:
+                                    product.inStock &&
+                                    _quantity < product.stock,
+                                onPressed: () => setState(() => _quantity++),
+                              ),
+                              const Spacer(),
+                              Text(
+                                product.inStock
+                                    ? 'Ready to add'
+                                    : 'Unavailable',
+                                style: TextStyle(
+                                  color: product.inStock
+                                      ? AppTheme.primary
+                                      : AppTheme.outline,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 24),
+                          ElevatedButton.icon(
+                            onPressed: product.inStock
+                                ? () async {
+                                    try {
+                                      await ref
+                                          .read(cartRepositoryProvider)
+                                          .addItem(
+                                            productId: product.id,
+                                            quantity: _quantity,
+                                          );
+                                      ref.invalidate(cartProvider);
+                                      if (context.mounted) {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              'Added $_quantity item(s) to cart.',
+                                            ),
+                                          ),
                                         );
-                                    ref.invalidate(cartProvider);
-                                    if (context.mounted) {
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            'Added $_quantity item(s) to cart.',
+                                      }
+                                    } catch (_) {
+                                      if (context.mounted) {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                              'Could not add item. Please login and try again.',
+                                            ),
                                           ),
-                                        ),
-                                      );
-                                    }
-                                  } catch (_) {
-                                    if (context.mounted) {
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                            'Could not add item. Please login and try again.',
-                                          ),
-                                        ),
-                                      );
+                                        );
+                                      }
                                     }
                                   }
-                                }
-                              : null,
-                          icon: const Icon(Icons.shopping_cart_outlined),
-                          label: Text(
-                            product.inStock ? 'Add to Cart' : 'Out of Stock',
+                                : null,
+                            icon: const Icon(Icons.shopping_cart_outlined),
+                            label: Text(
+                              product.inStock ? 'Add to Cart' : 'Out of Stock',
+                            ),
                           ),
-                        ),
                         ],
                       ),
                     ),
