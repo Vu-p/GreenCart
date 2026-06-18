@@ -30,7 +30,6 @@ class CheckoutRepository {
   Future<OrderItem> checkout({
     required String deliveryAddress,
     String? deliveryPhone,
-    String? deliverySlot,
     String? substitutionPreference,
   }) async {
     final response = await _apiClient.post(
@@ -39,7 +38,6 @@ class CheckoutRepository {
       data: {
         'deliveryAddress': deliveryAddress,
         'deliveryPhone': deliveryPhone,
-        'deliverySlot': deliverySlot,
         'substitutionPreference': substitutionPreference,
       },
     );

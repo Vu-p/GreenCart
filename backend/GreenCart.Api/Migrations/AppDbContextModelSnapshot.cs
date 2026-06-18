@@ -115,10 +115,6 @@ namespace GreenCart.Api.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("DeliverySlot")
-                        .HasMaxLength(120)
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("OrderNumber")
                         .IsRequired()
                         .HasMaxLength(32)
@@ -350,13 +346,13 @@ namespace GreenCart.Api.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("AvatarUrl")
+                        .HasMaxLength(1000)
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("AuthProvider")
                         .IsRequired()
                         .HasMaxLength(32)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("AvatarUrl")
-                        .HasMaxLength(1000)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTimeOffset>("CreatedAt")

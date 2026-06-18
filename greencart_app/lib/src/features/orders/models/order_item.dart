@@ -6,7 +6,6 @@ class OrderItem {
     required this.paymentStatus,
     required this.deliveryAddress,
     this.deliveryPhone,
-    this.deliverySlot,
     this.substitutionPreference,
     required this.subtotal,
     required this.deliveryFee,
@@ -23,7 +22,6 @@ class OrderItem {
   final String paymentStatus;
   final String deliveryAddress;
   final String? deliveryPhone;
-  final String? deliverySlot;
   final String? substitutionPreference;
   final double subtotal;
   final double deliveryFee;
@@ -44,7 +42,6 @@ class OrderItem {
       paymentStatus: json['paymentStatus'] as String,
       deliveryAddress: json['deliveryAddress'] as String,
       deliveryPhone: json['deliveryPhone'] as String?,
-      deliverySlot: json['deliverySlot'] as String?,
       substitutionPreference: json['substitutionPreference'] as String?,
       subtotal: (json['subtotal'] as num).toDouble(),
       deliveryFee: (json['deliveryFee'] as num).toDouble(),

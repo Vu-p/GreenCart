@@ -11,9 +11,7 @@ import 'package:greencart_app/src/core/widgets/organic_promo_banner.dart';
 import 'package:greencart_app/src/core/widgets/organic_state_message.dart';
 import 'package:greencart_app/src/core/widgets/pulse_dot.dart';
 import 'package:greencart_app/src/core/widgets/section_header.dart';
-import 'package:greencart_app/src/features/catalog/screens/home_screen.dart';
 import 'package:greencart_app/src/features/orders/data/orders_repository.dart';
-import 'package:greencart_app/src/features/orders/screens/orders_screen.dart';
 import 'package:greencart_app/src/features/orders/screens/rating_review_screen.dart';
 
 class OrderTrackingScreen extends ConsumerWidget {
@@ -31,17 +29,6 @@ class OrderTrackingScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          tooltip: 'Back',
-          onPressed: () {
-            if (context.canPop()) {
-              context.pop();
-            } else {
-              context.go(OrdersScreen.routePath);
-            }
-          },
-          icon: const Icon(Icons.arrow_back),
-        ),
         title: MobilePageTitle(
           title: 'Order $orderId',
           subtitle: 'Live delivery tracking',
@@ -67,9 +54,7 @@ class OrderTrackingScreen extends ConsumerWidget {
               child: OrganicPromoBanner(
                 eyebrow: order.status.toUpperCase(),
                 title: 'Your order ${order.orderNumber} is ${order.status}.',
-                subtitle: order.deliverySlot == null
-                    ? order.deliveryAddress
-                    : '${order.deliverySlot}\n${order.deliveryAddress}',
+                subtitle: order.deliveryAddress,
                 icon: Icons.local_shipping_outlined,
                 color: AppTheme.deepForest,
               ),
@@ -148,26 +133,6 @@ class OrderTrackingScreen extends ConsumerWidget {
                   ),
                 ],
               ),
-            ),
-            const SizedBox(height: 18),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () => context.go(OrdersScreen.routePath),
-                    icon: const Icon(Icons.receipt_long_outlined),
-                    label: const Text('Order History'),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () => context.go(HomeScreen.routePath),
-                    icon: const Icon(Icons.home_outlined),
-                    label: const Text('Back to Home'),
-                  ),
-                ),
-              ],
             ),
           ],
         ),
