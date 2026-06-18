@@ -14,6 +14,7 @@ public sealed record CheckoutPreviewResponse(
 public sealed record CheckoutRequest(
     [Required, MinLength(5), MaxLength(500)] string DeliveryAddress,
     [MaxLength(32)] string? DeliveryPhone,
+    [MaxLength(120)] string? DeliverySlot,
     [MaxLength(500)] string? SubstitutionPreference);
 
 public sealed record UpdateSubstitutionRequest([MaxLength(500)] string? SubstitutionPreference);
