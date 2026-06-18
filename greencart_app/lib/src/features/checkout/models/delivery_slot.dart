@@ -10,6 +10,4 @@ class DeliverySlot {
   final String window;
   final double price;
   final bool recommended;
-
-  String get value => '$label, $window';
 }

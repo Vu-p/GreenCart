@@ -6,7 +6,6 @@ import 'package:greencart_app/src/core/theme/app_theme.dart';
 import 'package:greencart_app/src/core/widgets/mobile_page_title.dart';
 import 'package:greencart_app/src/core/widgets/organic_card.dart';
 import 'package:greencart_app/src/features/cart/data/cart_repository.dart';
-import 'package:greencart_app/src/features/checkout/application/checkout_draft_controller.dart';
 import 'package:greencart_app/src/features/checkout/data/checkout_repository.dart';
 import 'package:greencart_app/src/features/checkout/data/mock_checkout.dart';
 import 'package:greencart_app/src/features/checkout/screens/payment_success_screen.dart';
@@ -28,21 +27,18 @@ class _SubstitutionScreenState extends ConsumerState<SubstitutionScreen> {
   Future<void> _pay() async {
     setState(() => _isPaying = true);
     try {
-      final draft = ref.read(checkoutDraftProvider);
-      if (draft == null || draft.deliverySlot == null) {
-        throw StateError('Checkout delivery details are incomplete.');
-      }
+      final preview = await ref.read(checkoutRepositoryProvider).preview();
       final order = await ref
           .read(checkoutRepositoryProvider)
           .checkout(
-            deliveryAddress: draft.deliveryAddress,
-            deliveryPhone: draft.deliveryPhone,
-            deliverySlot: draft.deliverySlot!.value,
+            deliveryAddress:
+                preview.deliveryAddress ??
+                '221B Green Market Street, District 1, Ho Chi Minh City',
+            deliveryPhone: preview.deliveryPhone,
             substitutionPreference: substitutionOptions[_selectedIndex],
           );
       ref.invalidate(cartProvider);
       ref.invalidate(ordersProvider);
-      ref.read(checkoutDraftProvider.notifier).clear();
       if (mounted) {
         context.go(
           PaymentSuccessScreen.pathFor(
