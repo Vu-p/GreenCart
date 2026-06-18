@@ -51,6 +51,7 @@ public static class ApiMappings
             order.PaymentStatus,
             order.DeliveryAddress,
             order.DeliveryPhone,
+            order.DeliverySlot,
             order.SubstitutionPreference,
             order.Subtotal,
             order.DeliveryFee,

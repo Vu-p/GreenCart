@@ -66,6 +66,10 @@ public sealed class CheckoutController(AppDbContext dbContext) : ControllerBase
         }
 
         var subtotal = cart.Items.Sum(item => item.Product!.Price * item.Quantity);
+        var deliverySlot = string.IsNullOrWhiteSpace(request.DeliverySlot)
+            ? null
+            : request.DeliverySlot.Trim();
+        var deliveryFee = DeliveryFeeFor(deliverySlot);
         var order = new Order
         {
             OrderNumber = await CreateOrderNumberAsync(cancellationToken),
@@ -74,10 +78,11 @@ public sealed class CheckoutController(AppDbContext dbContext) : ControllerBase
             PaymentStatus = PaymentStatuses.Paid,
             DeliveryAddress = request.DeliveryAddress.Trim(),
             DeliveryPhone = string.IsNullOrWhiteSpace(request.DeliveryPhone) ? null : request.DeliveryPhone.Trim(),
+            DeliverySlot = deliverySlot,
             SubstitutionPreference = string.IsNullOrWhiteSpace(request.SubstitutionPreference) ? null : request.SubstitutionPreference.Trim(),
             Subtotal = subtotal,
-            DeliveryFee = ApiMappings.StandardDeliveryFee,
-            Total = subtotal + ApiMappings.StandardDeliveryFee
+            DeliveryFee = deliveryFee,
+            Total = subtotal + deliveryFee
         };
 
         foreach (var item in cart.Items)
@@ -136,6 +141,14 @@ public sealed class CheckoutController(AppDbContext dbContext) : ControllerBase
 
         return orderNumber;
     }
+
+    private static decimal DeliveryFeeFor(string? deliverySlot) =>
+        deliverySlot switch
+        {
+            "Tomorrow, 8:00 - 10:00 AM" => 1.90m,
+            "Saturday, 10:00 AM - 12:00 PM" => 0m,
+            _ => ApiMappings.StandardDeliveryFee
+        };
 
     private Guid? GetUserId()
     {

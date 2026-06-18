@@ -7,6 +7,7 @@ public sealed record OrderResponse(
     string PaymentStatus,
     string DeliveryAddress,
     string? DeliveryPhone,
+    string? DeliverySlot,
     string? SubstitutionPreference,
     decimal Subtotal,
     decimal DeliveryFee,
