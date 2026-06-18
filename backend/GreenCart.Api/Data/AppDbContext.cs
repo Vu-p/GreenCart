@@ -15,6 +15,8 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<OrderReview> OrderReviews => Set<OrderReview>();
     public DbSet<ProductReview> ProductReviews => Set<ProductReview>();
     public DbSet<RealtimeEvent> RealtimeEvents => Set<RealtimeEvent>();
+    public DbSet<MealPlan> MealPlans => Set<MealPlan>();
+    public DbSet<MealIngredient> MealIngredients => Set<MealIngredient>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -142,6 +144,30 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             entity.Property(realtimeEvent => realtimeEvent.Payload).HasMaxLength(4000).IsRequired();
             entity.HasIndex(realtimeEvent => realtimeEvent.OrderId);
             entity.HasIndex(realtimeEvent => realtimeEvent.UserId);
+        });
+
+        modelBuilder.Entity<MealPlan>(entity =>
+        {
+            entity.HasIndex(meal => meal.Title).IsUnique();
+            entity.Property(meal => meal.Title).HasMaxLength(160).IsRequired();
+            entity.Property(meal => meal.Description).HasMaxLength(1000).IsRequired();
+            entity.Property(meal => meal.ImageUrl).HasMaxLength(1000).IsRequired();
+            entity.Property(meal => meal.Difficulty).HasMaxLength(32).IsRequired();
+            entity.Property(meal => meal.Instructions).HasMaxLength(4000).IsRequired();
+            entity.HasMany(meal => meal.Ingredients)
+                .WithOne(ingredient => ingredient.MealPlan)
+                .HasForeignKey(ingredient => ingredient.MealPlanId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<MealIngredient>(entity =>
+        {
+            entity.Property(ingredient => ingredient.QuantityText).HasMaxLength(80).IsRequired();
+            entity.HasIndex(ingredient => new { ingredient.MealPlanId, ingredient.ProductId }).IsUnique();
+            entity.HasOne(ingredient => ingredient.Product)
+                .WithMany()
+                .HasForeignKey(ingredient => ingredient.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
     }
 }
