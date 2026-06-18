@@ -87,6 +87,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             entity.Property(order => order.PaymentStatus).HasMaxLength(32).IsRequired();
             entity.Property(order => order.DeliveryAddress).HasMaxLength(500).IsRequired();
             entity.Property(order => order.DeliveryPhone).HasMaxLength(32);
+            entity.Property(order => order.DeliverySlot).HasMaxLength(120);
             entity.Property(order => order.SubstitutionPreference).HasMaxLength(500);
             entity.Property(order => order.Subtotal).HasConversion<double>();
             entity.Property(order => order.DeliveryFee).HasConversion<double>();
@@ -143,5 +144,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             entity.HasIndex(realtimeEvent => realtimeEvent.OrderId);
             entity.HasIndex(realtimeEvent => realtimeEvent.UserId);
         });
+
     }
 }
