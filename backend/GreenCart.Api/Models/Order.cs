@@ -12,6 +12,10 @@ public sealed class Order
     public string? DeliveryPhone { get; set; }
     public string? DeliverySlot { get; set; }
     public string? SubstitutionPreference { get; set; }
+    public string? PaymentProvider { get; set; }
+    public long? PayOsOrderCode { get; set; }
+    public string? PayOsPaymentLinkId { get; set; }
+    public string? PayOsCheckoutUrl { get; set; }
     public decimal Subtotal { get; set; }
     public decimal DeliveryFee { get; set; }
     public decimal Total { get; set; }

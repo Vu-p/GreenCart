@@ -79,7 +79,7 @@ class PaymentSuccessScreen extends StatelessWidget {
                       value: 'Today, 5:00 - 7:00 PM',
                     ),
                     SizedBox(height: 12),
-                    _ReceiptRow(label: 'Payment', value: 'Visa 4242'),
+                    _ReceiptRow(label: 'Payment', value: 'PayOS'),
                   ],
                 ),
               ),

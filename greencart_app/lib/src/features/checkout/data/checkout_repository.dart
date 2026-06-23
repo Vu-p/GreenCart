@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:greencart_app/src/core/services/api_client.dart';
+import 'package:greencart_app/src/features/checkout/models/checkout_payment.dart';
 import 'package:greencart_app/src/features/checkout/models/checkout_preview.dart';
-import 'package:greencart_app/src/features/orders/models/order_item.dart';
 
 final checkoutRepositoryProvider = Provider<CheckoutRepository>((ref) {
   return CheckoutRepository(ref.watch(apiClientProvider));
@@ -27,7 +27,7 @@ class CheckoutRepository {
     return CheckoutPreview.fromJson(response.data as Map<String, dynamic>);
   }
 
-  Future<OrderItem> checkout({
+  Future<CheckoutPayment> checkout({
     required String deliveryAddress,
     String? deliveryPhone,
     String? deliverySlot,
@@ -43,6 +43,6 @@ class CheckoutRepository {
         'substitutionPreference': substitutionPreference,
       },
     );
-    return OrderItem.fromJson(response.data as Map<String, dynamic>);
+    return CheckoutPayment.fromJson(response.data as Map<String, dynamic>);
   }
 }
