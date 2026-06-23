@@ -17,6 +17,13 @@ public sealed record CheckoutRequest(
     [MaxLength(120)] string? DeliverySlot,
     [MaxLength(500)] string? SubstitutionPreference);
 
+public sealed record CheckoutPaymentResponse(
+    OrderResponse Order,
+    string CheckoutUrl,
+    string PaymentLinkId,
+    string QrCode,
+    long PayOsOrderCode);
+
 public sealed record UpdateSubstitutionRequest([MaxLength(500)] string? SubstitutionPreference);
 
 public sealed record SubstitutionResponse(string? SubstitutionPreference);

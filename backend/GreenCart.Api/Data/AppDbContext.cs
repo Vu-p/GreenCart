@@ -84,9 +84,13 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
         modelBuilder.Entity<Order>(entity =>
         {
             entity.HasIndex(order => order.OrderNumber).IsUnique();
+            entity.HasIndex(order => order.PayOsOrderCode).IsUnique();
             entity.Property(order => order.OrderNumber).HasMaxLength(32).IsRequired();
             entity.Property(order => order.Status).HasMaxLength(32).IsRequired();
             entity.Property(order => order.PaymentStatus).HasMaxLength(32).IsRequired();
+            entity.Property(order => order.PaymentProvider).HasMaxLength(32);
+            entity.Property(order => order.PayOsPaymentLinkId).HasMaxLength(120);
+            entity.Property(order => order.PayOsCheckoutUrl).HasMaxLength(1000);
             entity.Property(order => order.DeliveryAddress).HasMaxLength(500).IsRequired();
             entity.Property(order => order.DeliveryPhone).HasMaxLength(32);
             entity.Property(order => order.DeliverySlot).HasMaxLength(120);

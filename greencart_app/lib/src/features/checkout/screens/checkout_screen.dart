@@ -415,16 +415,9 @@ class _PaymentMethods extends StatelessWidget {
     return Column(
       children: const [
         _PaymentMethodRow(
-          icon: Icons.credit_card,
-          label: 'Credit / Debit Card',
+          icon: Icons.qr_code_2,
+          label: 'PayOS QR / Bank Transfer',
           selected: true,
-        ),
-        SizedBox(height: 10),
-        _PaymentMethodRow(icon: Icons.apple, label: 'Apple Pay'),
-        SizedBox(height: 10),
-        _PaymentMethodRow(
-          icon: Icons.payments_outlined,
-          label: 'COD (Cash on Delivery)',
         ),
       ],
     );
