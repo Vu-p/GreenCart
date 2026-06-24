@@ -15,9 +15,33 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<OrderReview> OrderReviews => Set<OrderReview>();
     public DbSet<ProductReview> ProductReviews => Set<ProductReview>();
     public DbSet<RealtimeEvent> RealtimeEvents => Set<RealtimeEvent>();
+    public DbSet<Substitution> Substitutions => Set<Substitution>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Substitution>(entity =>
+        {
+            entity.HasKey(s => s.Id);
+            entity.Property(s => s.Status).HasMaxLength(50).IsRequired();
+            entity.Property(s => s.Note).HasMaxLength(1000);
+            entity.HasOne(s => s.Order)
+                .WithMany()
+                .HasForeignKey(s => s.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(s => s.OrderItem)
+                .WithMany()
+                .HasForeignKey(s => s.OrderItemId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(s => s.OriginalProduct)
+                .WithMany()
+                .HasForeignKey(s => s.OriginalProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(s => s.ReplacementProduct)
+                .WithMany()
+                .HasForeignKey(s => s.ReplacementProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasIndex(user => user.Email).IsUnique();

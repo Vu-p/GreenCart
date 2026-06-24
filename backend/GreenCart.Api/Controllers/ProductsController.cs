@@ -80,4 +80,30 @@ public sealed class ProductsController(AppDbContext dbContext) : ControllerBase
 
         return product is null ? NotFound() : Ok(ApiMappings.ToResponse(product));
     }
+
+    [HttpGet("{productId:guid}/substitutions")]
+    public async Task<ActionResult<IReadOnlyList<ProductResponse>>> GetSubstitutions(
+        Guid productId,
+        [FromQuery] int limit = 5,
+        CancellationToken cancellationToken = default)
+    {
+        var product = await dbContext.Products.AsNoTracking().SingleOrDefaultAsync(p => p.Id == productId, cancellationToken);
+        if (product is null)
+        {
+            return NotFound();
+        }
+
+        var query = dbContext.Products
+            .Include(p => p.Category)
+            .AsNoTracking()
+            .Where(p => p.Id != productId && p.Stock > 0);
+
+        var candidates = await query
+            .OrderByDescending(p => p.CategoryId == product.CategoryId)
+            .ThenBy(p => p.Price)
+            .Take(limit)
+            .ToListAsync(cancellationToken);
+
+        return Ok(candidates.Select(ApiMappings.ToResponse).ToList());
+    }
 }

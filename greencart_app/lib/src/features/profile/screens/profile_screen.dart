@@ -204,6 +204,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     label: 'Meal Planner',
                     onTap: () => context.push(MealPlannerScreen.routePath),
                   ),
+                  if (user.role == 'Admin') ...[
+                    const Divider(height: 1, color: AppTheme.mistGray),
+                    _SettingsRow(
+                      icon: Icons.admin_panel_settings_outlined,
+                      label: 'Admin Dashboard',
+                      onTap: () => context.push('/admin'),
+                    ),
+                  ],
                 ],
               ),
             ),
