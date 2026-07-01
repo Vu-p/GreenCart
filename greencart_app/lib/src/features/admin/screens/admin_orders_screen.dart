@@ -8,7 +8,7 @@ import '../../../core/utils/currency_formatter.dart';
 import '../../../core/widgets/animated_entrance.dart';
 import '../../../core/widgets/organic_card.dart';
 import '../../../core/widgets/organic_state_message.dart';
-import '../../catalog/models/product.dart';
+
 import '../../orders/models/order_item.dart';
 import '../data/admin_repository.dart';
 

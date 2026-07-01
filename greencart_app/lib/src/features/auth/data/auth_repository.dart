@@ -70,7 +70,18 @@ class AuthRepository {
     required String email,
     required String password,
   }) async {
-    await _requireFirebase();
+    final useLocalAuth = !await _firebaseBootstrap.ensureInitialized();
+    if (useLocalAuth) {
+      final response = await _apiClient.post(
+        '/api/auth/login',
+        data: {
+          'email': email.trim(),
+          'password': password,
+        },
+      );
+      return await _persistAuthResponse(response.data as Map<String, dynamic>);
+    }
+
     final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
       email: email.trim(),
       password: password,
@@ -85,7 +96,19 @@ class AuthRepository {
     required String email,
     required String password,
   }) async {
-    await _requireFirebase();
+    final useLocalAuth = !await _firebaseBootstrap.ensureInitialized();
+    if (useLocalAuth) {
+      final response = await _apiClient.post(
+        '/api/auth/register',
+        data: {
+          'name': name.trim(),
+          'email': email.trim(),
+          'password': password,
+        },
+      );
+      return await _persistAuthResponse(response.data as Map<String, dynamic>);
+    }
+
     final credential = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(
           email: email.trim(),
