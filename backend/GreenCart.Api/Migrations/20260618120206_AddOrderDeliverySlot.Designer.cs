@@ -3,6 +3,7 @@ using System;
 using GreenCart.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GreenCart.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260618120206_AddOrderDeliverySlot")]
+    partial class AddOrderDeliverySlot
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.12");
@@ -211,21 +214,6 @@ namespace GreenCart.Api.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("PayOsCheckoutUrl")
-                        .HasMaxLength(1000)
-                        .HasColumnType("TEXT");
-
-                    b.Property<long?>("PayOsOrderCode")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("PayOsPaymentLinkId")
-                        .HasMaxLength(120)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PaymentProvider")
-                        .HasMaxLength(32)
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("PaymentStatus")
                         .IsRequired()
                         .HasMaxLength(32)
@@ -255,9 +243,6 @@ namespace GreenCart.Api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("OrderNumber")
-                        .IsUnique();
-
-                    b.HasIndex("PayOsOrderCode")
                         .IsUnique();
 
                     b.HasIndex("UserId");
@@ -443,52 +428,6 @@ namespace GreenCart.Api.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("RealtimeEvents");
-                });
-
-            modelBuilder.Entity("GreenCart.Api.Models.Substitution", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Note")
-                        .HasMaxLength(1000)
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("OrderId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("OrderItemId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("OriginalProductId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("ReplacementProductId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.HasIndex("OrderItemId");
-
-                    b.HasIndex("OriginalProductId");
-
-                    b.HasIndex("ReplacementProductId");
-
-                    b.ToTable("Substitutions");
                 });
 
             modelBuilder.Entity("GreenCart.Api.Models.User", b =>
@@ -679,41 +618,6 @@ namespace GreenCart.Api.Migrations
                     b.Navigation("OrderReview");
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("GreenCart.Api.Models.Substitution", b =>
-                {
-                    b.HasOne("GreenCart.Api.Models.Order", "Order")
-                        .WithMany()
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GreenCart.Api.Models.OrderItem", "OrderItem")
-                        .WithMany()
-                        .HasForeignKey("OrderItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GreenCart.Api.Models.Product", "OriginalProduct")
-                        .WithMany()
-                        .HasForeignKey("OriginalProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("GreenCart.Api.Models.Product", "ReplacementProduct")
-                        .WithMany()
-                        .HasForeignKey("ReplacementProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Order");
-
-                    b.Navigation("OrderItem");
-
-                    b.Navigation("OriginalProduct");
-
-                    b.Navigation("ReplacementProduct");
                 });
 
             modelBuilder.Entity("GreenCart.Api.Models.Cart", b =>

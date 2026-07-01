@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:greencart_app/src/core/theme/app_theme.dart';
 import 'package:greencart_app/src/core/widgets/mobile_page_title.dart';
 import 'package:greencart_app/src/core/widgets/organic_card.dart';
 import 'package:greencart_app/src/features/cart/data/cart_repository.dart';
+import 'package:greencart_app/src/features/checkout/application/checkout_draft_controller.dart';
 import 'package:greencart_app/src/features/checkout/data/checkout_repository.dart';
 import 'package:greencart_app/src/features/checkout/data/mock_checkout.dart';
-import 'package:greencart_app/src/features/checkout/screens/payment_success_screen.dart';
 import 'package:greencart_app/src/features/orders/data/orders_repository.dart';
+import 'package:greencart_app/src/features/orders/screens/order_tracking_screen.dart';
 
 class SubstitutionScreen extends ConsumerStatefulWidget {
   const SubstitutionScreen({super.key});
@@ -27,31 +29,45 @@ class _SubstitutionScreenState extends ConsumerState<SubstitutionScreen> {
   Future<void> _pay() async {
     setState(() => _isPaying = true);
     try {
-      final preview = await ref.read(checkoutRepositoryProvider).preview();
-      final order = await ref
+      final draft = ref.read(checkoutDraftProvider);
+      if (draft == null || draft.deliverySlot == null) {
+        throw StateError('Checkout delivery details are incomplete.');
+      }
+      final payment = await ref
           .read(checkoutRepositoryProvider)
           .checkout(
-            deliveryAddress:
-                preview.deliveryAddress ??
-                '221B Green Market Street, District 1, Ho Chi Minh City',
-            deliveryPhone: preview.deliveryPhone,
+            deliveryAddress: draft.deliveryAddress,
+            deliveryPhone: draft.deliveryPhone,
+            deliverySlot: draft.deliverySlot!.value,
             substitutionPreference: substitutionOptions[_selectedIndex],
           );
+      final checkoutUri = Uri.parse(payment.checkoutUrl);
+      final opened = await launchUrl(
+        checkoutUri,
+        mode: LaunchMode.externalApplication,
+      );
       ref.invalidate(cartProvider);
       ref.invalidate(ordersProvider);
+      ref.read(checkoutDraftProvider.notifier).clear();
       if (mounted) {
-        context.go(
-          PaymentSuccessScreen.pathFor(
-            orderId: order.id,
-            orderNumber: order.orderNumber,
-          ),
-        );
+        if (!opened) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'PayOS checkout link was created, but could not be opened.',
+              ),
+            ),
+          );
+        }
+        context.go(OrderTrackingScreen.pathFor(payment.order.id));
       }
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Payment could not be completed. Check your cart.'),
+            content: Text(
+              'Could not create the PayOS checkout. Check your cart.',
+            ),
           ),
         );
       }
@@ -144,13 +160,13 @@ class _SubstitutionScreenState extends ConsumerState<SubstitutionScreen> {
                     height: 22,
                     child: CircularProgressIndicator(strokeWidth: 2.5),
                   )
-                : const Text('Accept Substitution'),
+                : const Text('Pay with PayOS'),
           ),
           const SizedBox(height: 10),
           OutlinedButton.icon(
-            onPressed: _isPaying ? null : _pay,
-            icon: const Icon(Icons.delete_outline),
-            label: const Text('Remove from Cart'),
+            onPressed: _isPaying ? null : () => context.pop(),
+            icon: const Icon(Icons.arrow_back),
+            label: const Text('Back to Checkout'),
           ),
         ],
       ),

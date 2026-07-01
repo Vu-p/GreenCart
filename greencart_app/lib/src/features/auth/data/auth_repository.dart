@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../core/services/api_client.dart';
+import '../../../core/services/auth_preference_store.dart';
 import '../../../core/services/firebase_bootstrap.dart';
 import '../../../core/services/token_storage.dart';
 import '../models/app_user.dart';
@@ -13,17 +14,31 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
     ref.watch(apiClientProvider),
     ref.watch(tokenStorageProvider),
     ref.watch(firebaseBootstrapProvider),
+    ref.watch(authPreferenceStoreProvider),
   );
 });
 
 class AuthRepository {
-  AuthRepository(this._apiClient, this._tokenStorage, this._firebaseBootstrap);
+  AuthRepository(
+    this._apiClient,
+    this._tokenStorage,
+    this._firebaseBootstrap,
+    this._authPreferenceStore,
+  );
 
   final ApiClient _apiClient;
   final TokenStorage _tokenStorage;
   final FirebaseBootstrap _firebaseBootstrap;
+  final AuthPreferenceStore _authPreferenceStore;
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: const ['email', 'profile'],
+  );
 
   Future<AppUser?> restoreSession() async {
+    if (!await _authPreferenceStore.hasLoggedInBefore()) {
+      return null;
+    }
+
     if (await _firebaseBootstrap.ensureInitialized()) {
       final firebaseUser = FirebaseAuth.instance.currentUser;
       if (firebaseUser != null) {
@@ -60,7 +75,9 @@ class AuthRepository {
       email: email.trim(),
       password: password,
     );
-    return _loginBackendWithFirebaseUser(credential.user);
+    final user = await _loginBackendWithFirebaseUser(credential.user);
+    await _authPreferenceStore.markLogin('password');
+    return user;
   }
 
   Future<AppUser> register({
@@ -75,18 +92,25 @@ class AuthRepository {
           password: password,
         );
     await credential.user?.updateDisplayName(name.trim());
-    return _loginBackendWithFirebaseUser(credential.user, fallbackName: name);
+    final user = await _loginBackendWithFirebaseUser(
+      credential.user,
+      fallbackName: name,
+    );
+    await _authPreferenceStore.markLogin('password');
+    return user;
   }
 
   Future<AppUser> loginWithGoogle() async {
     await _requireFirebase();
 
-    if (!GoogleSignIn.instance.supportsAuthenticate()) {
-      throw StateError('Google Sign-In is not supported on this platform.');
+    final googleAccount = await _googleSignIn.signIn();
+    if (googleAccount == null) {
+      throw StateError('Google sign-in was canceled.');
     }
-
-    final firebaseCredential = await _signInWithGoogleCredential();
-    return _loginBackendWithFirebaseUser(firebaseCredential.user);
+    final firebaseCredential = await _firebaseSignIn(googleAccount);
+    final user = await _loginBackendWithFirebaseUser(firebaseCredential.user);
+    await _authPreferenceStore.markLogin('google');
+    return user;
   }
 
   Future<AppUser> updateProfile({
@@ -110,9 +134,10 @@ class AuthRepository {
 
   Future<void> logout() async {
     await _tokenStorage.clear();
+    await _authPreferenceStore.clearLoginHint();
     if (await _firebaseBootstrap.ensureInitialized()) {
       await FirebaseAuth.instance.signOut();
-      await GoogleSignIn.instance.signOut();
+      await _googleSignIn.signOut();
     }
   }
 
@@ -127,35 +152,20 @@ class AuthRepository {
     }
   }
 
-  bool _isNoCredentialAvailable(GoogleSignInException error) {
-    return error.code == GoogleSignInExceptionCode.unknownError &&
-        (error.description ?? '').toLowerCase().contains(
-          'no credential available',
-        );
-  }
-
-  Future<UserCredential> _signInWithGoogleCredential() async {
-    try {
-      final googleAccount = await GoogleSignIn.instance.authenticate(
-        scopeHint: const ['email', 'profile'],
-      );
-      final googleIdToken = googleAccount.authentication.idToken;
-      if (googleIdToken == null || googleIdToken.isEmpty) {
-        throw StateError('Google Sign-In did not return an id token.');
-      }
-
-      final credential = GoogleAuthProvider.credential(idToken: googleIdToken);
-      return FirebaseAuth.instance.signInWithCredential(credential);
-    } on GoogleSignInException catch (error) {
-      if (!_isNoCredentialAvailable(error)) {
-        rethrow;
-      }
-
-      final provider = GoogleAuthProvider()
-        ..addScope('email')
-        ..addScope('profile');
-      return FirebaseAuth.instance.signInWithProvider(provider);
+  Future<UserCredential> _firebaseSignIn(
+    GoogleSignInAccount googleAccount,
+  ) async {
+    final authentication = await googleAccount.authentication;
+    final googleIdToken = authentication.idToken;
+    if (googleIdToken == null || googleIdToken.isEmpty) {
+      throw StateError('Google Sign-In did not return an id token.');
     }
+
+    final credential = GoogleAuthProvider.credential(
+      accessToken: authentication.accessToken,
+      idToken: googleIdToken,
+    );
+    return FirebaseAuth.instance.signInWithCredential(credential);
   }
 
   Future<AppUser> _loginBackendWithFirebaseUser(
