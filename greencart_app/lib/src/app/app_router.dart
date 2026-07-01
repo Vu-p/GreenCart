@@ -21,6 +21,10 @@ import '../features/orders/screens/order_tracking_screen.dart';
 import '../features/orders/screens/orders_screen.dart';
 import '../features/orders/screens/rating_review_screen.dart';
 import '../features/profile/screens/profile_screen.dart';
+import '../features/admin/screens/admin_dashboard_screen.dart';
+import '../features/admin/screens/admin_product_management_screen.dart';
+import '../features/admin/screens/admin_category_management_screen.dart';
+import '../features/admin/screens/admin_orders_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _homeNavigatorKey = GlobalKey<NavigatorState>();
@@ -153,6 +157,26 @@ final routerProvider = Provider<GoRouter>((ref) {
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) =>
             RatingReviewScreen(orderId: state.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: AdminDashboardScreen.routePath,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const AdminDashboardScreen(),
+      ),
+      GoRoute(
+        path: AdminProductManagementScreen.routePath,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const AdminProductManagementScreen(),
+      ),
+      GoRoute(
+        path: AdminCategoryManagementScreen.routePath,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const AdminCategoryManagementScreen(),
+      ),
+      GoRoute(
+        path: AdminOrdersScreen.routePath,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const AdminOrdersScreen(),
       ),
     ],
   );

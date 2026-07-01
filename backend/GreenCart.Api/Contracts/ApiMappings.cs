@@ -89,4 +89,14 @@ public static class ApiMappings
                     productReview.CreatedAt))
                 .ToList(),
             review.CreatedAt);
+
+    public static OrderSubstitutionResponse ToResponse(Substitution substitution) =>
+        new(
+            substitution.Id,
+            substitution.OrderId,
+            substitution.OrderItemId,
+            substitution.OriginalProductId,
+            substitution.ReplacementProductId,
+            substitution.Status,
+            substitution.Note);
 }

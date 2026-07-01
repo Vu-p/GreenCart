@@ -146,6 +146,14 @@ class OrderTrackingScreen extends ConsumerWidget {
                       order.hasReview ? 'Review submitted' : 'Rate delivery',
                     ),
                   ),
+                  const SizedBox(height: 10),
+                  OutlinedButton.icon(
+                    onPressed: _canCancel(order.status)
+                        ? () => _cancelOrder(context, ref, order.id)
+                        : null,
+                    icon: const Icon(Icons.cancel_outlined),
+                    label: const Text('Cancel order'),
+                  ),
                 ],
               ),
             ),
@@ -197,6 +205,58 @@ class OrderTrackingScreen extends ConsumerWidget {
     }
 
     return _TimelineState.pending;
+  }
+
+  bool _canCancel(String status) {
+    return status != 'Delivering' &&
+        status != 'Completed' &&
+        status != 'Cancelled';
+  }
+
+  Future<void> _cancelOrder(
+    BuildContext context,
+    WidgetRef ref,
+    String orderId,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Cancel order?'),
+        content: const Text('This order will be marked as cancelled.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Keep order'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Cancel order'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) {
+      return;
+    }
+
+    try {
+      await ref.read(ordersRepositoryProvider).cancelOrder(orderId);
+      ref
+        ..invalidate(ordersProvider)
+        ..invalidate(orderDetailProvider(orderId));
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Order cancelled.')),
+        );
+      }
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not cancel this order.')),
+        );
+      }
+    }
   }
 }
 
