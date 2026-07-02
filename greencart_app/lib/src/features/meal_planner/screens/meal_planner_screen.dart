@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:greencart_app/src/core/theme/app_theme.dart';
 import 'package:greencart_app/src/core/widgets/mobile_page_title.dart';
 import 'package:greencart_app/src/core/widgets/organic_card.dart';
 import 'package:greencart_app/src/core/widgets/section_header.dart';
+import 'package:greencart_app/src/features/meal_planner/data/meal_plan_repository.dart';
 import 'package:greencart_app/src/features/meal_planner/data/mock_meal_plans.dart';
 import 'package:greencart_app/src/features/meal_planner/models/meal_plan.dart';
 import 'package:greencart_app/src/features/meal_planner/screens/recipe_detail_screen.dart';
 
-class MealPlannerScreen extends StatelessWidget {
+class MealPlannerScreen extends ConsumerWidget {
   const MealPlannerScreen({super.key});
 
   static const routePath = '/meal-planner';
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final mealPlansAsync = ref.watch(mealPlansProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const MobilePageTitle(
@@ -61,10 +65,21 @@ class MealPlannerScreen extends StatelessWidget {
             onAction: () {},
           ),
           const SizedBox(height: 14),
-          for (final meal in mealPlans) ...[
-            _MealPlanCard(meal: meal),
-            const SizedBox(height: 12),
-          ],
+          mealPlansAsync.when(
+            loading: () => const Center(child: Padding(padding: EdgeInsets.all(20), child: CircularProgressIndicator())),
+            error: (err, stack) => Center(child: Text('Lỗi tải thực đơn: $err')),
+            data: (plans) {
+              final list = plans.isNotEmpty ? plans : mealPlans;
+              return Column(
+                children: [
+                  for (final meal in list) ...[
+                    _MealPlanCard(meal: meal),
+                    const SizedBox(height: 12),
+                  ],
+                ],
+              );
+            },
+          ),
           const SizedBox(height: 8),
           const _SmartSelectionCard(),
         ],

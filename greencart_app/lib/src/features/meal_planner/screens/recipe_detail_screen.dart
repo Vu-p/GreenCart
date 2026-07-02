@@ -10,6 +10,7 @@ import 'package:greencart_app/src/features/cart/data/cart_repository.dart';
 import 'package:greencart_app/src/features/cart/screens/cart_screen.dart';
 import 'package:greencart_app/src/features/catalog/data/product_repository.dart';
 import 'package:greencart_app/src/features/catalog/models/product.dart';
+import 'package:greencart_app/src/features/meal_planner/data/meal_plan_repository.dart';
 import 'package:greencart_app/src/features/meal_planner/data/mock_meal_plans.dart';
 
 class RecipeDetailScreen extends ConsumerStatefulWidget {
@@ -83,10 +84,14 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
 
     setState(() => _isAddingAll = true);
     try {
-      for (final product in availableProducts) {
-        await ref
-            .read(cartRepositoryProvider)
-            .addItem(productId: product.id, quantity: 1);
+      try {
+        await ref.read(mealPlanRepositoryProvider).addIngredientsToCart(widget.recipeId);
+      } catch (_) {
+        for (final product in availableProducts) {
+          await ref
+              .read(cartRepositoryProvider)
+              .addItem(productId: product.id, quantity: 1);
+        }
       }
       ref.invalidate(cartProvider);
       if (mounted) {

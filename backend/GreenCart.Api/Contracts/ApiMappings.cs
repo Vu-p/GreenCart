@@ -4,7 +4,7 @@ namespace GreenCart.Api.Contracts;
 
 public static class ApiMappings
 {
-    public const decimal StandardDeliveryFee = 2.90m;
+    public const decimal StandardDeliveryFee = 15000m;
 
     public static ProductResponse ToResponse(Product product) =>
         new(

@@ -16,6 +16,10 @@ final featuredProductsProvider = FutureProvider<List<Product>>((ref) {
   return ref.watch(productRepositoryProvider).getProducts();
 });
 
+final dealsProductsProvider = FutureProvider<List<Product>>((ref) {
+  return ref.watch(productRepositoryProvider).getProducts(isDeal: true);
+});
+
 final productDetailProvider = FutureProvider.family<Product, String>((
   ref,
   productId,
@@ -41,6 +45,7 @@ class ProductRepository {
     String? categoryId,
     double? minPrice,
     double? maxPrice,
+    bool? isDeal,
   }) async {
     final queryParameters = <String, dynamic>{};
     if (keyword != null && keyword.trim().isNotEmpty) {
@@ -54,6 +59,9 @@ class ProductRepository {
     }
     if (maxPrice != null) {
       queryParameters['maxPrice'] = maxPrice;
+    }
+    if (isDeal != null) {
+      queryParameters['isDeal'] = isDeal;
     }
 
     final response = await _apiClient.get(

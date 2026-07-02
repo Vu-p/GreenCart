@@ -18,6 +18,8 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<Substitution> Substitutions => Set<Substitution>();
     public DbSet<MealPlan> MealPlans => Set<MealPlan>();
     public DbSet<MealIngredient> MealIngredients => Set<MealIngredient>();
+    public DbSet<Notification> Notifications => Set<Notification>();
+    public DbSet<ProductSubstitution> ProductSubstitutions => Set<ProductSubstitution>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -196,6 +198,41 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             entity.HasOne(ingredient => ingredient.Product)
                 .WithMany()
                 .HasForeignKey(ingredient => ingredient.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<Notification>(entity =>
+        {
+            entity.HasIndex(notification => notification.UserId);
+            entity.Property(notification => notification.Title).HasMaxLength(200).IsRequired();
+            entity.Property(notification => notification.Message).HasMaxLength(1000).IsRequired();
+            entity.Property(notification => notification.Type).HasMaxLength(64).IsRequired();
+            entity.HasOne(notification => notification.User)
+                .WithMany()
+                .HasForeignKey(notification => notification.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<ProductSubstitution>(entity =>
+        {
+            entity.HasIndex(sub => sub.OrderId);
+            entity.Property(sub => sub.Status).HasMaxLength(64).IsRequired();
+            entity.Property(sub => sub.Note).HasMaxLength(1000);
+            entity.HasOne(sub => sub.Order)
+                .WithMany()
+                .HasForeignKey(sub => sub.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(sub => sub.OrderItem)
+                .WithMany()
+                .HasForeignKey(sub => sub.OrderItemId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(sub => sub.OriginalProduct)
+                .WithMany()
+                .HasForeignKey(sub => sub.OriginalProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(sub => sub.ReplacementProduct)
+                .WithMany()
+                .HasForeignKey(sub => sub.ReplacementProductId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
     }

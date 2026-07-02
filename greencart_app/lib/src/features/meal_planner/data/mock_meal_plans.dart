@@ -15,6 +15,7 @@ const mealPlans = [
       'Brown Rice',
       'Greek Yogurt',
     ],
+    ingredientItems: [],
     steps: [
       'Warm cooked brown rice with a pinch of salt.',
       'Layer spinach, sliced avocado, and tomatoes in a bowl.',
@@ -31,6 +32,7 @@ const mealPlans = [
     minutes: 30,
     calories: 610,
     ingredients: ['Chicken Breast', 'Vine Tomatoes', 'Organic Spinach'],
+    ingredientItems: [],
     steps: [
       'Season chicken breast and sear until golden.',
       'Roast tomatoes until they soften and release juices.',
@@ -47,6 +49,7 @@ const mealPlans = [
     minutes: 8,
     calories: 340,
     ingredients: ['Greek Yogurt', 'Strawberries', 'Brown Rice'],
+    ingredientItems: [],
     steps: [
       'Spoon yogurt into a chilled bowl.',
       'Slice strawberries and layer over the top.',
