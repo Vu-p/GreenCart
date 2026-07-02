@@ -92,7 +92,7 @@ $productContext
     try {
       final apiClient = _ref.read(apiClientProvider);
       final response = await apiClient.post(
-        '/chat',
+        '/api/chat',
         data: {
           'contents': _history,
           'generationConfig': {
