@@ -27,22 +27,30 @@ public sealed class ChatController(IConfiguration configuration, HttpClient http
 
         var response = await httpClient.PostAsync(url, content, cancellationToken);
 
-        // Nếu model chính gặp lỗi (429 Rate Limit, 404, 503), chuyển sang model dự phòng theo thứ tự ưu tiên chuẩn Google AI Studio
+        var primaryResponse = response;
+
+        // Nếu model chính gặp lỗi (429 Rate Limit, 404, 503), chuyển sang model dự phòng ổn định (stable universal models)
         if (!response.IsSuccessStatusCode)
         {
-            await Task.Delay(1000, cancellationToken);
-            var fallbackModel = "gemini-2.0-flash-lite-preview-02-05";
+            await Task.Delay(500, cancellationToken);
+            var fallbackModel = "gemini-1.5-flash";
             var fallbackUrl = $"https://generativelanguage.googleapis.com/v1beta/models/{fallbackModel}:generateContent?key={apiKey}";
             using var retryContent = new StringContent(contentString, Encoding.UTF8, "application/json");
             response = await httpClient.PostAsync(fallbackUrl, retryContent, cancellationToken);
 
             if (!response.IsSuccessStatusCode)
             {
-                await Task.Delay(1000, cancellationToken);
-                fallbackModel = "gemini-1.5-pro";
+                await Task.Delay(500, cancellationToken);
+                fallbackModel = "gemini-1.5-flash-8b";
                 var secondFallbackUrl = $"https://generativelanguage.googleapis.com/v1beta/models/{fallbackModel}:generateContent?key={apiKey}";
                 using var secondRetryContent = new StringContent(contentString, Encoding.UTF8, "application/json");
                 response = await httpClient.PostAsync(secondFallbackUrl, secondRetryContent, cancellationToken);
+            }
+
+            // Nếu tất cả các model đều lỗi và model chính ban đầu bị 429 (hết quota phút RPM), trả về đúng mã 429 để app hiện thông báo đợi
+            if (!response.IsSuccessStatusCode && primaryResponse.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+            {
+                response = primaryResponse;
             }
         }
 
