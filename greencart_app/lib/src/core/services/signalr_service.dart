@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 
+import 'package:greencart_app/src/core/config/api_config.dart';
 import 'package:greencart_app/src/core/services/local_notification_service.dart';
 import 'package:greencart_app/src/features/auth/data/auth_repository.dart';
 import 'package:greencart_app/src/features/notifications/data/notification_repository.dart';
+import 'package:greencart_app/src/features/orders/data/orders_repository.dart';
 
 final signalRServiceProvider = Provider<SignalRService>((ref) {
   final authRepo = ref.watch(authRepositoryProvider);
@@ -29,8 +31,7 @@ class SignalRService {
     final token = await _authRepository.getAccessToken();
     if (token == null) return;
 
-    // Thay đổi URL theo địa chỉ máy chủ thật hoặc máy ảo (10.0.2.2 cho Android Emulator)
-    const hubUrl = 'http://10.0.2.2:5000/hubs/orders';
+    final hubUrl = '${ApiConfig.baseUrl}/hubs/orders';
 
     _hubConnection = HubConnectionBuilder()
         .withUrl(
@@ -54,6 +55,19 @@ class SignalRService {
     }
   }
 
+  void _invalidateOrderProviders(List<Object?>? arguments) {
+    _ref.invalidate(ordersProvider);
+    if (arguments != null && arguments.isNotEmpty) {
+      final payload = arguments.first as Map<String, dynamic>?;
+      if (payload != null) {
+        final orderId = payload['id'] ?? payload['Id'] ?? payload['referenceId'] ?? payload['ReferenceId'];
+        if (orderId != null) {
+          _ref.invalidate(orderDetailProvider(orderId.toString()));
+        }
+      }
+    }
+  }
+
   void _invalidateNotificationProviders() {
     _ref.invalidate(notificationsProvider);
     _ref.invalidate(unreadNotificationCountProvider);
@@ -61,6 +75,7 @@ class SignalRService {
 
   void _onReceiveNotification(List<Object?>? arguments) {
     _invalidateNotificationProviders();
+    _invalidateOrderProviders(arguments);
     if (arguments == null || arguments.isEmpty) return;
     final payload = arguments.first as Map<String, dynamic>?;
     if (payload == null) return;
@@ -79,6 +94,7 @@ class SignalRService {
 
   void _onOrderStatusChanged(List<Object?>? arguments) {
     _invalidateNotificationProviders();
+    _invalidateOrderProviders(arguments);
     _localNotificationService.showNotification(
       id: DateTime.now().millisecondsSinceEpoch % 100000,
       title: '📦 Cập nhật đơn hàng',
@@ -88,6 +104,7 @@ class SignalRService {
 
   void _onSubstitutionProposed(List<Object?>? arguments) {
     _invalidateNotificationProviders();
+    _invalidateOrderProviders(arguments);
     _localNotificationService.showNotification(
       id: DateTime.now().millisecondsSinceEpoch % 100000,
       title: '🔄 Đề xuất thay thế sản phẩm',

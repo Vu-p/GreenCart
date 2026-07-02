@@ -74,6 +74,7 @@ public sealed class AdminController(AppDbContext dbContext, IHubContext<OrderHub
         await dbContext.SaveChangesAsync(cancellationToken);
         await orderHub.Clients.Group(OrderHub.OrderGroup(order.Id.ToString())).SendAsync("OrderStatusChanged", payload, cancellationToken);
         await orderHub.Clients.Group(OrderHub.OrderGroup(order.OrderNumber)).SendAsync("OrderStatusChanged", payload, cancellationToken);
+        await orderHub.Clients.Group(OrderHub.UserGroup(order.UserId.ToString())).SendAsync("OrderStatusChanged", payload, cancellationToken);
         await orderHub.Clients.Group(OrderHub.UserGroup(order.UserId.ToString())).SendAsync("ReceiveNotification", new
         {
             title = "Cập nhật đơn hàng",

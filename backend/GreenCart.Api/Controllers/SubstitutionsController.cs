@@ -85,6 +85,7 @@ public sealed class SubstitutionsController(AppDbContext dbContext, IHubContext<
 
         await orderHub.Clients.Group(OrderHub.OrderGroup(order.Id.ToString())).SendAsync("SubstitutionProposed", payload, cancellationToken);
         await orderHub.Clients.Group(OrderHub.OrderGroup(order.OrderNumber)).SendAsync("SubstitutionProposed", payload, cancellationToken);
+        await orderHub.Clients.Group(OrderHub.UserGroup(order.UserId.ToString())).SendAsync("SubstitutionProposed", payload, cancellationToken);
 
         return Ok(ApiMappings.ToResponse(substitution));
     }

@@ -196,6 +196,7 @@ public sealed class PayOsPaymentsController(
         await dbContext.SaveChangesAsync(cancellationToken);
         await orderHub.Clients.Group(OrderHub.OrderGroup(order.Id.ToString())).SendAsync(eventType, payload, cancellationToken);
         await orderHub.Clients.Group(OrderHub.OrderGroup(order.OrderNumber)).SendAsync(eventType, payload, cancellationToken);
+        await orderHub.Clients.Group(OrderHub.UserGroup(order.UserId.ToString())).SendAsync(eventType, payload, cancellationToken);
         await orderHub.Clients.Group(OrderHub.UserGroup(order.UserId.ToString())).SendAsync("ReceiveNotification", new
         {
             title = eventType == "OrderPaymentPaid" ? "Thanh toán thành công" : "Đã hủy thanh toán",
