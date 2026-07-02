@@ -8,10 +8,8 @@ import 'package:greencart_app/src/core/widgets/mobile_page_title.dart';
 import 'package:greencart_app/src/core/widgets/organic_card.dart';
 import 'package:greencart_app/src/core/widgets/organic_promo_banner.dart';
 import 'package:greencart_app/src/core/widgets/section_header.dart';
-import 'package:greencart_app/src/features/cart/data/cart_repository.dart';
 import 'package:greencart_app/src/features/catalog/data/product_repository.dart';
 import 'package:greencart_app/src/features/catalog/models/product.dart';
-import 'package:greencart_app/src/features/deals/data/mock_deals.dart';
 
 class DealsScreen extends ConsumerWidget {
   const DealsScreen({super.key});

@@ -11,7 +11,6 @@ import 'package:greencart_app/src/features/catalog/models/category.dart';
 import 'package:greencart_app/src/features/catalog/models/product.dart';
 import 'package:greencart_app/src/features/catalog/widgets/product_card.dart';
 import 'package:greencart_app/src/features/deals/screens/deals_screen.dart';
-import 'package:greencart_app/src/features/meal_planner/data/mock_meal_plans.dart';
 import 'package:greencart_app/src/features/meal_planner/screens/meal_planner_screen.dart';
 import 'package:greencart_app/src/features/meal_planner/screens/recipe_detail_screen.dart';
 import 'package:greencart_app/src/features/notifications/data/notification_repository.dart';

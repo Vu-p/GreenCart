@@ -11,7 +11,6 @@ import 'package:greencart_app/src/core/widgets/organic_state_message.dart';
 import 'package:greencart_app/src/core/widgets/section_header.dart';
 import 'package:greencart_app/src/features/checkout/application/checkout_draft_controller.dart';
 import 'package:greencart_app/src/features/checkout/data/checkout_repository.dart';
-import 'package:greencart_app/src/features/checkout/data/mock_checkout.dart';
 import 'package:greencart_app/src/features/checkout/models/delivery_slot.dart';
 import 'package:greencart_app/src/features/checkout/screens/map_address_picker_screen.dart';
 import 'package:greencart_app/src/features/checkout/screens/substitution_screen.dart';

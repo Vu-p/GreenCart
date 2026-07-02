@@ -7,11 +7,9 @@ import 'package:greencart_app/src/core/widgets/organic_card.dart';
 import 'package:greencart_app/src/core/widgets/organic_state_message.dart';
 import 'package:greencart_app/src/core/widgets/section_header.dart';
 import 'package:greencart_app/src/features/cart/data/cart_repository.dart';
-import 'package:greencart_app/src/features/cart/screens/cart_screen.dart';
 import 'package:greencart_app/src/features/catalog/data/product_repository.dart';
 import 'package:greencart_app/src/features/catalog/models/product.dart';
 import 'package:greencart_app/src/features/meal_planner/data/meal_plan_repository.dart';
-import 'package:greencart_app/src/features/meal_planner/data/mock_meal_plans.dart';
 
 class RecipeDetailScreen extends ConsumerStatefulWidget {
   const RecipeDetailScreen({required this.recipeId, super.key});

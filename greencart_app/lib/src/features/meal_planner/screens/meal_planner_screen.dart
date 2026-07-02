@@ -7,7 +7,6 @@ import 'package:greencart_app/src/core/widgets/mobile_page_title.dart';
 import 'package:greencart_app/src/core/widgets/organic_card.dart';
 import 'package:greencart_app/src/core/widgets/section_header.dart';
 import 'package:greencart_app/src/features/meal_planner/data/meal_plan_repository.dart';
-import 'package:greencart_app/src/features/meal_planner/data/mock_meal_plans.dart';
 import 'package:greencart_app/src/features/meal_planner/models/meal_plan.dart';
 import 'package:greencart_app/src/features/meal_planner/screens/recipe_detail_screen.dart';
 

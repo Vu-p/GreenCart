@@ -12,7 +12,6 @@ import 'package:greencart_app/src/features/catalog/data/product_repository.dart'
 import 'package:greencart_app/src/features/catalog/models/product.dart';
 import 'package:greencart_app/src/features/checkout/application/checkout_draft_controller.dart';
 import 'package:greencart_app/src/features/checkout/data/checkout_repository.dart';
-import 'package:greencart_app/src/features/checkout/data/mock_checkout.dart';
 import 'package:greencart_app/src/features/orders/data/orders_repository.dart';
 import 'package:greencart_app/src/features/orders/screens/order_tracking_screen.dart';
 
