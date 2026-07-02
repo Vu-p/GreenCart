@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
 class MapPresetLocation {
@@ -86,6 +87,59 @@ class _MapAddressPickerScreenState extends State<MapAddressPickerScreen> {
     super.dispose();
   }
 
+  bool _isLocatingGps = false;
+
+  Future<void> _locateCurrentGps() async {
+    setState(() => _isLocatingGps = true);
+    try {
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('⚠️ Bạn đã từ chối quyền định vị.')),
+            );
+          }
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('⚠️ Quyền định vị bị từ chối vĩnh viễn trong Cài đặt.')),
+          );
+        }
+        return;
+      }
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('🛰 Đang lấy vị trí GPS hiện tại...')),
+        );
+      }
+
+      final position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
+      );
+
+      final point = LatLng(position.latitude, position.longitude);
+      _mapController.move(point, 17);
+      await _fetchAddressFromCoordinates(point);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Lỗi lấy vị trí GPS: $e')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLocatingGps = false);
+      }
+    }
+  }
+
   Future<void> _fetchAddressFromCoordinates(LatLng point) async {
     setState(() {
       _selectedLatLng = point;
@@ -159,6 +213,19 @@ class _MapAddressPickerScreenState extends State<MapAddressPickerScreen> {
         backgroundColor: const Color(0xFF006A38),
         foregroundColor: Colors.white,
         elevation: 0,
+        actions: [
+          IconButton(
+            tooltip: 'Lấy vị trí GPS hiện tại',
+            onPressed: _isLocatingGps ? null : _locateCurrentGps,
+            icon: _isLocatingGps
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                  )
+                : const Icon(Icons.my_location),
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -260,6 +327,26 @@ class _MapAddressPickerScreenState extends State<MapAddressPickerScreen> {
                           style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF006A38)),
                         ),
                       ],
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: 16,
+                  right: 16,
+                  child: FloatingActionButton.extended(
+                    onPressed: _isLocatingGps ? null : _locateCurrentGps,
+                    backgroundColor: const Color(0xFF006A38),
+                    foregroundColor: Colors.white,
+                    icon: _isLocatingGps
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5),
+                          )
+                        : const Icon(Icons.my_location),
+                    label: Text(
+                      _isLocatingGps ? 'Đang định vị...' : 'Vị trí của tôi',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),

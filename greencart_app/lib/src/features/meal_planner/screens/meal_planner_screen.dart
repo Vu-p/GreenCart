@@ -323,7 +323,16 @@ class _PlannedMealStrip extends ConsumerWidget {
                     child: Stack(
                       fit: StackFit.expand,
                       children: [
-                        Image.network(_imageFor(meal.id), fit: BoxFit.cover),
+                        Image.network(
+                          meal.imageUrl.isNotEmpty
+                              ? meal.imageUrl
+                              : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c',
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => Container(
+                            color: AppTheme.succulentGreen,
+                            child: const Icon(Icons.restaurant, color: AppTheme.primary),
+                          ),
+                        ),
                         DecoratedBox(
                           decoration: BoxDecoration(
                             gradient: LinearGradient(

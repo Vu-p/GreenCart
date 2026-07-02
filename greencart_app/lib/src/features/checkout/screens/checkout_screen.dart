@@ -1,5 +1,7 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:greencart_app/src/core/theme/app_theme.dart';
@@ -498,6 +500,89 @@ class _EditAddressSheetState extends ConsumerState<_EditAddressSheet> {
     super.dispose();
   }
 
+  bool _isLocatingGps = false;
+
+  Future<void> _fetchCurrentGpsLocation() async {
+    setState(() => _isLocatingGps = true);
+    try {
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('⚠️ Bạn đã từ chối quyền truy cập vị trí.')),
+            );
+          }
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('⚠️ Quyền vị trí bị từ chối vĩnh viễn. Vui lòng bật trong Cài đặt máy.')),
+          );
+        }
+        return;
+      }
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('🛰 Đang định vị GPS hiện tại của máy...')),
+        );
+      }
+
+      final position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
+      );
+
+      String addressText = 'Tọa độ GPS: ${position.latitude.toStringAsFixed(5)}, ${position.longitude.toStringAsFixed(5)}';
+
+      try {
+        final dio = Dio();
+        final response = await dio.get(
+          'https://nominatim.openstreetmap.org/reverse',
+          queryParameters: {
+            'format': 'json',
+            'lat': position.latitude,
+            'lon': position.longitude,
+            'zoom': 18,
+            'addressdetails': 1,
+          },
+          options: Options(headers: {'User-Agent': 'GreenCartApp/1.0'}),
+        );
+        if (response.statusCode == 200 && response.data != null) {
+          final displayName = response.data['display_name'] as String?;
+          if (displayName != null && displayName.isNotEmpty) {
+            addressText = displayName;
+          }
+        }
+      } catch (_) {
+        // Fallback to coordinates
+      }
+
+      if (mounted) {
+        setState(() {
+          _addressController.text = addressText;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('📍 Đã cập nhật địa chỉ theo vị trí GPS máy!')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Lỗi lấy vị trí GPS: $e')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLocatingGps = false);
+      }
+    }
+  }
+
   void _save() {
     FocusManager.instance.primaryFocus?.unfocus();
     if (!_formKey.currentState!.validate()) {
@@ -542,6 +627,32 @@ class _EditAddressSheetState extends ConsumerState<_EditAddressSheet> {
                 ],
               ),
               const SizedBox(height: 16),
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 13),
+                  backgroundColor: AppTheme.primary,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: _isLocatingGps ? null : _fetchCurrentGpsLocation,
+                icon: _isLocatingGps
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.5,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Icon(Icons.my_location),
+                label: Text(
+                  _isLocatingGps ? 'Đang định vị GPS máy...' : '📍 Lấy vị trí GPS hiện tại của máy',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SizedBox(height: 10),
               OutlinedButton.icon(
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12),
