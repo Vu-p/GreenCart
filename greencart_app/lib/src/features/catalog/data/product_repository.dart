@@ -27,6 +27,13 @@ final productDetailProvider = FutureProvider.family<Product, String>((
   return ref.watch(productRepositoryProvider).getProduct(productId);
 });
 
+final productSubstitutionsProvider = FutureProvider.family<List<Product>, String>((
+  ref,
+  productId,
+) {
+  return ref.watch(productRepositoryProvider).getSubstitutions(productId);
+});
+
 class ProductRepository {
   ProductRepository(this._apiClient);
 
@@ -89,5 +96,16 @@ class ProductRepository {
   Future<Product> getProduct(String productId) async {
     final response = await _apiClient.get('/api/products/$productId');
     return Product.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  Future<List<Product>> getSubstitutions(String productId, {int limit = 6}) async {
+    final response = await _apiClient.get(
+      '/api/products/$productId/substitutions',
+      queryParameters: {'limit': limit},
+    );
+    final list = response.data as List<dynamic>;
+    return list
+        .map((item) => Product.fromJson(item as Map<String, dynamic>))
+        .toList();
   }
 }

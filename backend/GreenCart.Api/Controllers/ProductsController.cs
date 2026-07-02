@@ -104,11 +104,14 @@ public sealed class ProductsController(AppDbContext dbContext) : ControllerBase
             .AsNoTracking()
             .Where(p => p.Id != productId && p.Stock > 0);
 
-        var candidates = await query
-            .OrderByDescending(p => p.CategoryId == product.CategoryId)
-            .ThenBy(p => p.Price)
+        var allCandidates = await query.ToListAsync(cancellationToken);
+        var candidates = allCandidates
+            .OrderByDescending(p => (p.CategoryId == product.CategoryId ? 100 : 0) +
+                                    (p.Price < product.Price ? 60 + (double)((product.Price - p.Price) / 1000m) : (p.Price == product.Price ? 20 : - (double)((p.Price - product.Price) / 1000m))) +
+                                    (p.IsOrganic ? 30 : 0) +
+                                    (p.IsDeal ? 30 : 0))
             .Take(limit)
-            .ToListAsync(cancellationToken);
+            .ToList();
 
         return Ok(candidates.Select(ApiMappings.ToResponse).ToList());
     }

@@ -8,6 +8,7 @@ import 'package:greencart_app/src/core/widgets/organic_card.dart';
 import 'package:greencart_app/src/core/widgets/quantity_button.dart';
 import 'package:greencart_app/src/features/cart/data/cart_repository.dart';
 import 'package:greencart_app/src/features/catalog/data/product_repository.dart';
+import 'package:greencart_app/src/features/catalog/widgets/product_card.dart';
 
 class ProductDetailScreen extends ConsumerStatefulWidget {
   const ProductDetailScreen({required this.productId, super.key});
@@ -241,6 +242,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                               product.inStock ? 'Add to Cart' : 'Out of Stock',
                             ),
                           ),
+                          _AiRecommendedSection(productId: product.id, currentPrice: product.price),
                         ],
                       ),
                     ),
@@ -282,6 +284,106 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _AiRecommendedSection extends ConsumerWidget {
+  const _AiRecommendedSection({required this.productId, required this.currentPrice});
+
+  final String productId;
+  final double currentPrice;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final subsState = ref.watch(productSubstitutionsProvider(productId));
+    return subsState.when(
+      data: (products) {
+        if (products.isEmpty) return const SizedBox.shrink();
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 28),
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF0FDF4),
+                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                border: Border.all(color: const Color(0xFFBBF7D0)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.auto_awesome, color: Color(0xFF15803D), size: 24),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: const [
+                        Text(
+                          '✨ AI Gợi ý sản phẩm tối ưu (Rẻ hơn & Tốt hơn)',
+                          style: TextStyle(
+                            color: Color(0xFF14532D),
+                            fontSize: 15,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        SizedBox(height: 2),
+                        Text(
+                          'Sản phẩm cùng danh mục trong kho có giá tốt / ưu đãi tối ưu hơn cho bạn',
+                          style: TextStyle(color: Color(0xFF166534), fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 14),
+            SizedBox(
+              height: 250,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: products.length,
+                separatorBuilder: (context, index) => const SizedBox(width: 14),
+                itemBuilder: (context, index) {
+                  final item = products[index];
+                  final priceDiff = currentPrice - item.price;
+                  return SizedBox(
+                    width: 165,
+                    child: Stack(
+                      children: [
+                        ProductCard(product: item),
+                        if (priceDiff > 0)
+                          Positioned(
+                            top: 6,
+                            left: 6,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFDC2626),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                'RẺ HƠN ${formatCurrency(priceDiff)}',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
     );
   }
 }

@@ -10,9 +10,12 @@ import 'package:greencart_app/src/core/widgets/organic_card.dart';
 import 'package:greencart_app/src/core/widgets/organic_state_message.dart';
 import 'package:greencart_app/src/core/widgets/section_header.dart';
 import 'package:greencart_app/src/features/cart/data/cart_repository.dart';
+import 'package:greencart_app/src/features/cart/models/cart_item.dart';
 import 'package:greencart_app/src/features/cart/widgets/cart_item_tile.dart';
 import 'package:greencart_app/src/features/cart/widgets/order_summary.dart';
+import 'package:greencart_app/src/features/catalog/data/product_repository.dart';
 import 'package:greencart_app/src/features/catalog/screens/search_screen.dart';
+import 'package:greencart_app/src/features/catalog/widgets/product_card.dart';
 
 class CartScreen extends ConsumerWidget {
   const CartScreen({super.key});
@@ -64,7 +67,7 @@ class CartScreen extends ConsumerWidget {
           data: (cart) => ListView(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
             children: [
-              const AnimatedEntrance(child: _SmartSubstitutionStrip()),
+              AnimatedEntrance(child: _SmartSubstitutionStrip(cart: cart)),
               const SizedBox(height: 22),
               const SectionHeader(title: 'Your Basket'),
               const SizedBox(height: 14),
@@ -107,121 +110,231 @@ class CartScreen extends ConsumerWidget {
   }
 }
 
-class _SmartSubstitutionStrip extends StatelessWidget {
-  const _SmartSubstitutionStrip();
+class _SmartSubstitutionStrip extends ConsumerWidget {
+  const _SmartSubstitutionStrip({required this.cart});
+
+  final Cart cart;
 
   @override
-  Widget build(BuildContext context) {
-    return OrganicCard(
-      padding: const EdgeInsets.all(14),
-      color: AppTheme.succulentGreen,
-      radius: AppTheme.radiusMd,
-      child: Row(
-        children: [
-          Container(
-            width: 42,
-            height: 42,
-            decoration: const BoxDecoration(
-              color: AppTheme.primary,
-              shape: BoxShape.circle,
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (cart.isEmpty) {
+      return OrganicCard(
+        padding: const EdgeInsets.all(14),
+        color: AppTheme.succulentGreen,
+        radius: AppTheme.radiusMd,
+        child: Row(
+          children: [
+            Container(
+              width: 42,
+              height: 42,
+              decoration: const BoxDecoration(
+                color: AppTheme.primary,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.auto_awesome, color: Colors.white),
             ),
-            child: const Icon(Icons.autorenew, color: Colors.white),
-          ),
-          const SizedBox(width: 12),
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Smart Substitutions',
-                  style: TextStyle(
-                    color: AppTheme.charcoalInk,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                SizedBox(height: 2),
-                Text(
-                  'We will suggest similar items if something runs out.',
-                  style: TextStyle(color: AppTheme.outline, fontSize: 12),
-                ),
-              ],
-            ),
-          ),
-          const Icon(Icons.chevron_right, color: AppTheme.primary),
-        ],
-      ),
-    );
-  }
-}
-
-class _QuickAddRow extends StatelessWidget {
-  const _QuickAddRow();
-
-  @override
-  Widget build(BuildContext context) {
-    const items = [
-      (
-        'Carrots',
-        'https://images.unsplash.com/photo-1445282768818-728615cc910a?auto=format&fit=crop&q=80&w=500',
-      ),
-      (
-        'Avocado',
-        'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?auto=format&fit=crop&q=80&w=500',
-      ),
-      (
-        'Spinach',
-        'https://images.unsplash.com/photo-1576045057995-568f588f82fb?auto=format&fit=crop&q=80&w=500',
-      ),
-    ];
-
-    return SizedBox(
-      height: 112,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: items.length,
-        separatorBuilder: (context, index) => const SizedBox(width: 14),
-        itemBuilder: (context, index) {
-          final item = items[index];
-          return InkWell(
-            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-            onTap: () => context.go(SearchScreen.routePath),
-            child: SizedBox(
-              width: 82,
+            const SizedBox(width: 12),
+            const Expanded(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(18),
-                    child: Image.network(
-                      item.$2,
-                      width: 64,
-                      height: 58,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
                   Text(
-                    item.$1,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    '✨ AI Gợi ý tối ưu giỏ hàng',
+                    style: TextStyle(
                       color: AppTheme.charcoalInk,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  const CircleAvatar(
-                    radius: 12,
-                    backgroundColor: AppTheme.succulentGreen,
-                    child: Icon(Icons.add, color: AppTheme.primary, size: 16),
+                  SizedBox(height: 2),
+                  Text(
+                    'AI tự động đề xuất sản phẩm tốt hơn & rẻ hơn cho các món trong giỏ.',
+                    style: TextStyle(color: AppTheme.outline, fontSize: 12),
                   ),
                 ],
               ),
             ),
+          ],
+        ),
+      );
+    }
+
+    final firstItem = cart.items.first;
+    final subsState = ref.watch(productSubstitutionsProvider(firstItem.productId));
+
+    return subsState.when(
+      data: (products) {
+        if (products.isEmpty) {
+          return OrganicCard(
+            padding: const EdgeInsets.all(14),
+            color: AppTheme.succulentGreen,
+            radius: AppTheme.radiusMd,
+            child: Row(
+              children: [
+                const Icon(Icons.check_circle_outline, color: AppTheme.primary, size: 32),
+                const SizedBox(width: 12),
+                const Expanded(
+                  child: Text(
+                    '✅ Giỏ hàng của bạn đã là các lựa chọn tối ưu nhất trong kho!',
+                    style: TextStyle(fontWeight: FontWeight.w700, color: AppTheme.charcoalInk),
+                  ),
+                ),
+              ],
+            ),
           );
-        },
-      ),
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF0FDF4),
+                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                border: Border.all(color: const Color(0xFFBBF7D0)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.auto_awesome, color: Color(0xFF15803D), size: 28),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          '✨ AI Đề xuất tối ưu thay thế (Rẻ hơn / Tốt hơn)',
+                          style: TextStyle(
+                            color: Color(0xFF14532D),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'Dành cho món "${firstItem.productName}" trong giỏ hàng',
+                          style: const TextStyle(color: Color(0xFF166534), fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              height: 250,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: products.length,
+                separatorBuilder: (context, index) => const SizedBox(width: 14),
+                itemBuilder: (context, index) {
+                  final item = products[index];
+                  final priceDiff = firstItem.unitPrice - item.price;
+                  return SizedBox(
+                    width: 165,
+                    child: Stack(
+                      children: [
+                        ProductCard(product: item),
+                        if (priceDiff > 0)
+                          Positioned(
+                            top: 6,
+                            left: 6,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFDC2626),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                'RẺ HƠN ${(priceDiff).toStringAsFixed(0)}đ',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      },
+      loading: () => const Center(child: Padding(padding: EdgeInsets.all(12), child: CircularProgressIndicator())),
+      error: (_, __) => const SizedBox.shrink(),
+    );
+  }
+}
+
+class _QuickAddRow extends ConsumerWidget {
+  const _QuickAddRow();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dealsState = ref.watch(dealsProductsProvider);
+    return dealsState.when(
+      data: (products) {
+        if (products.isEmpty) return const SizedBox.shrink();
+        return SizedBox(
+          height: 120,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: products.take(6).length,
+            separatorBuilder: (context, index) => const SizedBox(width: 14),
+            itemBuilder: (context, index) {
+              final item = products[index];
+              return InkWell(
+                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                onTap: () async {
+                  await ref.read(cartRepositoryProvider).addItem(productId: item.id, quantity: 1);
+                  ref.invalidate(cartProvider);
+                },
+                child: SizedBox(
+                  width: 86,
+                  child: Column(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(18),
+                        child: Image.network(
+                          item.imageUrl,
+                          width: 64,
+                          height: 58,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(width: 64, height: 58, color: AppTheme.succulentGreen),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        item.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: AppTheme.charcoalInk,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      const CircleAvatar(
+                        radius: 12,
+                        backgroundColor: AppTheme.succulentGreen,
+                        child: Icon(Icons.add, color: AppTheme.primary, size: 16),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
     );
   }
 }
