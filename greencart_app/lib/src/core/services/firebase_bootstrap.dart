@@ -1,4 +1,4 @@
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final firebaseBootstrapProvider = Provider<FirebaseBootstrap>((ref) {
@@ -23,6 +23,7 @@ class FirebaseBootstrap {
     // Bypass Firebase initialization for local testing to avoid hangs
     return false;
     
+    /*
     try {
       await Firebase.initializeApp().timeout(const Duration(seconds: 5));
       return true;
@@ -30,5 +31,6 @@ class FirebaseBootstrap {
       _initializationError = error;
       return false;
     }
+    */
   }
 }

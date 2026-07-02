@@ -62,9 +62,25 @@ public sealed class AdminController(AppDbContext dbContext, IHubContext<OrderHub
             Payload = payload
         });
 
+        dbContext.Notifications.Add(new Notification
+        {
+            UserId = order.UserId,
+            Title = "Cập nhật đơn hàng",
+            Message = $"Đơn hàng {order.OrderNumber} của bạn đã chuyển sang trạng thái: {order.Status}.",
+            Type = "OrderStatus",
+            ReferenceId = order.Id
+        });
+
         await dbContext.SaveChangesAsync(cancellationToken);
         await orderHub.Clients.Group(OrderHub.OrderGroup(order.Id.ToString())).SendAsync("OrderStatusChanged", payload, cancellationToken);
         await orderHub.Clients.Group(OrderHub.OrderGroup(order.OrderNumber)).SendAsync("OrderStatusChanged", payload, cancellationToken);
+        await orderHub.Clients.Group(OrderHub.UserGroup(order.UserId.ToString())).SendAsync("ReceiveNotification", new
+        {
+            title = "Cập nhật đơn hàng",
+            message = $"Đơn hàng {order.OrderNumber} của bạn đã chuyển sang trạng thái: {order.Status}.",
+            type = "OrderStatus",
+            referenceId = order.Id
+        }, cancellationToken);
 
         return Ok(ApiMappings.ToResponse(order));
     }

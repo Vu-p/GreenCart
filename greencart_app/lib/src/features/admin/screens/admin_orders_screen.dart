@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/currency_formatter.dart';
@@ -232,7 +231,7 @@ class _AdminOrderCardState extends ConsumerState<_AdminOrderCard> {
     final statusColor = _getStatusColor(order.status);
     final statusIcon = _getStatusIcon(order.status);
     final formattedDate =
-        DateFormat('MMM dd, yyyy - hh:mm a').format(order.createdAt);
+        '${order.createdAt.day.toString().padLeft(2, '0')}/${order.createdAt.month.toString().padLeft(2, '0')}/${order.createdAt.year} - ${order.createdAt.hour.toString().padLeft(2, '0')}:${order.createdAt.minute.toString().padLeft(2, '0')}';
 
     return OrganicCard(
       padding: EdgeInsets.zero,
