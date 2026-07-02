@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Search, Filter, CheckCircle, Truck, XCircle, Clock, Eye, AlertCircle, Sparkles } from 'lucide-react';
+import { Search, Filter, CheckCircle, Truck, XCircle, Clock, Eye, AlertCircle, Sparkles, Download } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import api from '../services/api';
 
@@ -68,6 +68,32 @@ const OrdersPage = () => {
     { id: 'Cancelled', label: '❌ Đã hủy' },
   ];
 
+  const exportOrdersCSV = () => {
+    const formatCurrencyPlain = (val) => new Intl.NumberFormat('vi-VN').format(Math.round(val));
+    const header = ['Mã đơn hàng', 'Khách hàng', 'Số điện thoại', 'Địa chỉ giao hàng', 'Tổng tiền (VNĐ)', 'Trạng thái', 'Phương thức thanh toán', 'Ngày đặt'];
+    const rows = filteredOrders.map(o => [
+      o.orderNumber || o.id?.substring(0, 8),
+      o.userName || o.userId || 'N/A',
+      o.userPhone || 'N/A',
+      (o.shippingAddress || 'N/A').replace(/,/g, ' -'),
+      formatCurrencyPlain(o.totalAmount || 0),
+      o.status || 'N/A',
+      o.paymentMethod || 'N/A',
+      o.createdAt ? new Date(o.createdAt).toLocaleDateString('vi-VN') : 'N/A'
+    ]);
+
+    const csvContent = [header, ...rows].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+    // UTF-8 BOM for Excel Vietnamese support
+    const BOM = '\uFEFF';
+    const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `GreenCart_DonHang_${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="animate-fade-in">
       {/* Top Filter Bar */}
@@ -85,6 +111,20 @@ const OrdersPage = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
+
+          {/* Export Button */}
+          <button
+            onClick={exportOrdersCSV}
+            className="btn"
+            style={{
+              backgroundColor: '#006A38', color: 'white', padding: '10px 18px',
+              fontSize: '13.5px', fontWeight: '700', borderRadius: '12px',
+              display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap'
+            }}
+          >
+            <Download size={16} />
+            📥 Xuất Excel/CSV
+          </button>
 
           {/* Status Tabs */}
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
