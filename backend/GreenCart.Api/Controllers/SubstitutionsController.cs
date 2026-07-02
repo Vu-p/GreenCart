@@ -117,12 +117,16 @@ public sealed class SubstitutionsController(AppDbContext dbContext, IHubContext<
         }
 
         var bestMatch = candidates
-            .OrderByDescending(p => (originalProduct != null && p.CategoryId == originalProduct.CategoryId ? 50 : 0) +
-                                    (originalProduct != null && p.IsOrganic == originalProduct.IsOrganic ? 25 : 0) -
-                                    (originalProduct != null ? (double)Math.Abs(p.Price - originalProduct.Price) / 1000.0 : 0))
+            .OrderByDescending(p => (originalProduct != null && p.CategoryId == originalProduct.CategoryId ? 100 : 0) +
+                                    (originalProduct != null && p.Price < originalProduct.Price ? 60 + (double)((originalProduct.Price - p.Price) / 1000m) : (originalProduct != null && p.Price == originalProduct.Price ? 20 : (originalProduct != null ? - (double)((p.Price - originalProduct.Price) / 1000m) : 0))) +
+                                    (p.IsOrganic ? 30 : 0) +
+                                    (p.IsDeal ? 30 : 0))
             .First();
 
-        var note = $"🤖 AI GreenCart đề xuất: Thay '{orderItem.ProductName}' bằng '{bestMatch.Name}' (Cùng nhóm dinh dưỡng, giá {bestMatch.Price:N0}đ)";
+        var priceDiff = originalProduct != null ? originalProduct.Price - bestMatch.Price : 0;
+        var note = priceDiff > 0
+            ? $"🤖 AI Đề xuất tối ưu: Thay '{orderItem.ProductName}' ({originalProduct?.Price:N0}đ) bằng '{bestMatch.Name}' (Cùng loại, CHẤT LƯỢNG TỐT & RẺ HƠN, giúp bạn TIẾT KIỆM {priceDiff:N0}đ!)"
+            : $"🤖 AI Đề xuất tối ưu: Thay '{orderItem.ProductName}' bằng '{bestMatch.Name}' (Cùng danh mục dinh dưỡng, tối ưu giá trị & chất lượng tốt nhất)";
 
         var substitution = new Substitution
         {
@@ -207,36 +211,50 @@ public sealed class SubstitutionsController(AppDbContext dbContext, IHubContext<
         foreach (var item in order.Items)
         {
             var orig = allProducts.FirstOrDefault(p => p.Id == item.ProductId);
-            if (orig != null && orig.Stock <= 0)
+            if (orig != null)
             {
-                var bestMatch = inStockCandidates
-                    .Where(p => p.Id != item.ProductId)
-                    .OrderByDescending(p => (p.CategoryId == orig.CategoryId ? 50 : 0) +
-                                            (p.IsOrganic == orig.IsOrganic ? 25 : 0) -
-                                            (double)Math.Abs(p.Price - orig.Price) / 1000.0)
+                var candidatesForOrig = inStockCandidates.Where(p => p.Id != orig.Id).ToList();
+                if (candidatesForOrig.Count == 0) continue;
+
+                var bestMatch = candidatesForOrig
+                    .OrderByDescending(p => (p.CategoryId == orig.CategoryId ? 100 : 0) +
+                                            (p.Price < orig.Price ? 60 + (double)((orig.Price - p.Price) / 1000m) : (p.Price == orig.Price ? 20 : - (double)((p.Price - orig.Price) / 1000m))) +
+                                            (p.IsOrganic ? 30 : 0) +
+                                            (p.IsDeal ? 30 : 0))
                     .FirstOrDefault();
 
                 if (bestMatch != null)
                 {
-                    var note = $"🤖 AI GreenCart tự động đề xuất thay '{item.ProductName}' (hết hàng) bằng '{bestMatch.Name}' (Cùng loại, giá {bestMatch.Price:N0}đ)";
-                    var sub = new Substitution
+                    bool isOut = orig.Stock <= 0;
+                    bool isCheaperAndBetter = bestMatch.CategoryId == orig.CategoryId && bestMatch.Price < orig.Price;
+
+                    if (isOut || isCheaperAndBetter)
                     {
-                        OrderId = orderId,
-                        OrderItemId = item.Id,
-                        OriginalProductId = item.ProductId ?? Guid.Empty,
-                        ReplacementProductId = bestMatch.Id,
-                        Status = "PendingCustomerDecision",
-                        Note = note
-                    };
-                    dbContext.Substitutions.Add(sub);
-                    proposedCount++;
+                        var priceDiff = orig.Price - bestMatch.Price;
+                        var reason = isOut ? "(hết hàng)" : "(tối ưu chi phí & chất lượng)";
+                        var note = priceDiff > 0
+                            ? $"🤖 AI Đề xuất tối ưu {reason}: Thay '{item.ProductName}' ({orig.Price:N0}đ) bằng '{bestMatch.Name}' (Cùng loại, RẺ HƠN & TỐT HƠN, giúp bạn TIẾT KIỆM {priceDiff:N0}đ!)"
+                            : $"🤖 AI Đề xuất tối ưu {reason}: Thay '{item.ProductName}' bằng '{bestMatch.Name}' (Cùng danh mục, đảm bảo chất lượng tốt nhất)";
+
+                        var sub = new Substitution
+                        {
+                            OrderId = orderId,
+                            OrderItemId = item.Id,
+                            OriginalProductId = item.ProductId ?? Guid.Empty,
+                            ReplacementProductId = bestMatch.Id,
+                            Status = "PendingCustomerDecision",
+                            Note = note
+                        };
+                        dbContext.Substitutions.Add(sub);
+                        proposedCount++;
+                    }
                 }
             }
         }
 
         if (proposedCount == 0)
         {
-            return Ok(new { message = "✅ Tất cả sản phẩm trong đơn hàng hiện đều còn đủ hàng trong kho, không cần thay thế." });
+            return Ok(new { message = "✅ Các món trong đơn hàng hiện tại đã là lựa chọn tối ưu về chi phí và chất lượng nhất rồi!" });
         }
 
         await dbContext.SaveChangesAsync(cancellationToken);

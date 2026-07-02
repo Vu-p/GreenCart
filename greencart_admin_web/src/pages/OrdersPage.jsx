@@ -323,7 +323,7 @@ const OrdersPage = () => {
                 style={{ padding: '6px 12px', fontSize: '12px', background: '#E0F2FE', color: '#0369A1', border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '700' }}
               >
                 <Sparkles size={14} />
-                <span>{aiLoading ? 'AI đang chạy...' : '✨ AI Tự động thay thế kho hết hàng'}</span>
+                <span>{aiLoading ? 'AI đang xử lý...' : '✨ AI Đề xuất tối ưu (Rẻ hơn & Tốt hơn)'}</span>
               </button>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
@@ -345,7 +345,7 @@ const OrdersPage = () => {
                         onClick={() => triggerAiSubstituteItem(selectedOrder.id, item.id)}
                         style={{ padding: '4px 8px', fontSize: '11px', background: '#FEF3C7', color: '#B45309', border: '1px solid #FDE68A', borderRadius: '6px', cursor: 'pointer', fontWeight: '700' }}
                       >
-                        🤖 AI Đổi món
+                        🤖 AI Tối ưu món rẻ hơn
                       </button>
                     )}
                     <div style={{ fontWeight: '800', color: 'var(--primary)' }}>
