@@ -43,6 +43,7 @@ class _PaymentCancelledScreenState
             payment.order.id,
             checkoutUrl: payment.checkoutUrl,
             orderNumber: widget.orderNumber,
+            qrCode: payment.qrCode,
           ),
         );
       }

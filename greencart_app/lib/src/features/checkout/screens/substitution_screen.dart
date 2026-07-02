@@ -57,6 +57,7 @@ class _SubstitutionScreenState extends ConsumerState<SubstitutionScreen> {
             payment.order.id,
             checkoutUrl: payment.checkoutUrl,
             orderNumber: payment.order.orderNumber,
+            qrCode: payment.qrCode,
           ),
         );
       }

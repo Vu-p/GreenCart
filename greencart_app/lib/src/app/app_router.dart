@@ -140,6 +140,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           orderId: state.uri.queryParameters['orderId'] ?? '',
           orderNumber: state.uri.queryParameters['orderNumber'] ?? '',
           checkoutUrl: state.uri.queryParameters['checkoutUrl'] ?? '',
+          qrCode: state.uri.queryParameters['qrCode'] ?? '',
         ),
       ),
       GoRoute(
