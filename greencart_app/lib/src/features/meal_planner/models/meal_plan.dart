@@ -57,6 +57,18 @@ class MealPlan {
   final IconData icon;
   final Color color;
 
+  String get imageUrl {
+    switch (id) {
+      case 'tomato-chicken':
+        return 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&q=80&w=900';
+      case 'berry-yogurt':
+        return 'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&q=80&w=900';
+      case 'green-bowl':
+      default:
+        return 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=80&w=900';
+    }
+  }
+
   factory MealPlan.fromJson(Map<String, dynamic> json) {
     final rawIngredients = json['ingredients'] as List<dynamic>? ?? [];
     final items = <MealIngredientItem>[];

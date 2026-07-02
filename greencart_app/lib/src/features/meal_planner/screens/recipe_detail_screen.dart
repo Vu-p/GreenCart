@@ -7,6 +7,7 @@ import 'package:greencart_app/src/core/widgets/organic_card.dart';
 import 'package:greencart_app/src/core/widgets/organic_state_message.dart';
 import 'package:greencart_app/src/core/widgets/section_header.dart';
 import 'package:greencart_app/src/features/cart/data/cart_repository.dart';
+import 'package:greencart_app/src/features/cart/screens/cart_screen.dart';
 import 'package:greencart_app/src/features/catalog/data/product_repository.dart';
 import 'package:greencart_app/src/features/catalog/models/product.dart';
 import 'package:greencart_app/src/features/meal_planner/data/meal_plan_repository.dart';
@@ -111,13 +112,16 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final meal = mealPlanById(widget.recipeId);
+    final mealAsync = ref.watch(mealPlanDetailProvider(widget.recipeId));
     final productsState = ref.watch(featuredProductsProvider);
 
     return Scaffold(
-      body: ListView(
-        padding: EdgeInsets.zero,
-        children: [
+      body: mealAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, st) => Center(child: Text('Lỗi tải công thức: $err')),
+        data: (meal) => ListView(
+          padding: EdgeInsets.zero,
+          children: [
           SizedBox(
             height: 320,
             child: Stack(
@@ -316,6 +320,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
             ),
           ),
         ],
+      ),
       ),
     );
   }

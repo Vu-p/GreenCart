@@ -172,10 +172,10 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               const SizedBox(height: 22),
               const SectionHeader(title: 'Delivery Slot'),
               const SizedBox(height: 12),
-              for (final slot in deliverySlots) ...[
+              for (final slot in DeliverySlot.standardSlots) ...[
                 AnimatedEntrance(
                   delay: Duration(
-                    milliseconds: 120 + (deliverySlots.indexOf(slot) * 80),
+                    milliseconds: 120 + (DeliverySlot.standardSlots.indexOf(slot) * 80),
                   ),
                   child: _DeliverySlotCard(
                     slot: slot,

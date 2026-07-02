@@ -68,10 +68,12 @@ class MealPlannerScreen extends ConsumerWidget {
             loading: () => const Center(child: Padding(padding: EdgeInsets.all(20), child: CircularProgressIndicator())),
             error: (err, stack) => Center(child: Text('Lỗi tải thực đơn: $err')),
             data: (plans) {
-              final list = plans.isNotEmpty ? plans : mealPlans;
+              if (plans.isEmpty) {
+                return const Center(child: Padding(padding: EdgeInsets.all(20), child: Text('Chưa có thực đơn mẫu nào.')));
+              }
               return Column(
                 children: [
-                  for (final meal in list) ...[
+                  for (final meal in plans) ...[
                     _MealPlanCard(meal: meal),
                     const SizedBox(height: 12),
                   ],
@@ -149,19 +151,25 @@ class _FilterChips extends StatelessWidget {
   }
 }
 
-class _PlannedMealStrip extends StatelessWidget {
+class _PlannedMealStrip extends ConsumerWidget {
   const _PlannedMealStrip();
 
   @override
-  Widget build(BuildContext context) {
-    final planned = mealPlans.take(2).toList();
-    return SizedBox(
-      height: 126,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: planned.length,
-        separatorBuilder: (context, index) => const SizedBox(width: 12),
-        itemBuilder: (context, index) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final mealPlansAsync = ref.watch(mealPlansProvider);
+    return mealPlansAsync.when(
+      loading: () => const SizedBox(height: 126, child: Center(child: CircularProgressIndicator())),
+      error: (e, st) => const SizedBox.shrink(),
+      data: (mealPlans) {
+        final planned = mealPlans.take(2).toList();
+        if (planned.isEmpty) return const SizedBox.shrink();
+        return SizedBox(
+          height: 126,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: planned.length,
+            separatorBuilder: (context, index) => const SizedBox(width: 12),
+            itemBuilder: (context, index) {
           final meal = planned[index];
           return InkWell(
             borderRadius: BorderRadius.circular(AppTheme.radiusMd),
@@ -220,6 +228,8 @@ class _PlannedMealStrip extends StatelessWidget {
           );
         },
       ),
+    );
+      },
     );
   }
 }

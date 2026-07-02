@@ -11,6 +11,7 @@ import 'package:greencart_app/src/features/catalog/models/category.dart';
 import 'package:greencart_app/src/features/catalog/models/product.dart';
 import 'package:greencart_app/src/features/catalog/widgets/product_card.dart';
 import 'package:greencart_app/src/features/deals/screens/deals_screen.dart';
+import 'package:greencart_app/src/features/meal_planner/data/meal_plan_repository.dart';
 import 'package:greencart_app/src/features/meal_planner/screens/meal_planner_screen.dart';
 import 'package:greencart_app/src/features/meal_planner/screens/recipe_detail_screen.dart';
 import 'package:greencart_app/src/features/notifications/data/notification_repository.dart';
@@ -452,30 +453,36 @@ class _CategoryBubble extends StatelessWidget {
   }
 }
 
-class _MealGrid extends StatelessWidget {
+class _MealGrid extends ConsumerWidget {
   const _MealGrid();
 
   @override
-  Widget build(BuildContext context) {
-    final meals = mealPlans.take(2).toList();
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 14,
-        mainAxisSpacing: 14,
-        childAspectRatio: 0.8,
-      ),
-      itemCount: meals.length,
-      itemBuilder: (context, index) => _MealCard(
-        title: index == 0 ? 'Sweet & Sour Soup' : 'Braised Pork',
-        subtitle: 'Get Ingredients',
-        imageUrl: index == 0
-            ? 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&q=80&w=900'
-            : 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&q=80&w=900',
-        onTap: () => context.push(RecipeDetailScreen.pathFor(meals[index].id)),
-      ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final mealPlansAsync = ref.watch(mealPlansProvider);
+    return mealPlansAsync.when(
+      loading: () => const Center(child: Padding(padding: EdgeInsets.all(20), child: CircularProgressIndicator())),
+      error: (e, st) => Center(child: Text('Lỗi tải thực đơn: $e')),
+      data: (mealPlans) {
+        final meals = mealPlans.take(2).toList();
+        if (meals.isEmpty) return const SizedBox.shrink();
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 14,
+            mainAxisSpacing: 14,
+            childAspectRatio: 0.8,
+          ),
+          itemCount: meals.length,
+          itemBuilder: (context, index) => _MealCard(
+            title: meals[index].title,
+            subtitle: 'Get Ingredients',
+            imageUrl: meals[index].imageUrl,
+            onTap: () => context.push(RecipeDetailScreen.pathFor(meals[index].id)),
+          ),
+        );
+      },
     );
   }
 }

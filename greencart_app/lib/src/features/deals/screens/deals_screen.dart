@@ -8,6 +8,7 @@ import 'package:greencart_app/src/core/widgets/mobile_page_title.dart';
 import 'package:greencart_app/src/core/widgets/organic_card.dart';
 import 'package:greencart_app/src/core/widgets/organic_promo_banner.dart';
 import 'package:greencart_app/src/core/widgets/section_header.dart';
+import 'package:greencart_app/src/features/cart/data/cart_repository.dart';
 import 'package:greencart_app/src/features/catalog/data/product_repository.dart';
 import 'package:greencart_app/src/features/catalog/models/product.dart';
 
@@ -15,6 +16,7 @@ class DealsScreen extends ConsumerWidget {
   const DealsScreen({super.key});
 
   static const routePath = '/deals';
+  static const couponCodes = ['GREENCART10', 'ORGANIC20', 'FREESHIP50'];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

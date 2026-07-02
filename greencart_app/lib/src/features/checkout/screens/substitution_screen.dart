@@ -25,6 +25,12 @@ class SubstitutionScreen extends ConsumerStatefulWidget {
 }
 
 class _SubstitutionScreenState extends ConsumerState<SubstitutionScreen> {
+  static const substitutionOptions = [
+    'Cho phép AI đề xuất món thay thế tốt nhất',
+    'Hoàn tiền lập tức nếu hết hàng',
+    'Liên hệ qua điện thoại trước khi giao',
+  ];
+
   int _selectedIndex = 0;
   bool _isPaying = false;
 
