@@ -38,11 +38,11 @@ const DashboardPage = ({ setActiveTab }) => {
   // Calculations
   const totalRevenue = analytics?.totalRevenue ?? orders
     .filter(o => o.status !== 'Cancelled')
-    .reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+    .reduce((sum, o) => sum + (o.total || o.totalAmount || 0), 0);
 
   const pendingOrdersCount = orders.filter(o => o.status === 'Pending' || o.status === 'Submitted').length;
-  const shippingOrdersCount = orders.filter(o => o.status === 'Shipping' || o.status === 'Delivering').length;
-  const deliveredOrdersCount = orders.filter(o => o.status === 'Delivered' || o.status === 'Completed').length;
+  const shippingOrdersCount = orders.filter(o => o.status === 'Delivering' || o.status === 'Shipping').length;
+  const deliveredOrdersCount = orders.filter(o => o.status === 'Completed' || o.status === 'Delivered').length;
   const cancelledOrdersCount = orders.filter(o => o.status === 'Cancelled').length;
   const lowStockProducts = products.filter(p => p.stock < 10);
 
@@ -275,14 +275,14 @@ const DashboardPage = ({ setActiveTab }) => {
                 {orders.slice(0, 5).map((order) => (
                   <tr key={order.id}>
                     <td style={{ fontWeight: '700' }}>#{order.orderNumber || order.id?.substring(0, 8)}</td>
-                    <td style={{ fontWeight: '700', color: 'var(--primary)' }}>{formatCurrency(order.totalAmount || 0)}</td>
+                    <td style={{ fontWeight: '700', color: 'var(--primary)' }}>{formatCurrency(order.total || order.totalAmount || 0)}</td>
                     <td>
                       <span className={`badge ${
-                        order.status === 'Delivered' ? 'badge-success' :
+                        (order.status === 'Completed' || order.status === 'Delivered') ? 'badge-success' :
                         order.status === 'Cancelled' ? 'badge-danger' :
-                        order.status === 'Shipping' ? 'badge-info' : 'badge-warning'
+                        (order.status === 'Delivering' || order.status === 'Shipping') ? 'badge-info' : 'badge-warning'
                       }`}>
-                        {order.status}
+                        {order.status === 'Delivering' ? 'Đang giao' : order.status === 'Completed' ? 'Hoàn thành' : order.status}
                       </span>
                     </td>
                     <td style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>

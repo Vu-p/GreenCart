@@ -42,7 +42,7 @@ const OrdersPage = () => {
         setSelectedOrder(prev => ({ ...prev, status: newStatus }));
       }
 
-      if (newStatus === 'Delivered') {
+      if (newStatus === 'Completed' || newStatus === 'Delivered') {
         confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
       }
     } catch (err) {
@@ -53,7 +53,9 @@ const OrdersPage = () => {
   };
 
   const filteredOrders = orders.filter(o => {
-    const matchesTab = activeFilter === 'All' || o.status === activeFilter;
+    const matchesTab = activeFilter === 'All' || o.status === activeFilter ||
+      (activeFilter === 'Delivering' && o.status === 'Shipping') ||
+      (activeFilter === 'Completed' && o.status === 'Delivered');
     const matchesSearch = (o.orderNumber || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                           (o.id || '').toLowerCase().includes(searchTerm.toLowerCase());
     return matchesTab && matchesSearch;
@@ -63,8 +65,8 @@ const OrdersPage = () => {
     { id: 'All', label: 'Tất cả đơn' },
     { id: 'Pending', label: '⏳ Chờ xác nhận' },
     { id: 'Confirmed', label: '📦 Đã xác nhận' },
-    { id: 'Shipping', label: '🚚 Đang giao' },
-    { id: 'Delivered', label: '✅ Đã giao hàng' },
+    { id: 'Delivering', label: '🚚 Đang giao' },
+    { id: 'Completed', label: '✅ Hoàn thành' },
     { id: 'Cancelled', label: '❌ Đã hủy' },
   ];
 
@@ -76,7 +78,7 @@ const OrdersPage = () => {
       o.userName || o.userId || 'N/A',
       o.userPhone || 'N/A',
       (o.shippingAddress || 'N/A').replace(/,/g, ' -'),
-      formatCurrencyPlain(o.totalAmount || 0),
+      formatCurrencyPlain(o.total || o.totalAmount || 0),
       o.status || 'N/A',
       o.paymentMethod || 'N/A',
       o.createdAt ? new Date(o.createdAt).toLocaleDateString('vi-VN') : 'N/A'
@@ -192,15 +194,15 @@ const OrdersPage = () => {
                       {order.items?.length || 0} sản phẩm
                     </td>
                     <td style={{ fontWeight: '800', fontSize: '15px', color: '#1A1C1B' }}>
-                      {formatCurrency(order.totalAmount || 0)}
+                      {formatCurrency(order.total || order.totalAmount || 0)}
                     </td>
                     <td>
                       <span className={`badge ${
-                        order.status === 'Delivered' ? 'badge-success' :
+                        (order.status === 'Completed' || order.status === 'Delivered') ? 'badge-success' :
                         order.status === 'Cancelled' ? 'badge-danger' :
-                        order.status === 'Shipping' ? 'badge-info' : 'badge-warning'
+                        (order.status === 'Delivering' || order.status === 'Shipping') ? 'badge-info' : 'badge-warning'
                       }`}>
-                        {order.status}
+                        {order.status === 'Delivering' ? 'Đang giao' : order.status === 'Completed' ? 'Hoàn thành' : order.status}
                       </span>
                     </td>
                     <td>
@@ -218,24 +220,24 @@ const OrdersPage = () => {
                         {order.status === 'Confirmed' && (
                           <button
                             disabled={updatingId === order.id}
-                            onClick={() => updateOrderStatus(order.id, 'Shipping')}
+                            onClick={() => updateOrderStatus(order.id, 'Delivering')}
                             className="btn btn-secondary"
                             style={{ padding: '6px 12px', fontSize: '12px', background: '#DBEAFE', color: '#1E40AF' }}
                           >
                             🚚 Giao hàng
                           </button>
                         )}
-                        {order.status === 'Shipping' && (
+                        {(order.status === 'Delivering' || order.status === 'Shipping') && (
                           <button
                             disabled={updatingId === order.id}
-                            onClick={() => updateOrderStatus(order.id, 'Delivered')}
+                            onClick={() => updateOrderStatus(order.id, 'Completed')}
                             className="btn btn-primary"
                             style={{ padding: '6px 12px', fontSize: '12px', background: '#00C853' }}
                           >
                             ✅ Hoàn tất
                           </button>
                         )}
-                        {order.status !== 'Delivered' && order.status !== 'Cancelled' && (
+                        {order.status !== 'Completed' && order.status !== 'Delivered' && order.status !== 'Cancelled' && (
                           <button
                             disabled={updatingId === order.id}
                             onClick={() => updateOrderStatus(order.id, 'Cancelled')}
