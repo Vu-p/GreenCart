@@ -21,12 +21,13 @@ public sealed class NotificationsController(AppDbContext dbContext) : Controller
             return Unauthorized();
         }
 
-        var list = await dbContext.Notifications
+        var list = (await dbContext.Notifications
             .AsNoTracking()
             .Where(n => n.UserId == userId.Value)
+            .ToListAsync(cancellationToken))
             .OrderByDescending(n => n.CreatedAt)
             .Take(50)
-            .ToListAsync(cancellationToken);
+            .ToList();
 
         return Ok(list.Select(n => new
         {

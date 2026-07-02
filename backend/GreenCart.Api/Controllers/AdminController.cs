@@ -229,8 +229,9 @@ public sealed class AdminController(AppDbContext dbContext, IHubContext<OrderHub
     [HttpGet("users")]
     public async Task<ActionResult<IEnumerable<object>>> GetUsers(CancellationToken cancellationToken)
     {
-        var users = await dbContext.Users
+        var users = (await dbContext.Users
             .AsNoTracking()
+            .ToListAsync(cancellationToken))
             .OrderByDescending(u => u.CreatedAt)
             .Select(u => new
             {
@@ -240,8 +241,7 @@ public sealed class AdminController(AppDbContext dbContext, IHubContext<OrderHub
                 phone = u.Phone,
                 role = u.Role,
                 createdAt = u.CreatedAt
-            })
-            .ToListAsync(cancellationToken);
+            });
 
         return Ok(users);
     }
@@ -292,12 +292,13 @@ public sealed class AdminController(AppDbContext dbContext, IHubContext<OrderHub
     [HttpGet("meal-plans")]
     public async Task<ActionResult<IEnumerable<object>>> GetMealPlansAdmin(CancellationToken cancellationToken)
     {
-        var plans = await dbContext.MealPlans
+        var plans = (await dbContext.MealPlans
             .AsNoTracking()
             .Include(p => p.Ingredients)
             .ThenInclude(i => i.Product)
+            .ToListAsync(cancellationToken))
             .OrderByDescending(p => p.CreatedAt)
-            .ToListAsync(cancellationToken);
+            .ToList();
 
         return Ok(plans.Select(p => new
         {
