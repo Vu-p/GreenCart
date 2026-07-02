@@ -12,7 +12,7 @@ public sealed class ChatController(IConfiguration configuration, HttpClient http
     public async Task<IActionResult> SendMessage(CancellationToken cancellationToken)
     {
         var apiKey = configuration["Gemini:ApiKey"];
-        var model = configuration["Gemini:Model"] ?? "gemini-2.0-flash";
+        var model = configuration["Gemini:Model"] ?? "gemini-2.5-flash";
 
         if (string.IsNullOrEmpty(apiKey))
         {
@@ -33,7 +33,7 @@ public sealed class ChatController(IConfiguration configuration, HttpClient http
         if (!response.IsSuccessStatusCode)
         {
             await Task.Delay(500, cancellationToken);
-            var fallbackModel = "gemini-1.5-flash";
+            var fallbackModel = "gemini-flash-latest";
             var fallbackUrl = $"https://generativelanguage.googleapis.com/v1beta/models/{fallbackModel}:generateContent?key={apiKey}";
             using var retryContent = new StringContent(contentString, Encoding.UTF8, "application/json");
             response = await httpClient.PostAsync(fallbackUrl, retryContent, cancellationToken);
@@ -41,7 +41,7 @@ public sealed class ChatController(IConfiguration configuration, HttpClient http
             if (!response.IsSuccessStatusCode)
             {
                 await Task.Delay(500, cancellationToken);
-                fallbackModel = "gemini-1.5-flash-8b";
+                fallbackModel = "gemini-2.0-flash-lite";
                 var secondFallbackUrl = $"https://generativelanguage.googleapis.com/v1beta/models/{fallbackModel}:generateContent?key={apiKey}";
                 using var secondRetryContent = new StringContent(contentString, Encoding.UTF8, "application/json");
                 response = await httpClient.PostAsync(secondFallbackUrl, secondRetryContent, cancellationToken);
