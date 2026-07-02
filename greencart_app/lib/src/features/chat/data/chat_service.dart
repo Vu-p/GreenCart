@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -111,10 +112,14 @@ $productContext
 
     try {
       var response = await sendRequest();
-      final candidates = response.data['candidates'] as List<dynamic>?;
-      if (candidates != null && candidates.isNotEmpty) {
-        final parts = candidates[0]['content']['parts'] as List<dynamic>;
-        final reply = parts.map((p) => p['text'] as String).join();
+      final responseData = response.data is String
+          ? jsonDecode(response.data as String)
+          : response.data;
+      if (responseData is Map<String, dynamic>) {
+        final candidates = responseData['candidates'] as List<dynamic>?;
+        if (candidates != null && candidates.isNotEmpty) {
+          final parts = candidates[0]['content']['parts'] as List<dynamic>;
+          final reply = parts.map((p) => p['text'] as String).join();
 
         _history.add({
           'role': 'model',
@@ -123,7 +128,8 @@ $productContext
           ]
         });
 
-        return reply;
+          return reply;
+        }
       }
 
       return 'Xin lỗi, mình không thể trả lời lúc này. Vui lòng thử lại sau! 🙏';

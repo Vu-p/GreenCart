@@ -55,6 +55,11 @@ public sealed class ChatController(IConfiguration configuration, HttpClient http
         }
 
         var responseString = await response.Content.ReadAsStringAsync(cancellationToken);
-        return StatusCode((int)response.StatusCode, responseString);
+        return new ContentResult
+        {
+            Content = responseString,
+            ContentType = "application/json",
+            StatusCode = (int)response.StatusCode
+        };
     }
 }
