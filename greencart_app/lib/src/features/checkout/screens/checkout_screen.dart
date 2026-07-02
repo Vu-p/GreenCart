@@ -13,6 +13,7 @@ import 'package:greencart_app/src/features/checkout/application/checkout_draft_c
 import 'package:greencart_app/src/features/checkout/data/checkout_repository.dart';
 import 'package:greencart_app/src/features/checkout/data/mock_checkout.dart';
 import 'package:greencart_app/src/features/checkout/models/delivery_slot.dart';
+import 'package:greencart_app/src/features/checkout/screens/map_address_picker_screen.dart';
 import 'package:greencart_app/src/features/checkout/screens/substitution_screen.dart';
 
 class CheckoutScreen extends ConsumerStatefulWidget {
@@ -75,6 +76,34 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                     ],
                   ),
                   const SizedBox(height: 16),
+                  OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      foregroundColor: const Color(0xFF006A38),
+                      side: const BorderSide(color: Color(0xFF006A38), width: 1.5),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: () async {
+                      final picked = await Navigator.of(sheetContext).push<String>(
+                        MaterialPageRoute(
+                          builder: (_) => MapAddressPickerScreen(
+                            initialAddress: addressController.text,
+                          ),
+                        ),
+                      );
+                      if (picked != null && picked.isNotEmpty) {
+                        addressController.text = picked;
+                      }
+                    },
+                    icon: const Icon(Icons.map_outlined),
+                    label: const Text(
+                      '🗺 Chọn vị trí trên Bản đồ (Pick on Map)',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
                   TextFormField(
                     controller: addressController,
                     autofocus: true,

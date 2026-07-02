@@ -12,6 +12,7 @@ import 'package:greencart_app/src/core/widgets/section_header.dart';
 import 'package:greencart_app/src/features/auth/application/auth_controller.dart';
 import 'package:greencart_app/src/features/auth/screens/login_screen.dart';
 import 'package:greencart_app/src/features/meal_planner/screens/meal_planner_screen.dart';
+import 'package:greencart_app/src/features/checkout/screens/map_address_picker_screen.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -250,6 +251,36 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     ),
                   ),
                   const SizedBox(height: 14),
+                  OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      foregroundColor: const Color(0xFF006A38),
+                      side: const BorderSide(color: Color(0xFF006A38), width: 1.5),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: () async {
+                      final picked = await Navigator.of(context).push<String>(
+                        MaterialPageRoute(
+                          builder: (_) => MapAddressPickerScreen(
+                            initialAddress: _addressController.text,
+                          ),
+                        ),
+                      );
+                      if (picked != null && picked.isNotEmpty) {
+                        setState(() {
+                          _addressController.text = picked;
+                        });
+                      }
+                    },
+                    icon: const Icon(Icons.map_outlined),
+                    label: const Text(
+                      '🗺 Chọn vị trí trên Bản đồ (Pick on Map)',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
                   TextField(
                     controller: _addressController,
                     focusNode: _addressFocusNode,
