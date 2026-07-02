@@ -80,7 +80,8 @@ public sealed class PayOsPaymentsController(
 
         if (paymentStatus.IsCancelled)
         {
-            await MarkOrderCancelledAsync(order, paymentStatus.PaymentLinkId, cancellationToken);
+            // Không tự động hủy đơn hàng (giữ nguyên Pending) để user có thể bấm Thanh toán lại (Repay)
+            return Redirect(BuildAppUrl(payOsOptions.Value.AppCancelUrl, order));
         }
 
         return Redirect(BuildAppUrl(payOsOptions.Value.AppCancelUrl, order));
@@ -95,7 +96,7 @@ public sealed class PayOsPaymentsController(
             return Redirect(payOsOptions.Value.AppCancelUrl);
         }
 
-        await MarkOrderCancelledAsync(order, order.PayOsPaymentLinkId, cancellationToken);
+        // Người dùng hủy thanh toán trên cổng PayOS: không hủy order, chuyển hướng về App màn hình PaymentCancelled
         return Redirect(BuildAppUrl(payOsOptions.Value.AppCancelUrl, order));
     }
 

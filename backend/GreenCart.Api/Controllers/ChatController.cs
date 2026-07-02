@@ -27,14 +27,23 @@ public sealed class ChatController(IConfiguration configuration, HttpClient http
 
         var response = await httpClient.PostAsync(url, content, cancellationToken);
 
-        // Nếu model chính gặp 429 hoặc 503, thử chuyển ngay sang model dự phòng gemini-1.5-flash sau 1.5s (chỉ 1 lần duy nhất)
-        if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests || response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
+        // Nếu model chính gặp lỗi (429 Rate Limit, 404, 503), chuyển sang model dự phòng theo thứ tự ưu tiên chuẩn Google AI Studio
+        if (!response.IsSuccessStatusCode)
         {
-            await Task.Delay(1500, cancellationToken);
-            var fallbackModel = model == "gemini-2.0-flash" ? "gemini-1.5-flash" : "gemini-1.5-pro";
+            await Task.Delay(1000, cancellationToken);
+            var fallbackModel = "gemini-2.0-flash-lite-preview-02-05";
             var fallbackUrl = $"https://generativelanguage.googleapis.com/v1beta/models/{fallbackModel}:generateContent?key={apiKey}";
             using var retryContent = new StringContent(contentString, Encoding.UTF8, "application/json");
             response = await httpClient.PostAsync(fallbackUrl, retryContent, cancellationToken);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                await Task.Delay(1000, cancellationToken);
+                fallbackModel = "gemini-1.5-pro";
+                var secondFallbackUrl = $"https://generativelanguage.googleapis.com/v1beta/models/{fallbackModel}:generateContent?key={apiKey}";
+                using var secondRetryContent = new StringContent(contentString, Encoding.UTF8, "application/json");
+                response = await httpClient.PostAsync(secondFallbackUrl, secondRetryContent, cancellationToken);
+            }
         }
 
         var responseString = await response.Content.ReadAsStringAsync(cancellationToken);

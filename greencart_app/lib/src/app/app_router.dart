@@ -11,6 +11,8 @@ import '../features/cart/screens/cart_screen.dart';
 import '../features/checkout/screens/checkout_screen.dart';
 import '../features/checkout/screens/payment_success_screen.dart';
 import '../features/checkout/screens/substitution_screen.dart';
+import '../features/checkout/screens/embedded_payment_screen.dart';
+import '../features/checkout/screens/payment_cancelled_screen.dart';
 import '../features/catalog/screens/home_screen.dart';
 import '../features/catalog/screens/product_detail_screen.dart';
 import '../features/catalog/screens/search_screen.dart';
@@ -129,6 +131,23 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => PaymentSuccessScreen(
           orderId: state.uri.queryParameters['orderId'],
           orderNumber: state.uri.queryParameters['orderNumber'],
+        ),
+      ),
+      GoRoute(
+        path: '/checkout/embedded',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => EmbeddedPaymentScreen(
+          orderId: state.uri.queryParameters['orderId'] ?? '',
+          orderNumber: state.uri.queryParameters['orderNumber'] ?? '',
+          checkoutUrl: state.uri.queryParameters['checkoutUrl'] ?? '',
+        ),
+      ),
+      GoRoute(
+        path: '/checkout/cancelled',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => PaymentCancelledScreen(
+          orderId: state.uri.queryParameters['orderId'] ?? '',
+          orderNumber: state.uri.queryParameters['orderNumber'] ?? '',
         ),
       ),
       GoRoute(

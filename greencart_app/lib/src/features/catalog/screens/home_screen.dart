@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:greencart_app/src/core/theme/app_theme.dart';
+import 'package:greencart_app/src/core/widgets/floating_cart_button.dart';
 import 'package:greencart_app/src/core/widgets/animated_entrance.dart';
 import 'package:greencart_app/src/core/widgets/animated_pressable.dart';
 import 'package:greencart_app/src/core/widgets/organic_state_message.dart';
@@ -31,18 +32,26 @@ class HomeScreen extends ConsumerWidget {
     final products = ref.watch(featuredProductsProvider);
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        heroTag: 'ai_chat_fab',
-        backgroundColor: const Color(0xFF006A38),
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute<void>(
-              builder: (_) => const AiChatScreen(),
-            ),
-          );
-        },
-        tooltip: 'Trợ lý AI GreenCart',
-        child: const Text('🤖', style: TextStyle(fontSize: 26)),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          const FloatingCartButton(),
+          const SizedBox(height: 12),
+          FloatingActionButton(
+            heroTag: 'ai_chat_fab',
+            backgroundColor: const Color(0xFF006A38),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const AiChatScreen(),
+                ),
+              );
+            },
+            tooltip: 'Trợ lý AI GreenCart',
+            child: const Text('🤖', style: TextStyle(fontSize: 26)),
+          ),
+        ],
       ),
       body: SafeArea(
         child: Column(

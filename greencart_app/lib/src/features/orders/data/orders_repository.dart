@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:greencart_app/src/core/services/api_client.dart';
 import 'package:greencart_app/src/features/orders/models/order_item.dart';
+import 'package:greencart_app/src/features/checkout/models/checkout_payment.dart';
 
 final ordersRepositoryProvider = Provider<OrdersRepository>((ref) {
   return OrdersRepository(ref.watch(apiClientProvider));
@@ -42,6 +43,14 @@ class OrdersRepository {
       authorized: true,
     );
     return OrderItem.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  Future<CheckoutPayment> repayOrder(String orderId) async {
+    final response = await _apiClient.post(
+      '/api/orders/$orderId/repay',
+      authorized: true,
+    );
+    return CheckoutPayment.fromJson(response.data as Map<String, dynamic>);
   }
 
   Future<void> submitReview({

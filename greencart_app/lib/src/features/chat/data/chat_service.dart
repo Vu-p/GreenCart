@@ -137,10 +137,19 @@ $productContext
         return '⚠️ Chưa cấu hình API Key Gemini trên máy chủ Backend.';
       }
       if (statusCode == 429) {
-        return '🌿 Trợ lý AI hiện đang nhận được rất nhiều câu hỏi cùng lúc hoặc đã hết hạn mức phản hồi miễn phí của Google Gemini. Bạn đợi khoảng 30 giây rồi hỏi lại nhé! 😊';
+        return '🌿 Trợ lý AI đang nhận được nhiều yêu cầu hoặc đã hết hạn mức phản hồi miễn phí của Google Gemini (Lỗi 429). Bạn vui lòng đợi 30 giây rồi hỏi lại nhé! 😊';
+      }
+      if (statusCode == 404) {
+        return '🌿 Model AI hiện đang được bảo trì hoặc nâng cấp trên Google Gemini (Lỗi 404). Bạn vui lòng thử hỏi lại sau ít giây nhé!';
+      }
+      if (statusCode == 403) {
+        return '⚠️ Quyền truy cập API AI bị từ chối hoặc hết hạn mức từ Google (Lỗi 403). Vui lòng kiểm tra lại cấu hình API Key.';
       }
       if (statusCode != null && statusCode >= 500) {
         return '⚠️ Máy chủ AI đang bảo trì hoặc bận (Lỗi $statusCode). Vui lòng thử lại sau ít phút!';
+      }
+      if (statusCode != null && statusCode >= 400) {
+        return '🌿 AI phản hồi mã lỗi $statusCode. Vui lòng thử hỏi lại sau giây lát nhé!';
       }
       return 'Lỗi kết nối tới AI: Không thể xử lý yêu cầu lúc này. Vui lòng kiểm tra lại kết nối mạng! 📡';
     } catch (e) {

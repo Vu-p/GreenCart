@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -6,20 +7,103 @@ import 'package:greencart_app/src/core/theme/app_theme.dart';
 import 'package:greencart_app/src/core/widgets/mobile_page_title.dart';
 import 'package:greencart_app/src/core/widgets/organic_card.dart';
 import 'package:greencart_app/src/core/widgets/section_header.dart';
+import 'package:greencart_app/src/core/widgets/floating_cart_button.dart';
 import 'package:greencart_app/src/features/meal_planner/data/meal_plan_repository.dart';
 import 'package:greencart_app/src/features/meal_planner/models/meal_plan.dart';
 import 'package:greencart_app/src/features/meal_planner/screens/recipe_detail_screen.dart';
+import 'package:greencart_app/src/features/cart/data/cart_repository.dart';
+import 'package:greencart_app/src/features/catalog/data/product_repository.dart';
 
-class MealPlannerScreen extends ConsumerWidget {
+class MealPlannerScreen extends ConsumerStatefulWidget {
   const MealPlannerScreen({super.key});
 
   static const routePath = '/meal-planner';
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MealPlannerScreen> createState() => _MealPlannerScreenState();
+}
+
+class _MealPlannerScreenState extends ConsumerState<MealPlannerScreen> {
+  int _selectedFilterIndex = 0;
+  final List<String> _filters = ['All Recipes', 'Quick < 25m', 'Low Calorie'];
+
+  void _showSearchDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        final controller = TextEditingController();
+        return AlertDialog(
+          title: const Text('Tìm kiếm thực đơn'),
+          content: TextField(
+            controller: controller,
+            autofocus: true,
+            decoration: const InputDecoration(
+              hintText: 'Nhập tên món ăn hoặc nguyên liệu...',
+              prefixIcon: Icon(Icons.search),
+              border: OutlineInputBorder(),
+            ),
+            onSubmitted: (val) {
+              Navigator.of(ctx).pop();
+              if (val.trim().isNotEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Đang lọc thực đơn theo: "$val"')),
+                );
+              }
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('Đóng'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showScheduleModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Lịch Trình Thực Đơn Tuần',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'Thứ 2 - Thứ 4: Tomato Chicken Stew\nThứ 5 - Thứ 6: Green Goddess Bowl\nCuối tuần: Berry Chia Yogurt Parfait',
+              style: TextStyle(height: 1.6, fontSize: 14, color: AppTheme.charcoalInk),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primary),
+                child: const Text('Đã hiểu', style: TextStyle(color: Colors.white)),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final mealPlansAsync = ref.watch(mealPlansProvider);
 
     return Scaffold(
+      floatingActionButton: const FloatingCartButton(),
       appBar: AppBar(
         title: const MobilePageTitle(
           title: 'GreenCart',
@@ -28,62 +112,108 @@ class MealPlannerScreen extends ConsumerWidget {
         actions: [
           IconButton(
             tooltip: 'Search recipes',
-            onPressed: () {},
+            onPressed: () => _showSearchDialog(context),
             icon: const Icon(Icons.search, color: AppTheme.primary),
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 28),
-        children: [
-          Text(
-            'Meal Planner',
-            style: Theme.of(context).textTheme.headlineLarge,
-          ),
-          const SizedBox(height: 4),
-          const Text(
-            'Plan your week with fresh ingredients.',
-            style: TextStyle(color: AppTheme.outline, fontSize: 14),
-          ),
-          const SizedBox(height: 16),
-          _RecipeSearchPill(onTap: () {}),
-          const SizedBox(height: 14),
-          const _FilterChips(),
-          const SizedBox(height: 24),
-          SectionHeader(
-            title: 'Planned Meals',
-            actionLabel: 'View Schedule',
-            onAction: () {},
-          ),
-          const SizedBox(height: 14),
-          const _PlannedMealStrip(),
-          const SizedBox(height: 24),
-          SectionHeader(
-            title: 'Popular Recipes',
-            actionLabel: 'See All',
-            onAction: () {},
-          ),
-          const SizedBox(height: 14),
-          mealPlansAsync.when(
-            loading: () => const Center(child: Padding(padding: EdgeInsets.all(20), child: CircularProgressIndicator())),
-            error: (err, stack) => Center(child: Text('Lỗi tải thực đơn: $err')),
-            data: (plans) {
-              if (plans.isEmpty) {
-                return const Center(child: Padding(padding: EdgeInsets.all(20), child: Text('Chưa có thực đơn mẫu nào.')));
-              }
-              return Column(
-                children: [
-                  for (final meal in plans) ...[
-                    _MealPlanCard(meal: meal),
-                    const SizedBox(height: 12),
+      body: RefreshIndicator(
+        color: AppTheme.primary,
+        onRefresh: () async {
+          HapticFeedback.lightImpact();
+          ref.invalidate(mealPlansProvider);
+          return await ref.read(mealPlansProvider.future);
+        },
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
+          children: [
+            Text(
+              'Meal Planner',
+              style: Theme.of(context).textTheme.headlineLarge,
+            ),
+            const SizedBox(height: 4),
+            const Text(
+              'Plan your week with fresh ingredients.',
+              style: TextStyle(color: AppTheme.outline, fontSize: 14),
+            ),
+            const SizedBox(height: 16),
+            _RecipeSearchPill(onTap: () => _showSearchDialog(context)),
+            const SizedBox(height: 14),
+            _FilterChips(
+              filters: _filters,
+              selectedIndex: _selectedFilterIndex,
+              onSelected: (idx) {
+                HapticFeedback.selectionClick();
+                setState(() => _selectedFilterIndex = idx);
+              },
+            ),
+            const SizedBox(height: 24),
+            SectionHeader(
+              title: 'Planned Meals',
+              actionLabel: 'View Schedule',
+              onAction: () => _showScheduleModal(context),
+            ),
+            const SizedBox(height: 14),
+            const _PlannedMealStrip(),
+            const SizedBox(height: 24),
+            SectionHeader(
+              title: 'Popular Recipes',
+              actionLabel: 'See All',
+              onAction: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Đang hiển thị toàn bộ công thức nổi bật')),
+                );
+              },
+            ),
+            const SizedBox(height: 14),
+            mealPlansAsync.when(
+              loading: () => const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: CircularProgressIndicator(color: AppTheme.primary),
+                ),
+              ),
+              error: (err, stack) => Center(child: Text('Lỗi tải thực đơn: $err')),
+              data: (plans) {
+                if (plans.isEmpty) {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Text('Chưa có thực đơn mẫu nào.'),
+                    ),
+                  );
+                }
+
+                var filteredPlans = plans;
+                if (_selectedFilterIndex == 1) {
+                  filteredPlans = plans.where((m) => m.minutes < 25).toList();
+                } else if (_selectedFilterIndex == 2) {
+                  filteredPlans = plans.where((m) => m.calories < 450).toList();
+                }
+
+                if (filteredPlans.isEmpty) {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Text('Không tìm thấy công thức phù hợp bộ lọc.'),
+                    ),
+                  );
+                }
+
+                return Column(
+                  children: [
+                    for (final meal in filteredPlans) ...[
+                      _MealPlanCard(meal: meal),
+                      const SizedBox(height: 12),
+                    ],
                   ],
-                ],
-              );
-            },
-          ),
-          const SizedBox(height: 8),
-          const _SmartSelectionCard(),
-        ],
+                );
+              },
+            ),
+            const SizedBox(height: 8),
+            const _SmartSelectionCard(),
+          ],
+        ),
       ),
     );
   }
@@ -123,27 +253,36 @@ class _RecipeSearchPill extends StatelessWidget {
 }
 
 class _FilterChips extends StatelessWidget {
-  const _FilterChips();
+  const _FilterChips({
+    required this.filters,
+    required this.selectedIndex,
+    required this.onSelected,
+  });
+
+  final List<String> filters;
+  final int selectedIndex;
+  final ValueChanged<int> onSelected;
 
   @override
   Widget build(BuildContext context) {
-    const filters = ['All Recipes', 'Quick & Easy', 'Healthy'];
     return SizedBox(
       height: 34,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index) => Chip(
-          label: Text(filters[index]),
-          backgroundColor: index == 0
-              ? AppTheme.primary
-              : AppTheme.succulentGreen,
-          labelStyle: TextStyle(
-            color: index == 0 ? Colors.white : AppTheme.primary,
-            fontSize: 12,
-            fontWeight: FontWeight.w800,
-          ),
-          padding: EdgeInsets.zero,
-        ),
+        itemBuilder: (context, index) {
+          final isSelected = index == selectedIndex;
+          return ActionChip(
+            label: Text(filters[index]),
+            backgroundColor: isSelected ? AppTheme.primary : AppTheme.succulentGreen,
+            labelStyle: TextStyle(
+              color: isSelected ? Colors.white : AppTheme.primary,
+              fontSize: 12,
+              fontWeight: FontWeight.w800,
+            ),
+            padding: EdgeInsets.zero,
+            onPressed: () => onSelected(index),
+          );
+        },
         separatorBuilder: (context, index) => const SizedBox(width: 8),
         itemCount: filters.length,
       ),
@@ -158,7 +297,10 @@ class _PlannedMealStrip extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final mealPlansAsync = ref.watch(mealPlansProvider);
     return mealPlansAsync.when(
-      loading: () => const SizedBox(height: 126, child: Center(child: CircularProgressIndicator())),
+      loading: () => const SizedBox(
+        height: 126,
+        child: Center(child: CircularProgressIndicator(color: AppTheme.primary)),
+      ),
       error: (e, st) => const SizedBox.shrink(),
       data: (mealPlans) {
         final planned = mealPlans.take(2).toList();
@@ -168,67 +310,67 @@ class _PlannedMealStrip extends ConsumerWidget {
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: planned.length,
-            separatorBuilder: (context, index) => const SizedBox(width: 12),
+            separatorBuilder: (_, __) => const SizedBox(width: 12),
             itemBuilder: (context, index) {
-          final meal = planned[index];
-          return InkWell(
-            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-            onTap: () => context.push(RecipeDetailScreen.pathFor(meal.id)),
-            child: SizedBox(
-              width: 154,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Image.network(_imageFor(meal.id), fit: BoxFit.cover),
-                    DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.transparent,
-                            AppTheme.charcoalInk.withValues(alpha: 0.72),
-                          ],
+              final meal = planned[index];
+              return SizedBox(
+                width: 220,
+                child: OrganicCard(
+                  padding: EdgeInsets.zero,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                    onTap: () => context.push(RecipeDetailScreen.pathFor(meal.id)),
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Image.network(_imageFor(meal.id), fit: BoxFit.cover),
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.transparent,
+                                AppTheme.charcoalInk.withValues(alpha: 0.72),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 10,
-                      right: 10,
-                      bottom: 10,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            meal.title,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w800,
-                            ),
+                        Positioned(
+                          left: 10,
+                          right: 10,
+                          bottom: 10,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                meal.title,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                              Text(
+                                '${meal.minutes} min',
+                                style: const TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ],
                           ),
-                          Text(
-                            '${meal.minutes} min',
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 10,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
+              );
+            },
+          ),
+        );
       },
     );
   }
@@ -304,8 +446,45 @@ class _MealPlanCard extends StatelessWidget {
   }
 }
 
-class _SmartSelectionCard extends StatelessWidget {
+class _SmartSelectionCard extends ConsumerStatefulWidget {
   const _SmartSelectionCard();
+
+  @override
+  ConsumerState<_SmartSelectionCard> createState() => _SmartSelectionCardState();
+}
+
+class _SmartSelectionCardState extends ConsumerState<_SmartSelectionCard> {
+  bool _isAdding = false;
+
+  Future<void> _handleAddAll() async {
+    setState(() => _isAdding = true);
+    HapticFeedback.mediumImpact();
+
+    try {
+      final productsAsync = ref.read(featuredProductsProvider);
+      final products = productsAsync.valueOrNull ?? [];
+      final toAdd = products.take(3).toList();
+
+      for (final p in toAdd) {
+        await ref.read(cartRepositoryProvider).addItem(productId: p.id, quantity: 1);
+      }
+      ref.invalidate(cartProvider);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('🌿 Đã thêm gói nguyên liệu Smart Selection vào giỏ hàng!')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Lỗi khi thêm vào giỏ: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isAdding = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -329,9 +508,23 @@ class _SmartSelectionCard extends StatelessWidget {
           const _IngredientRow(name: 'Romaine Tomatoes', price: '\$1.27'),
           const _IngredientRow(name: 'Fresh Bean Sprouts', price: '\$1.80'),
           const SizedBox(height: 14),
-          ElevatedButton(
-            onPressed: () {},
-            child: const Text('Add All Selected to Cart - \$5.50'),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: _isAdding ? null : _handleAddAll,
+              style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primary),
+              icon: _isAdding
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                    )
+                  : const Icon(Icons.add_shopping_cart, color: Colors.white),
+              label: Text(
+                _isAdding ? 'Adding...' : 'Add All Selected to Cart - \$5.50',
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+              ),
+            ),
           ),
         ],
       ),

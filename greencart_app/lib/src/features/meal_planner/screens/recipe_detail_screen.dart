@@ -253,19 +253,52 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                     onAction: () => ref.invalidate(featuredProductsProvider),
                   ),
                   data: (products) {
+                    final productsById = {
+                      for (final product in products) product.id: product,
+                    };
                     final productsByName = {
                       for (final product in products)
-                        product.name.toLowerCase(): product,
+                        product.name.toLowerCase().trim(): product,
                     };
-                    final ingredients = meal.ingredients
-                        .map((name) => productsByName[name.toLowerCase()])
-                        .whereType<Product>()
-                        .toList();
-                    final missingNames = meal.ingredients
-                        .where(
-                          (name) => productsByName[name.toLowerCase()] == null,
-                        )
-                        .toList();
+
+                    final ingredients = <Product>[];
+                    final missingNames = <String>[];
+
+                    if (meal.ingredientItems.isNotEmpty) {
+                      for (final item in meal.ingredientItems) {
+                        final matched = productsById[item.productId] ??
+                            productsByName[item.name.toLowerCase().trim()] ??
+                            Product(
+                              id: item.productId.isNotEmpty ? item.productId : item.id,
+                              name: item.name.isNotEmpty ? item.name : 'Nguyên liệu',
+                              categoryId: 'cat-meal-prep',
+                              categoryName: item.quantityLabel.isNotEmpty ? item.quantityLabel : 'Khẩu phần',
+                              price: item.unitPrice > 0 ? item.unitPrice : 25000,
+                              imageUrl: item.imageUrl.isNotEmpty
+                                  ? item.imageUrl
+                                  : 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&q=80&w=400',
+                              description: 'Nguyên liệu thực đơn ${meal.title}',
+                              isOrganic: true,
+                              isDeal: false,
+                              stock: item.stock > 0 ? item.stock : 50,
+                            );
+                        ingredients.add(matched);
+                      }
+                    } else {
+                      for (final name in meal.ingredients) {
+                        final cleanName = name.split('(')[0].trim().toLowerCase();
+                        final matched = productsByName[cleanName] ??
+                            products.cast<Product?>().firstWhere(
+                              (p) => p!.name.toLowerCase().contains(cleanName),
+                              orElse: () => null,
+                            );
+                        if (matched != null) {
+                          ingredients.add(matched);
+                        } else {
+                          missingNames.add(name);
+                        }
+                      }
+                    }
 
                     return Column(
                       children: [

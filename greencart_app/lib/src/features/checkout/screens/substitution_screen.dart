@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:url_launcher/url_launcher.dart';
 
+import 'package:greencart_app/src/features/checkout/screens/embedded_payment_screen.dart';
 import 'package:greencart_app/src/core/theme/app_theme.dart';
 import 'package:greencart_app/src/core/utils/currency_formatter.dart';
 import 'package:greencart_app/src/core/widgets/mobile_page_title.dart';
@@ -13,7 +13,6 @@ import 'package:greencart_app/src/features/catalog/models/product.dart';
 import 'package:greencart_app/src/features/checkout/application/checkout_draft_controller.dart';
 import 'package:greencart_app/src/features/checkout/data/checkout_repository.dart';
 import 'package:greencart_app/src/features/orders/data/orders_repository.dart';
-import 'package:greencart_app/src/features/orders/screens/order_tracking_screen.dart';
 
 class SubstitutionScreen extends ConsumerStatefulWidget {
   const SubstitutionScreen({super.key});
@@ -49,25 +48,17 @@ class _SubstitutionScreenState extends ConsumerState<SubstitutionScreen> {
             deliverySlot: draft.deliverySlot!.value,
             substitutionPreference: substitutionOptions[_selectedIndex],
           );
-      final checkoutUri = Uri.parse(payment.checkoutUrl);
-      final opened = await launchUrl(
-        checkoutUri,
-        mode: LaunchMode.inAppBrowserView,
-      );
       ref.invalidate(cartProvider);
       ref.invalidate(ordersProvider);
       ref.read(checkoutDraftProvider.notifier).clear();
       if (mounted) {
-        if (!opened) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                'PayOS checkout link was created, but could not be opened.',
-              ),
-            ),
-          );
-        }
-        context.go(OrderTrackingScreen.pathFor(payment.order.id));
+        context.push(
+          EmbeddedPaymentScreen.pathFor(
+            payment.order.id,
+            checkoutUrl: payment.checkoutUrl,
+            orderNumber: payment.order.orderNumber,
+          ),
+        );
       }
     } catch (_) {
       if (mounted) {
