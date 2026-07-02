@@ -196,7 +196,7 @@ public sealed class CheckoutController(
     private static decimal DeliveryFeeFor(string? deliverySlot) =>
         deliverySlot switch
         {
-            "Tomorrow, 8:00 - 10:00 AM" => 1.90m,
+            "Tomorrow, 8:00 - 10:00 AM" => 10000m,
             "Saturday, 10:00 AM - 12:00 PM" => 0m,
             _ => ApiMappings.StandardDeliveryFee
         };

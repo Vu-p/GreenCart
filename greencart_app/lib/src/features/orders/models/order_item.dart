@@ -34,7 +34,8 @@ class OrderItem {
   final bool hasReview;
 
   int get itemCount => items.fold(0, (total, item) => total + item.quantity);
-  bool get active => status != 'Completed' && status != 'Cancelled';
+  bool get isCancelled => status == 'Cancelled' || paymentStatus == 'Cancelled';
+  bool get active => status != 'Completed' && !isCancelled;
 
   factory OrderItem.fromJson(Map<String, dynamic> json) {
     return OrderItem(

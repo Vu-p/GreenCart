@@ -43,4 +43,21 @@ class OrdersRepository {
     );
     return OrderItem.fromJson(response.data as Map<String, dynamic>);
   }
+
+  Future<void> submitReview({
+    required String orderId,
+    required int rating,
+    String? comment,
+    List<Map<String, dynamic>>? productReviews,
+  }) async {
+    await _apiClient.post(
+      '/api/orders/$orderId/review',
+      authorized: true,
+      data: {
+        'rating': rating,
+        'comment': comment,
+        'productReviews': productReviews ?? [],
+      },
+    );
+  }
 }

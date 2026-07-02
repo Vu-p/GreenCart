@@ -32,7 +32,11 @@ class AuthRepository {
   final AuthPreferenceStore _authPreferenceStore;
   final GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: const ['email', 'profile'],
+    serverClientId:
+        '874459031414-piu34mdpal24h9a40098o14sqdaad9nb.apps.googleusercontent.com',
   );
+
+  Future<String?> getAccessToken() => _tokenStorage.readToken();
 
   Future<AppUser?> restoreSession() async {
     if (!await _authPreferenceStore.hasLoggedInBefore()) {

@@ -21,8 +21,8 @@ class LoginScreen extends ConsumerStatefulWidget {
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController(text: 'name@example.com');
-  final _passwordController = TextEditingController(text: 'password123');
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   final _passwordFocusNode = FocusNode();
   bool _obscurePassword = true;
 
@@ -91,6 +91,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (_) => _passwordFocusNode.requestFocus(),
                 decoration: const InputDecoration(
+                  hintText: 'name@example.com',
                   prefixIcon: Icon(Icons.mail_outline, size: 20),
                 ),
                 validator: (value) {
@@ -128,6 +129,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   }
                 },
                 decoration: InputDecoration(
+                  hintText: '••••••••',
                   prefixIcon: const Icon(Icons.lock_outline, size: 20),
                   suffixIcon: IconButton(
                     tooltip: _obscurePassword

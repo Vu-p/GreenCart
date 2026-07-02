@@ -4,13 +4,13 @@ const deliverySlots = [
   DeliverySlot(
     label: 'Today',
     window: '5:00 - 7:00 PM',
-    price: 2.90,
+    price: 15000,
     recommended: true,
   ),
   DeliverySlot(
     label: 'Tomorrow',
     window: '8:00 - 10:00 AM',
-    price: 1.90,
+    price: 10000,
     recommended: false,
   ),
   DeliverySlot(
@@ -22,7 +22,7 @@ const deliverySlots = [
 ];
 
 const substitutionOptions = [
-  'Replace with similar organic product',
-  'Contact me before replacing',
-  'Skip unavailable items',
+  'Tự động thay thế bằng món tương tự rẻ hơn hoặc bằng giá',
+  'KHÔNG thay thế — Hoàn tiền ngay cho món hết hàng',
+  'Gọi điện thoại cho tôi trước khi thay thế',
 ];

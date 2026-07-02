@@ -142,6 +142,10 @@ class AuthController extends StateNotifier<AuthState> {
     }
 
     if (error is PlatformException) {
+      if (error.code == 'sign_in_failed' ||
+          (error.message?.contains('10:') ?? false)) {
+        return 'Google Sign-In failed (Error 10). Vui lòng thêm SHA-1 của PC vào Firebase Console (Project Settings -> Android App).';
+      }
       return error.message ??
           'Platform sign-in failed with code ${error.code}.';
     }

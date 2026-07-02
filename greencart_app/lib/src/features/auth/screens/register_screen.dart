@@ -21,9 +21,9 @@ class RegisterScreen extends ConsumerStatefulWidget {
 
 class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController(text: 'Alex Green');
-  final _emailController = TextEditingController(text: 'alex@example.com');
-  final _passwordController = TextEditingController(text: 'password123');
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
   bool _obscurePassword = true;
@@ -86,6 +86,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (_) => _emailFocusNode.requestFocus(),
                 decoration: const InputDecoration(
+                  hintText: 'Alex Green',
                   prefixIcon: Icon(Icons.person_outline, size: 20),
                 ),
                 validator: (value) {
@@ -105,6 +106,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (_) => _passwordFocusNode.requestFocus(),
                 decoration: const InputDecoration(
+                  hintText: 'alex@example.com',
                   prefixIcon: Icon(Icons.mail_outline, size: 20),
                 ),
                 validator: (value) {
@@ -128,6 +130,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   }
                 },
                 decoration: InputDecoration(
+                  hintText: '••••••••',
                   prefixIcon: const Icon(Icons.lock_outline, size: 20),
                   suffixIcon: IconButton(
                     tooltip: _obscurePassword

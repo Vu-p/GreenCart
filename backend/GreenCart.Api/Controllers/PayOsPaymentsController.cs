@@ -182,9 +182,29 @@ public sealed class PayOsPaymentsController(
             Payload = payload
         });
 
+        dbContext.Notifications.Add(new Notification
+        {
+            UserId = order.UserId,
+            Title = eventType == "OrderPaymentPaid" ? "Thanh toán thành công" : "Đã hủy thanh toán",
+            Message = eventType == "OrderPaymentPaid" 
+                ? $"Đơn hàng {order.OrderNumber} đã được thanh toán thành công qua PayOS." 
+                : $"Thanh toán cho đơn hàng {order.OrderNumber} đã bị hủy.",
+            Type = "Payment",
+            ReferenceId = order.Id
+        });
+
         await dbContext.SaveChangesAsync(cancellationToken);
         await orderHub.Clients.Group(OrderHub.OrderGroup(order.Id.ToString())).SendAsync(eventType, payload, cancellationToken);
         await orderHub.Clients.Group(OrderHub.OrderGroup(order.OrderNumber)).SendAsync(eventType, payload, cancellationToken);
+        await orderHub.Clients.Group(OrderHub.UserGroup(order.UserId.ToString())).SendAsync("ReceiveNotification", new
+        {
+            title = eventType == "OrderPaymentPaid" ? "Thanh toán thành công" : "Đã hủy thanh toán",
+            message = eventType == "OrderPaymentPaid" 
+                ? $"Đơn hàng {order.OrderNumber} đã được thanh toán thành công qua PayOS." 
+                : $"Thanh toán cho đơn hàng {order.OrderNumber} đã bị hủy.",
+            type = "Payment",
+            referenceId = order.Id
+        }, cancellationToken);
     }
 
     private static string BuildAppUrl(string baseUrl, Order order)

@@ -65,43 +65,53 @@ class OrderTrackingScreen extends ConsumerWidget {
           children: [
             AnimatedEntrance(
               child: OrganicPromoBanner(
-                eyebrow: order.status.toUpperCase(),
-                title: 'Your order ${order.orderNumber} is ${order.status}.',
-                subtitle: order.deliverySlot == null
-                    ? order.deliveryAddress
-                    : '${order.deliverySlot}\n${order.deliveryAddress}',
-                icon: Icons.local_shipping_outlined,
-                color: AppTheme.deepForest,
+                eyebrow: order.isCancelled ? 'ĐÃ HỦY' : order.status.toUpperCase(),
+                title: order.isCancelled
+                    ? 'Đơn hàng ${order.orderNumber} đã bị hủy.'
+                    : 'Your order ${order.orderNumber} is ${order.status}.',
+                subtitle: order.isCancelled
+                    ? 'Thanh toán PayOS bị hủy hoặc thất bại. Sản phẩm đã được hoàn lại vào kho.'
+                    : (order.deliverySlot == null
+                        ? order.deliveryAddress
+                        : '${order.deliverySlot}\n${order.deliveryAddress}'),
+                icon: order.isCancelled
+                    ? Icons.cancel_outlined
+                    : Icons.local_shipping_outlined,
+                color: order.isCancelled
+                    ? const Color(0xFFD32F2F)
+                    : AppTheme.deepForest,
               ),
             ),
             const SizedBox(height: 24),
-            const SectionHeader(title: 'Progress'),
-            const SizedBox(height: 12),
-            AnimatedEntrance(
-              delay: const Duration(milliseconds: 120),
-              child: _TimelineStep(
-                title: 'Order confirmed',
-                subtitle:
-                    'Payment ${order.paymentStatus.toLowerCase()} and basket reserved.',
-                state: _stateFor(order.status, 0),
+            if (!order.isCancelled) ...[
+              const SectionHeader(title: 'Progress'),
+              const SizedBox(height: 12),
+              AnimatedEntrance(
+                delay: const Duration(milliseconds: 120),
+                child: _TimelineStep(
+                  title: 'Order confirmed',
+                  subtitle:
+                      'Payment ${order.paymentStatus.toLowerCase()} and basket reserved.',
+                  state: _stateFor(order.status, 0),
+                ),
               ),
-            ),
-            AnimatedEntrance(
-              delay: const Duration(milliseconds: 220),
-              child: _TimelineStep(
-                title: 'Packed fresh',
-                subtitle: 'Cold-packed produce with substitution preferences.',
-                state: _stateFor(order.status, 1),
+              AnimatedEntrance(
+                delay: const Duration(milliseconds: 220),
+                child: _TimelineStep(
+                  title: 'Packed fresh',
+                  subtitle: 'Cold-packed produce with substitution preferences.',
+                  state: _stateFor(order.status, 1),
+                ),
               ),
-            ),
-            AnimatedEntrance(
-              delay: const Duration(milliseconds: 320),
-              child: _TimelineStep(
-                title: 'On route',
-                subtitle: 'Driver will call at the gate.',
-                state: _stateFor(order.status, 2),
+              AnimatedEntrance(
+                delay: const Duration(milliseconds: 320),
+                child: _TimelineStep(
+                  title: 'On route',
+                  subtitle: 'Driver will call at the gate.',
+                  state: _stateFor(order.status, 2),
+                ),
               ),
-            ),
+            ],
             const SizedBox(height: 18),
             OrganicCard(
               radius: AppTheme.radiusLg,

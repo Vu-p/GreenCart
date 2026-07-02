@@ -50,12 +50,16 @@ class OrdersScreen extends ConsumerWidget {
               ),
             ],
           ),
-          data: (orders) => ListView(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
-            children: [
-              const ActiveOrderCard(),
-              const SizedBox(height: 24),
-              const SectionHeader(title: 'Recent Orders'),
+          data: (orders) {
+            final activeOrders = orders.where((o) => o.active).toList();
+            return ListView(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
+              children: [
+                if (activeOrders.isNotEmpty) ...[
+                  ActiveOrderCard(orders: activeOrders),
+                  const SizedBox(height: 24),
+                ],
+                const SectionHeader(title: 'Recent Orders'),
               const SizedBox(height: 14),
               if (orders.isEmpty)
                 OrganicStateMessage(
@@ -72,8 +76,9 @@ class OrdersScreen extends ConsumerWidget {
               const SizedBox(height: 10),
               const SupportCard(),
             ],
-          ),
-        ),
+          );
+        },
+      ),
       ),
     );
   }

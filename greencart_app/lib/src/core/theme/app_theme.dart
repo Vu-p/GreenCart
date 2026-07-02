@@ -14,6 +14,7 @@ class AppTheme {
   static const outline = Color(0xFF6E7A6F);
   static const outlineVariant = Color(0xFFBDCABD);
   static const deepForest = Color(0xFF1E4D34);
+  static const coral = Color(0xFFFF5252);
 
   static const radiusSm = 8.0;
   static const radiusMd = 16.0;

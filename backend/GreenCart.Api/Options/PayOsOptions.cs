@@ -12,5 +12,5 @@ public sealed class PayOsOptions
     public string? CancelUrl { get; set; }
     public string AppSuccessUrl { get; set; } = "greencart:///checkout/success";
     public string AppCancelUrl { get; set; } = "greencart:///orders";
-    public decimal AmountMultiplier { get; set; } = 1000m;
+    public decimal AmountMultiplier { get; set; } = 1m;
 }

@@ -17,6 +17,7 @@ import '../features/catalog/screens/search_screen.dart';
 import '../features/deals/screens/deals_screen.dart';
 import '../features/meal_planner/screens/meal_planner_screen.dart';
 import '../features/meal_planner/screens/recipe_detail_screen.dart';
+import '../features/notifications/screens/notifications_screen.dart';
 import '../features/orders/screens/order_tracking_screen.dart';
 import '../features/orders/screens/orders_screen.dart';
 import '../features/orders/screens/rating_review_screen.dart';
@@ -177,6 +178,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AdminOrdersScreen.routePath,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const AdminOrdersScreen(),
+      ),
+      GoRoute(
+        path: NotificationsScreen.routePath,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const NotificationsScreen(),
       ),
     ],
   );
