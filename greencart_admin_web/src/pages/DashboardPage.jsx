@@ -1,24 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { DollarSign, ShoppingBag, Package, AlertTriangle, TrendingUp, CheckCircle2, Clock, ArrowUpRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { DollarSign, ShoppingBag, Package, AlertTriangle, TrendingUp, ArrowUpRight } from 'lucide-react';
 import api from '../services/api';
 
 const DashboardPage = ({ setActiveTab }) => {
-  const [orders, setOrders] = useState([]);
-  const [products, setProducts] = useState([]);
+  const navigate = useNavigate();
   const [analytics, setAnalytics] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      const [ordersRes, productsRes, analyticsRes] = await Promise.all([
-        api.get('/admin/orders'),
-        api.get('/admin/products'),
-        api.get('/admin/analytics').catch(() => ({ data: null }))
-      ]);
-      setOrders(ordersRes.data || []);
-      setProducts(productsRes.data || []);
-      setAnalytics(analyticsRes.data || null);
+      const res = await api.get('/admin/analytics');
+      setAnalytics(res.data || null);
     } catch (err) {
       console.error('Lỗi khi tải dữ liệu Dashboard:', err);
     } finally {
@@ -35,16 +29,16 @@ const DashboardPage = ({ setActiveTab }) => {
     return new Intl.NumberFormat('vi-VN').format(Math.round(val)) + ' đ';
   };
 
-  // Calculations
-  const totalRevenue = analytics?.totalRevenue ?? orders
-    .filter(o => o.status !== 'Cancelled')
-    .reduce((sum, o) => sum + (o.total || o.totalAmount || 0), 0);
-
-  const pendingOrdersCount = orders.filter(o => o.status === 'Pending' || o.status === 'Submitted').length;
-  const shippingOrdersCount = orders.filter(o => o.status === 'Delivering' || o.status === 'Shipping').length;
-  const deliveredOrdersCount = orders.filter(o => o.status === 'Completed' || o.status === 'Delivered').length;
-  const cancelledOrdersCount = orders.filter(o => o.status === 'Cancelled').length;
-  const lowStockProducts = products.filter(p => p.stock < 10);
+  const totalRevenue = analytics?.totalRevenue || 0;
+  const totalOrders = analytics?.totalOrders || 0;
+  const totalProducts = analytics?.totalProducts || 0;
+  const pendingOrdersCount = analytics?.pendingOrders || 0;
+  const shippingOrdersCount = analytics?.deliveringOrders || 0;
+  const deliveredOrdersCount = analytics?.completedOrders || 0;
+  const cancelledOrdersCount = analytics?.cancelledOrders || 0;
+  const lowStockCount = analytics?.lowStockProducts || 0;
+  const recentOrders = analytics?.recentOrders || [];
+  const lowStockList = analytics?.lowStockList || [];
 
   if (loading) {
     return (
@@ -83,11 +77,11 @@ const DashboardPage = ({ setActiveTab }) => {
             Xin chào Quản trị viên GreenCart! 👋
           </h1>
           <p style={{ opacity: 0.85, fontSize: '15px', maxWidth: '600px' }}>
-            Hôm nay bạn có <strong>{pendingOrdersCount} đơn hàng chờ xác nhận</strong> và <strong>{lowStockProducts.length} sản phẩm sắp hết tồn kho</strong> cần chú ý.
+            Hôm nay bạn có <strong>{pendingOrdersCount} đơn hàng chờ xác nhận</strong> và <strong>{lowStockCount} sản phẩm sắp hết tồn kho</strong> cần chú ý.
           </p>
         </div>
         <button
-          onClick={() => setActiveTab('orders')}
+          onClick={() => setActiveTab ? setActiveTab('orders') : navigate('/orders')}
           className="btn"
           style={{
             backgroundColor: '#00E676', color: '#0A2E1C', padding: '14px 24px',
@@ -124,7 +118,7 @@ const DashboardPage = ({ setActiveTab }) => {
             <div>
               <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-secondary)' }}>TỔNG ĐƠN HÀNG</span>
               <h3 style={{ fontSize: '26px', fontWeight: '800', color: '#1E40AF', marginTop: '4px' }}>
-                {orders.length} đơn
+                {totalOrders} đơn
               </h3>
             </div>
             <div style={{ padding: '12px', backgroundColor: '#EFF6FF', borderRadius: '14px', color: '#3B82F6' }}>
@@ -143,7 +137,7 @@ const DashboardPage = ({ setActiveTab }) => {
             <div>
               <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-secondary)' }}>SẢN PHẨM TRONG KHO</span>
               <h3 style={{ fontSize: '26px', fontWeight: '800', color: '#6D28D9', marginTop: '4px' }}>
-                {products.length} mặt hàng
+                {totalProducts} mặt hàng
               </h3>
             </div>
             <div style={{ padding: '12px', backgroundColor: '#F5F3FF', borderRadius: '14px', color: '#8B5CF6' }}>
@@ -160,7 +154,7 @@ const DashboardPage = ({ setActiveTab }) => {
             <div>
               <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-secondary)' }}>CẢNH BÁO TỒN KHO</span>
               <h3 style={{ fontSize: '26px', fontWeight: '800', color: '#D97706', marginTop: '4px' }}>
-                {lowStockProducts.length} món sắp hết
+                {lowStockCount} món sắp hết
               </h3>
             </div>
             <div style={{ padding: '12px', backgroundColor: '#FFFBEB', borderRadius: '14px', color: '#D97706' }}>
@@ -220,7 +214,7 @@ const DashboardPage = ({ setActiveTab }) => {
         <div className="card">
           <h3 style={{ fontSize: '18px', fontWeight: '800', marginBottom: '6px' }}>Tỷ lệ Trạng thái Đơn hàng</h3>
           <span style={{ fontSize: '13px', color: 'var(--text-secondary)', display: 'block', marginBottom: '20px' }}>
-            Tổng số {orders.length} đơn trên toàn hệ thống
+            Tổng số {totalOrders} đơn trên toàn hệ thống
           </span>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
@@ -230,7 +224,7 @@ const DashboardPage = ({ setActiveTab }) => {
               { label: 'Đã hoàn tất (Completed)', count: deliveredOrdersCount, color: '#10B981' },
               { label: 'Đã hủy (Cancelled)', count: cancelledOrdersCount, color: '#EF4444' }
             ].map((st, i) => {
-              const pct = orders.length > 0 ? Math.round((st.count / orders.length) * 100) : 0;
+              const pct = totalOrders > 0 ? Math.round((st.count / totalOrders) * 100) : 0;
               return (
                 <div key={i}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13.5px', fontWeight: '600', marginBottom: '6px' }}>
@@ -254,7 +248,7 @@ const DashboardPage = ({ setActiveTab }) => {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <h3 style={{ fontSize: '18px', fontWeight: '800' }}>Đơn hàng gần đây</h3>
             <button
-              onClick={() => setActiveTab('orders')}
+              onClick={() => setActiveTab ? setActiveTab('orders') : navigate('/orders')}
               style={{ background: 'none', border: 'none', color: 'var(--primary)', fontWeight: '700', cursor: 'pointer', fontSize: '13.5px' }}
             >
               Xem tất cả →
@@ -272,10 +266,10 @@ const DashboardPage = ({ setActiveTab }) => {
                 </tr>
               </thead>
               <tbody>
-                {orders.slice(0, 5).map((order) => (
+                {recentOrders.map((order) => (
                   <tr key={order.id}>
                     <td style={{ fontWeight: '700' }}>#{order.orderNumber || order.id?.substring(0, 8)}</td>
-                    <td style={{ fontWeight: '700', color: 'var(--primary)' }}>{formatCurrency(order.total || order.totalAmount || 0)}</td>
+                    <td style={{ fontWeight: '700', color: 'var(--primary)' }}>{formatCurrency(order.total || 0)}</td>
                     <td>
                       <span className={`badge ${
                         (order.status === 'Completed' || order.status === 'Delivered') ? 'badge-success' :
@@ -290,7 +284,7 @@ const DashboardPage = ({ setActiveTab }) => {
                     </td>
                   </tr>
                 ))}
-                {orders.length === 0 && (
+                {recentOrders.length === 0 && (
                   <tr>
                     <td colSpan="4" style={{ textAlign: 'center', padding: '32px', color: 'var(--text-secondary)' }}>
                       Chưa có đơn hàng nào trong hệ thống.
@@ -307,7 +301,7 @@ const DashboardPage = ({ setActiveTab }) => {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <h3 style={{ fontSize: '18px', fontWeight: '800' }}>Sắp hết hàng</h3>
             <button
-              onClick={() => setActiveTab('products')}
+              onClick={() => setActiveTab ? setActiveTab('products') : navigate('/products')}
               style={{ background: 'none', border: 'none', color: 'var(--primary)', fontWeight: '700', cursor: 'pointer', fontSize: '13.5px' }}
             >
               Cập nhật kho →
@@ -315,7 +309,7 @@ const DashboardPage = ({ setActiveTab }) => {
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-            {lowStockProducts.slice(0, 6).map((item) => (
+            {lowStockList.map((item) => (
               <div key={item.id} style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                 padding: '12px', borderRadius: '12px', backgroundColor: '#F8FAF9', border: '1px solid var(--border-color)'
@@ -342,7 +336,7 @@ const DashboardPage = ({ setActiveTab }) => {
                 </div>
               </div>
             ))}
-            {lowStockProducts.length === 0 && (
+            {lowStockList.length === 0 && (
               <div style={{ textAlign: 'center', padding: '32px', color: 'var(--text-secondary)' }}>
                 🎉 Tất cả sản phẩm đều đủ tồn kho!
               </div>

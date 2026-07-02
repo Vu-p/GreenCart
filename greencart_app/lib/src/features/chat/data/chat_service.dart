@@ -131,33 +131,13 @@ $productContext
       final statusCode = e.response?.statusCode;
       final responseData = e.response?.data;
 
-      // Nếu gặp lỗi 429 hoặc 503 từ Client, tự động đợi 4 giây rồi thử lại thêm 1 lần ngầm
-      if (statusCode == 429 || statusCode == 503) {
-        try {
-          await Future<void>.delayed(const Duration(seconds: 4));
-          final retryResponse = await sendRequest();
-          final candidates = retryResponse.data['candidates'] as List<dynamic>?;
-          if (candidates != null && candidates.isNotEmpty) {
-            final parts = candidates[0]['content']['parts'] as List<dynamic>;
-            final reply = parts.map((p) => p['text'] as String).join();
-            _history.add({
-              'role': 'model',
-              'parts': [{'text': reply}]
-            });
-            return reply;
-          }
-        } catch (_) {
-          // Nếu thử lại vẫn lỗi thì chuyển sang thông báo thân thiện
-        }
-      }
-
       if (statusCode == 400 &&
           responseData != null &&
           responseData.toString().contains('Chưa cấu hình API Key')) {
         return '⚠️ Chưa cấu hình API Key Gemini trên máy chủ Backend.';
       }
       if (statusCode == 429) {
-        return '🌿 AI đang xử lý rất nhiều câu hỏi cùng lúc nên hơi chậm xíu xíu. Bạn đợi khoảng 20 giây rồi nhắn lại giúp mình nha! 😊';
+        return '🌿 Trợ lý AI hiện đang nhận được rất nhiều câu hỏi cùng lúc hoặc đã hết hạn mức phản hồi miễn phí của Google Gemini. Bạn đợi khoảng 30 giây rồi hỏi lại nhé! 😊';
       }
       if (statusCode != null && statusCode >= 500) {
         return '⚠️ Máy chủ AI đang bảo trì hoặc bận (Lỗi $statusCode). Vui lòng thử lại sau ít phút!';

@@ -481,6 +481,22 @@ public sealed class AdminController(AppDbContext dbContext, IHubContext<OrderHub
             }
         }
 
+        var lowStockCount = await dbContext.Products.CountAsync(p => p.Stock < 10, cancellationToken);
+        var lowStockList = await dbContext.Products
+            .AsNoTracking()
+            .Where(p => p.Stock < 10)
+            .OrderBy(p => p.Stock)
+            .Take(6)
+            .Select(p => new LowStockProductDto(p.Id, p.Name, p.Price, p.Stock, p.ImageUrl))
+            .ToListAsync(cancellationToken);
+
+        var recentOrders = await dbContext.Orders
+            .AsNoTracking()
+            .OrderByDescending(o => o.CreatedAt)
+            .Take(5)
+            .Select(o => new RecentOrderDto(o.Id.ToString(), o.OrderNumber, o.Total, o.Status, o.CreatedAt))
+            .ToListAsync(cancellationToken);
+
         return Ok(new AdminAnalyticsResponse(
             totalRevenue,
             totalOrders,
@@ -491,7 +507,10 @@ public sealed class AdminController(AppDbContext dbContext, IHubContext<OrderHub
             deliveringCount,
             completedCount,
             cancelledCount,
-            dailyRevenues
+            lowStockCount,
+            dailyRevenues,
+            recentOrders,
+            lowStockList
         ));
     }
 
@@ -512,7 +531,13 @@ public sealed record AdminAnalyticsResponse(
     int DeliveringOrders,
     int CompletedOrders,
     int CancelledOrders,
-    List<DailyRevenueDto> DailyRevenues);
+    int LowStockProducts,
+    List<DailyRevenueDto> DailyRevenues,
+    List<RecentOrderDto> RecentOrders,
+    List<LowStockProductDto> LowStockList);
+
+public sealed record RecentOrderDto(string Id, string OrderNumber, decimal Total, string Status, DateTimeOffset CreatedAt);
+public sealed record LowStockProductDto(Guid Id, string Name, decimal Price, int Stock, string ImageUrl);
 
 public sealed record DailyRevenueDto(string Date, decimal Revenue);
 
