@@ -6,6 +6,8 @@ import DashboardPage from './pages/DashboardPage';
 import OrdersPage from './pages/OrdersPage';
 import ProductsPage from './pages/ProductsPage';
 import CategoriesPage from './pages/CategoriesPage';
+import UsersPage from './pages/UsersPage';
+import MealPlansPage from './pages/MealPlansPage';
 
 const AppContent = () => {
   const { isAuthenticated } = useAuth();
@@ -30,6 +32,10 @@ const AppContent = () => {
         return <ProductsPage key={refreshKey} />;
       case 'categories':
         return <CategoriesPage key={refreshKey} />;
+      case 'users':
+        return <UsersPage key={refreshKey} />;
+      case 'meal-plans':
+        return <MealPlansPage key={refreshKey} />;
       default:
         return <DashboardPage key={refreshKey} setActiveTab={setActiveTab} />;
     }

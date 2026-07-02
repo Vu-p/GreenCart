@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, ShoppingBag, Package, FolderTree, LogOut, ShieldAlert } from 'lucide-react';
+import { LayoutDashboard, ShoppingBag, Package, FolderTree, LogOut, Users, Utensils } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Sidebar = ({ activeTab, setActiveTab }) => {
@@ -10,6 +10,8 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
     { id: 'orders', label: 'Quản lý Đơn hàng', icon: ShoppingBag },
     { id: 'products', label: 'Sản phẩm & Kho', icon: Package },
     { id: 'categories', label: 'Danh mục', icon: FolderTree },
+    { id: 'users', label: 'Khách hàng & Tài khoản', icon: Users },
+    { id: 'meal-plans', label: 'Thực đơn & Kế hoạch', icon: Utensils },
   ];
 
   return (

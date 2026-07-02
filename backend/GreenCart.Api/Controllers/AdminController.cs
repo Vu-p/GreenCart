@@ -225,6 +225,202 @@ public sealed class AdminController(AppDbContext dbContext, IHubContext<OrderHub
         return NoContent();
     }
 
+    // ================= USERS MANAGEMENT =================
+    [HttpGet("users")]
+    public async Task<ActionResult<IEnumerable<object>>> GetUsers(CancellationToken cancellationToken)
+    {
+        var users = await dbContext.Users
+            .AsNoTracking()
+            .OrderByDescending(u => u.CreatedAt)
+            .Select(u => new
+            {
+                id = u.Id,
+                email = u.Email,
+                name = u.Name,
+                phone = u.Phone,
+                role = u.Role,
+                createdAt = u.CreatedAt
+            })
+            .ToListAsync(cancellationToken);
+
+        return Ok(users);
+    }
+
+    [HttpPut("users/{id:guid}/role")]
+    public async Task<ActionResult<object>> UpdateUserRole(Guid id, [FromBody] UpdateUserRoleRequest request, CancellationToken cancellationToken)
+    {
+        if (request.Role != UserRoles.Admin && request.Role != UserRoles.Customer)
+        {
+            return BadRequest(new { message = "Invalid user role." });
+        }
+
+        var user = await dbContext.Users.SingleOrDefaultAsync(u => u.Id == id, cancellationToken);
+        if (user is null)
+        {
+            return NotFound(new { message = "User not found." });
+        }
+
+        user.Role = request.Role;
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return Ok(new
+        {
+            id = user.Id,
+            email = user.Email,
+            name = user.Name,
+            phone = user.Phone,
+            role = user.Role,
+            createdAt = user.CreatedAt
+        });
+    }
+
+    [HttpDelete("users/{id:guid}")]
+    public async Task<IActionResult> DeleteUser(Guid id, CancellationToken cancellationToken)
+    {
+        var user = await dbContext.Users.SingleOrDefaultAsync(u => u.Id == id, cancellationToken);
+        if (user is null)
+        {
+            return NotFound();
+        }
+
+        dbContext.Users.Remove(user);
+        await dbContext.SaveChangesAsync(cancellationToken);
+        return NoContent();
+    }
+
+    // ================= MEAL PLANS MANAGEMENT =================
+    [HttpGet("meal-plans")]
+    public async Task<ActionResult<IEnumerable<object>>> GetMealPlansAdmin(CancellationToken cancellationToken)
+    {
+        var plans = await dbContext.MealPlans
+            .AsNoTracking()
+            .Include(p => p.Ingredients)
+            .ThenInclude(i => i.Product)
+            .OrderByDescending(p => p.CreatedAt)
+            .ToListAsync(cancellationToken);
+
+        return Ok(plans.Select(p => new
+        {
+            id = p.Id,
+            title = p.Title,
+            description = p.Description,
+            instructions = p.Instructions,
+            prepMinutes = p.PrepMinutes,
+            cookMinutes = p.CookMinutes,
+            servings = p.Servings,
+            difficulty = p.Difficulty,
+            imageUrl = p.ImageUrl,
+            isFeatured = p.IsFeatured,
+            createdAt = p.CreatedAt,
+            ingredients = p.Ingredients.OrderBy(i => i.SortOrder).Select(i => new
+            {
+                id = i.Id,
+                productId = i.ProductId,
+                productName = i.Product?.Name ?? "Unknown Product",
+                quantityText = i.QuantityText,
+                isOptional = i.IsOptional,
+                sortOrder = i.SortOrder
+            })
+        }));
+    }
+
+    [HttpPost("meal-plans")]
+    public async Task<ActionResult<object>> CreateMealPlan([FromBody] UpsertMealPlanRequest request, CancellationToken cancellationToken)
+    {
+        var plan = new MealPlan
+        {
+            Title = request.Title.Trim(),
+            Description = request.Description.Trim(),
+            Instructions = request.Instructions.Trim(),
+            PrepMinutes = request.PrepMinutes,
+            CookMinutes = request.CookMinutes,
+            Servings = request.Servings,
+            Difficulty = request.Difficulty.Trim(),
+            ImageUrl = request.ImageUrl.Trim(),
+            IsFeatured = request.IsFeatured
+        };
+
+        dbContext.MealPlans.Add(plan);
+
+        if (request.Ingredients != null)
+        {
+            foreach (var ing in request.Ingredients)
+            {
+                plan.Ingredients.Add(new MealIngredient
+                {
+                    MealPlanId = plan.Id,
+                    ProductId = ing.ProductId,
+                    QuantityText = ing.QuantityText.Trim(),
+                    IsOptional = ing.IsOptional,
+                    SortOrder = ing.SortOrder
+                });
+            }
+        }
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return Created($"api/admin/meal-plans/{plan.Id}", new { id = plan.Id, title = plan.Title });
+    }
+
+    [HttpPut("meal-plans/{id:guid}")]
+    public async Task<ActionResult<object>> UpdateMealPlan(Guid id, [FromBody] UpsertMealPlanRequest request, CancellationToken cancellationToken)
+    {
+        var plan = await dbContext.MealPlans
+            .Include(p => p.Ingredients)
+            .SingleOrDefaultAsync(p => p.Id == id, cancellationToken);
+
+        if (plan is null)
+        {
+            return NotFound();
+        }
+
+        plan.Title = request.Title.Trim();
+        plan.Description = request.Description.Trim();
+        plan.Instructions = request.Instructions.Trim();
+        plan.PrepMinutes = request.PrepMinutes;
+        plan.CookMinutes = request.CookMinutes;
+        plan.Servings = request.Servings;
+        plan.Difficulty = request.Difficulty.Trim();
+        plan.ImageUrl = request.ImageUrl.Trim();
+        plan.IsFeatured = request.IsFeatured;
+
+        dbContext.MealIngredients.RemoveRange(plan.Ingredients);
+        plan.Ingredients.Clear();
+
+        if (request.Ingredients != null)
+        {
+            foreach (var ing in request.Ingredients)
+            {
+                plan.Ingredients.Add(new MealIngredient
+                {
+                    MealPlanId = plan.Id,
+                    ProductId = ing.ProductId,
+                    QuantityText = ing.QuantityText.Trim(),
+                    IsOptional = ing.IsOptional,
+                    SortOrder = ing.SortOrder
+                });
+            }
+        }
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return Ok(new { id = plan.Id, title = plan.Title });
+    }
+
+    [HttpDelete("meal-plans/{id:guid}")]
+    public async Task<IActionResult> DeleteMealPlan(Guid id, CancellationToken cancellationToken)
+    {
+        var plan = await dbContext.MealPlans.SingleOrDefaultAsync(p => p.Id == id, cancellationToken);
+        if (plan is null)
+        {
+            return NotFound();
+        }
+
+        dbContext.MealPlans.Remove(plan);
+        await dbContext.SaveChangesAsync(cancellationToken);
+        return NoContent();
+    }
+
     private IQueryable<Order> BaseOrderQuery() =>
         dbContext.Orders
             .Include(order => order.Items)
@@ -244,3 +440,24 @@ public sealed class AdminController(AppDbContext dbContext, IHubContext<OrderHub
             .AsNoTracking()
             .SingleOrDefaultAsync(product => product.Id == id, cancellationToken);
 }
+
+public sealed record UpdateUserRoleRequest(string Role);
+
+public sealed record UpsertMealPlanRequest(
+    string Title,
+    string Description,
+    string Instructions,
+    int PrepMinutes,
+    int CookMinutes,
+    int Servings,
+    string Difficulty,
+    string ImageUrl,
+    bool IsFeatured,
+    List<UpsertMealPlanIngredientDto>? Ingredients);
+
+public sealed record UpsertMealPlanIngredientDto(
+    Guid ProductId,
+    string QuantityText,
+    bool IsOptional,
+    int SortOrder);
+

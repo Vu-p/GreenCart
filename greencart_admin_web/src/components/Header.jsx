@@ -8,6 +8,8 @@ const Header = ({ activeTab, onRefresh }) => {
       case 'orders': return 'Quản lý Đơn hàng hệ thống';
       case 'products': return 'Danh sách Sản phẩm & Kho hàng';
       case 'categories': return 'Quản lý Danh mục sản phẩm';
+      case 'users': return 'Quản lý Khách hàng & Tài khoản';
+      case 'meal-plans': return 'Quản lý Thực đơn & Kế hoạch (Meal Planner)';
       default: return 'Admin Portal';
     }
   };
