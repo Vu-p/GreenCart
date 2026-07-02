@@ -10,6 +10,31 @@ const OrdersPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [updatingId, setUpdatingId] = useState(null);
+  const [aiLoading, setAiLoading] = useState(false);
+
+  const triggerAiAutoSubstitute = async (orderId) => {
+    setAiLoading(true);
+    try {
+      const res = await api.post(`/admin/orders/${orderId}/ai-auto-substitute`);
+      alert(res.data?.message || '🤖 AI đã xử lý đề xuất thay thế!');
+    } catch (err) {
+      alert(err.response?.data?.message || 'Lỗi khi chạy AI tự động đề xuất');
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  const triggerAiSubstituteItem = async (orderId, itemId) => {
+    setAiLoading(true);
+    try {
+      await api.post(`/admin/orders/${orderId}/items/${itemId}/ai-substitute`);
+      alert('🤖 AI GreenCart đã tạo đề xuất thay thế tối ưu và gửi thông báo tới khách hàng!');
+    } catch (err) {
+      alert(err.response?.data?.message || 'Lỗi khi tạo đề xuất AI');
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -289,7 +314,18 @@ const OrdersPage = () => {
             </div>
 
             {/* Items List */}
-            <h4 style={{ fontSize: '15px', fontWeight: '700', marginBottom: '12px' }}>Danh sách món đặt ({selectedOrder.items?.length || 0})</h4>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <h4 style={{ fontSize: '15px', fontWeight: '700', margin: 0 }}>Danh sách món đặt ({selectedOrder.items?.length || 0})</h4>
+              <button
+                disabled={aiLoading || selectedOrder.status === 'Completed' || selectedOrder.status === 'Cancelled'}
+                onClick={() => triggerAiAutoSubstitute(selectedOrder.id)}
+                className="btn btn-secondary"
+                style={{ padding: '6px 12px', fontSize: '12px', background: '#E0F2FE', color: '#0369A1', border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '700' }}
+              >
+                <Sparkles size={14} />
+                <span>{aiLoading ? 'AI đang chạy...' : '✨ AI Tự động thay thế kho hết hàng'}</span>
+              </button>
+            </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
               {(selectedOrder.items || []).map((item, idx) => (
                 <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', backgroundColor: '#F8FAF9', borderRadius: '12px' }}>
@@ -302,8 +338,19 @@ const OrdersPage = () => {
                       <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Đơn giá: {formatCurrency(item.price || 0)}</div>
                     </div>
                   </div>
-                  <div style={{ fontWeight: '800', color: 'var(--primary)' }}>
-                    {formatCurrency((item.price || 0) * (item.quantity || 1))}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    {selectedOrder.status !== 'Completed' && selectedOrder.status !== 'Cancelled' && (
+                      <button
+                        disabled={aiLoading}
+                        onClick={() => triggerAiSubstituteItem(selectedOrder.id, item.id)}
+                        style={{ padding: '4px 8px', fontSize: '11px', background: '#FEF3C7', color: '#B45309', border: '1px solid #FDE68A', borderRadius: '6px', cursor: 'pointer', fontWeight: '700' }}
+                      >
+                        🤖 AI Đổi món
+                      </button>
+                    )}
+                    <div style={{ fontWeight: '800', color: 'var(--primary)' }}>
+                      {formatCurrency((item.price || 0) * (item.quantity || 1))}
+                    </div>
                   </div>
                 </div>
               ))}

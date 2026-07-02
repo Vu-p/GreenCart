@@ -90,6 +90,159 @@ public sealed class SubstitutionsController(AppDbContext dbContext, IHubContext<
         return Ok(ApiMappings.ToResponse(substitution));
     }
 
+    [Authorize(Roles = UserRoles.Admin)]
+    [HttpPost("api/admin/orders/{orderId:guid}/items/{orderItemId:guid}/ai-substitute")]
+    public async Task<ActionResult<object>> AiSubstituteItem(
+        Guid orderId,
+        Guid orderItemId,
+        CancellationToken cancellationToken)
+    {
+        var order = await dbContext.Orders
+            .Include(o => o.Items)
+            .SingleOrDefaultAsync(o => o.Id == orderId, cancellationToken);
+        if (order is null) return NotFound(new { message = "Không tìm thấy đơn hàng." });
+
+        var orderItem = order.Items.SingleOrDefault(i => i.Id == orderItemId);
+        if (orderItem is null) return BadRequest(new { message = "Không tìm thấy sản phẩm trong đơn hàng." });
+
+        var originalProduct = await dbContext.Products.SingleOrDefaultAsync(p => p.Id == orderItem.ProductId, cancellationToken);
+        var candidates = await dbContext.Products
+            .AsNoTracking()
+            .Where(p => p.Id != orderItem.ProductId && p.Stock > 0)
+            .ToListAsync(cancellationToken);
+
+        if (candidates.Count == 0)
+        {
+            return BadRequest(new { message = "⚠️ Hiện không có sản phẩm nào khác trong kho còn hàng để thay thế." });
+        }
+
+        var bestMatch = candidates
+            .OrderByDescending(p => (originalProduct != null && p.CategoryId == originalProduct.CategoryId ? 50 : 0) +
+                                    (originalProduct != null && p.IsOrganic == originalProduct.IsOrganic ? 25 : 0) -
+                                    (originalProduct != null ? (double)Math.Abs(p.Price - originalProduct.Price) / 1000.0 : 0))
+            .First();
+
+        var note = $"🤖 AI GreenCart đề xuất: Thay '{orderItem.ProductName}' bằng '{bestMatch.Name}' (Cùng nhóm dinh dưỡng, giá {bestMatch.Price:N0}đ)";
+
+        var substitution = new Substitution
+        {
+            OrderId = orderId,
+            OrderItemId = orderItemId,
+            OriginalProductId = orderItem.ProductId ?? Guid.Empty,
+            ReplacementProductId = bestMatch.Id,
+            Status = "PendingCustomerDecision",
+            Note = note
+        };
+
+        dbContext.Substitutions.Add(substitution);
+
+        dbContext.Notifications.Add(new Notification
+        {
+            UserId = order.UserId,
+            Title = "🤖 AI Đề xuất đổi món",
+            Message = $"Sản phẩm '{orderItem.ProductName}' trong đơn {order.OrderNumber} được AI gợi ý thay bằng '{bestMatch.Name}'.",
+            Type = "Substitution",
+            ReferenceId = order.Id
+        });
+
+        var payload = JsonSerializer.Serialize(new
+        {
+            substitution.Id,
+            substitution.OrderId,
+            substitution.OrderItemId,
+            substitution.OriginalProductId,
+            originalProductName = orderItem.ProductName,
+            substitution.ReplacementProductId,
+            replacementProductName = bestMatch.Name,
+            replacementImageUrl = bestMatch.ImageUrl,
+            replacementPrice = bestMatch.Price,
+            substitution.Status,
+            substitution.Note
+        });
+
+        dbContext.RealtimeEvents.Add(new RealtimeEvent
+        {
+            UserId = order.UserId,
+            OrderId = order.Id,
+            Type = "SubstitutionProposed",
+            Payload = payload
+        });
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        await orderHub.Clients.Group(OrderHub.OrderGroup(order.Id.ToString())).SendAsync("SubstitutionProposed", payload, cancellationToken);
+        await orderHub.Clients.Group(OrderHub.OrderGroup(order.OrderNumber)).SendAsync("SubstitutionProposed", payload, cancellationToken);
+        await orderHub.Clients.Group(OrderHub.UserGroup(order.UserId.ToString())).SendAsync("SubstitutionProposed", payload, cancellationToken);
+        await orderHub.Clients.Group(OrderHub.UserGroup(order.UserId.ToString())).SendAsync("ReceiveNotification", new
+        {
+            title = "🤖 AI Đề xuất đổi món",
+            message = $"Sản phẩm '{orderItem.ProductName}' trong đơn {order.OrderNumber} được AI gợi ý thay bằng '{bestMatch.Name}'.",
+            type = "Substitution",
+            referenceId = order.Id
+        }, cancellationToken);
+
+        return Ok(ApiMappings.ToResponse(substitution));
+    }
+
+    [Authorize(Roles = UserRoles.Admin)]
+    [HttpPost("api/admin/orders/{orderId:guid}/ai-auto-substitute")]
+    public async Task<ActionResult<object>> AiAutoSubstituteOrder(
+        Guid orderId,
+        CancellationToken cancellationToken)
+    {
+        var order = await dbContext.Orders
+            .Include(o => o.Items)
+            .SingleOrDefaultAsync(o => o.Id == orderId, cancellationToken);
+        if (order is null) return NotFound(new { message = "Không tìm thấy đơn hàng." });
+
+        var allProducts = await dbContext.Products.AsNoTracking().ToListAsync(cancellationToken);
+        var inStockCandidates = allProducts.Where(p => p.Stock > 0).ToList();
+
+        if (inStockCandidates.Count == 0)
+        {
+            return BadRequest(new { message = "⚠️ Kho hàng hiện không có sản phẩm nào còn hàng để thay thế." });
+        }
+
+        var proposedCount = 0;
+        foreach (var item in order.Items)
+        {
+            var orig = allProducts.FirstOrDefault(p => p.Id == item.ProductId);
+            if (orig != null && orig.Stock <= 0)
+            {
+                var bestMatch = inStockCandidates
+                    .Where(p => p.Id != item.ProductId)
+                    .OrderByDescending(p => (p.CategoryId == orig.CategoryId ? 50 : 0) +
+                                            (p.IsOrganic == orig.IsOrganic ? 25 : 0) -
+                                            (double)Math.Abs(p.Price - orig.Price) / 1000.0)
+                    .FirstOrDefault();
+
+                if (bestMatch != null)
+                {
+                    var note = $"🤖 AI GreenCart tự động đề xuất thay '{item.ProductName}' (hết hàng) bằng '{bestMatch.Name}' (Cùng loại, giá {bestMatch.Price:N0}đ)";
+                    var sub = new Substitution
+                    {
+                        OrderId = orderId,
+                        OrderItemId = item.Id,
+                        OriginalProductId = item.ProductId ?? Guid.Empty,
+                        ReplacementProductId = bestMatch.Id,
+                        Status = "PendingCustomerDecision",
+                        Note = note
+                    };
+                    dbContext.Substitutions.Add(sub);
+                    proposedCount++;
+                }
+            }
+        }
+
+        if (proposedCount == 0)
+        {
+            return Ok(new { message = "✅ Tất cả sản phẩm trong đơn hàng hiện đều còn đủ hàng trong kho, không cần thay thế." });
+        }
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+        return Ok(new { message = $"🤖 AI đã tự động tạo {proposedCount} đề xuất thay thế cho các món hết hàng trong đơn!" });
+    }
+
     [Authorize]
     [HttpPost("api/orders/{orderId:guid}/substitutions/{substitutionId:guid}/accept")]
     public async Task<ActionResult<OrderSubstitutionResponse>> AcceptSubstitution(
