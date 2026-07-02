@@ -8,12 +8,12 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:5169',
+        target: 'http://localhost:5126',
         changeOrigin: true,
         secure: false,
       },
       '/orderHub': {
-        target: 'http://localhost:5169',
+        target: 'http://localhost:5126',
         ws: true,
       }
     }
