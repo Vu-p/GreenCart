@@ -73,17 +73,52 @@ class CartItemTile extends ConsumerWidget {
           ),
           const SizedBox(width: 10),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
             decoration: BoxDecoration(
               color: AppTheme.succulentGreen,
               borderRadius: BorderRadius.circular(999),
             ),
-            child: Text(
-              'x${item.quantity}',
-              style: const TextStyle(
-                color: AppTheme.primary,
-                fontWeight: FontWeight.w800,
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InkWell(
+                  onTap: () async {
+                    if (item.quantity > 1) {
+                      await ref.read(cartRepositoryProvider).updateItem(
+                            productId: item.productId,
+                            quantity: item.quantity - 1,
+                          );
+                    } else {
+                      await ref.read(cartRepositoryProvider).removeItem(item.productId);
+                    }
+                    ref.invalidate(cartProvider);
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 6),
+                    child: Icon(Icons.remove, size: 16, color: AppTheme.primary),
+                  ),
+                ),
+                Text(
+                  '${item.quantity}',
+                  style: const TextStyle(
+                    color: AppTheme.primary,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                InkWell(
+                  onTap: () async {
+                    await ref.read(cartRepositoryProvider).updateItem(
+                          productId: item.productId,
+                          quantity: item.quantity + 1,
+                        );
+                    ref.invalidate(cartProvider);
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 6),
+                    child: Icon(Icons.add, size: 16, color: AppTheme.primary),
+                  ),
+                ),
+              ],
             ),
           ),
           IconButton(

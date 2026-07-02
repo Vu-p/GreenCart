@@ -14,6 +14,8 @@ import 'package:greencart_app/src/features/deals/screens/deals_screen.dart';
 import 'package:greencart_app/src/features/meal_planner/data/mock_meal_plans.dart';
 import 'package:greencart_app/src/features/meal_planner/screens/meal_planner_screen.dart';
 import 'package:greencart_app/src/features/meal_planner/screens/recipe_detail_screen.dart';
+import 'package:greencart_app/src/features/notifications/data/notification_repository.dart';
+import 'package:greencart_app/src/features/notifications/screens/notifications_screen.dart';
 
 import 'search_screen.dart';
 
@@ -67,11 +69,16 @@ class HomeScreen extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 26),
+                    const AnimatedEntrance(
+                      delay: Duration(milliseconds: 180),
+                      child: _MealPlannerPromoCard(),
+                    ),
+                    const SizedBox(height: 24),
                     AnimatedEntrance(
                       delay: const Duration(milliseconds: 200),
                       child: _SectionTitle(
-                        title: 'Shop by Meal',
-                        trailingIcon: Icons.restaurant_menu,
+                        title: 'Shop by Meal (Thực đơn Món ăn)',
+                        actionLabel: 'Xem tất cả →',
                         onAction: () =>
                             context.push(MealPlannerScreen.routePath),
                       ),
@@ -113,11 +120,14 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
-class _HomeHeader extends StatelessWidget {
+class _HomeHeader extends ConsumerWidget {
   const _HomeHeader();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final unreadCountAsync = ref.watch(unreadNotificationCountProvider);
+    final unreadCount = unreadCountAsync.value ?? 0;
+
     return DecoratedBox(
       decoration: BoxDecoration(
         color: AppTheme.surface,
@@ -151,10 +161,36 @@ class _HomeHeader extends StatelessWidget {
                   onPressed: () => context.go(SearchScreen.routePath),
                   icon: const Icon(Icons.search, color: AppTheme.primary),
                 ),
-                IconButton(
-                  tooltip: 'Menu',
-                  onPressed: () {},
-                  icon: const Icon(Icons.menu, color: AppTheme.primary),
+                Stack(
+                  children: [
+                    IconButton(
+                      tooltip: 'Notifications',
+                      onPressed: () => context.push(NotificationsScreen.routePath),
+                      icon: const Icon(Icons.notifications_outlined, color: AppTheme.primary),
+                    ),
+                    if (unreadCount > 0)
+                      Positioned(
+                        right: 8,
+                        top: 8,
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: const BoxDecoration(
+                            color: AppTheme.coral,
+                            shape: BoxShape.circle,
+                          ),
+                          constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+                          child: Text(
+                            '$unreadCount',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w800,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ],
             ),
@@ -289,13 +325,11 @@ class _SectionTitle extends StatelessWidget {
   const _SectionTitle({
     required this.title,
     this.actionLabel,
-    this.trailingIcon,
     this.onAction,
   });
 
   final String title;
   final String? actionLabel;
-  final IconData? trailingIcon;
   final VoidCallback? onAction;
 
   @override
@@ -322,12 +356,6 @@ class _SectionTitle extends StatelessWidget {
                 letterSpacing: 0.6,
               ),
             ),
-          )
-        else if (trailingIcon != null)
-          IconButton(
-            tooltip: title,
-            onPressed: onAction,
-            icon: Icon(trailingIcon, color: AppTheme.outline),
           ),
       ],
     );
@@ -600,6 +628,104 @@ class _SearchPill extends StatelessWidget {
               ),
             ),
             const Icon(Icons.tune, color: AppTheme.primary, size: 20),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MealPlannerPromoCard extends StatelessWidget {
+  const _MealPlannerPromoCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedPressable(
+      onTap: () => context.push(MealPlannerScreen.routePath),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [AppTheme.deepForest, AppTheme.charcoalInk],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+          boxShadow: [
+            BoxShadow(
+              color: AppTheme.deepForest.withValues(alpha: 0.2),
+              blurRadius: 18,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AppTheme.ripenedOrange,
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: const Text(
+                      'TÍNH NĂNG HOT',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 9,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  const Text(
+                    'Thực Đơn Thông Minh',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Lên thực đơn cả tuần & thêm toàn bộ nguyên liệu chuẩn công thức chỉ với 1 nút bấm!',
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 12.5,
+                      height: 1.4,
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  Row(
+                    children: [
+                      Text(
+                        'Khám phá ngay',
+                        style: TextStyle(
+                          color: AppTheme.ripenedOrange,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      const Icon(Icons.arrow_forward, color: AppTheme.ripenedOrange, size: 15),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 14),
+            Container(
+              width: 76,
+              height: 76,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.restaurant_menu, color: Colors.white, size: 38),
+            ),
           ],
         ),
       ),

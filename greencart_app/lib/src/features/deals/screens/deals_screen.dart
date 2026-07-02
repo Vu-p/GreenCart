@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:greencart_app/src/core/theme/app_theme.dart';
 import 'package:greencart_app/src/core/utils/currency_formatter.dart';
@@ -8,17 +8,20 @@ import 'package:greencart_app/src/core/widgets/mobile_page_title.dart';
 import 'package:greencart_app/src/core/widgets/organic_card.dart';
 import 'package:greencart_app/src/core/widgets/organic_promo_banner.dart';
 import 'package:greencart_app/src/core/widgets/section_header.dart';
-import 'package:greencart_app/src/features/cart/screens/cart_screen.dart';
+import 'package:greencart_app/src/features/cart/data/cart_repository.dart';
+import 'package:greencart_app/src/features/catalog/data/product_repository.dart';
+import 'package:greencart_app/src/features/catalog/models/product.dart';
 import 'package:greencart_app/src/features/deals/data/mock_deals.dart';
-import 'package:greencart_app/src/features/deals/models/deal_bundle.dart';
 
-class DealsScreen extends StatelessWidget {
+class DealsScreen extends ConsumerWidget {
   const DealsScreen({super.key});
 
   static const routePath = '/deals';
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dealsAsync = ref.watch(dealsProductsProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const MobilePageTitle(
@@ -38,17 +41,35 @@ class DealsScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          const SectionHeader(title: 'Bundles'),
+          const SectionHeader(title: 'Special Deals'),
           const SizedBox(height: 14),
-          for (final deal in dealBundles) ...[
-            AnimatedEntrance(
-              delay: Duration(
-                milliseconds: 100 + (dealBundles.indexOf(deal) * 80),
-              ),
-              child: _DealBundleCard(deal: deal),
-            ),
-            const SizedBox(height: 12),
-          ],
+          dealsAsync.when(
+            loading: () => const Center(child: Padding(padding: EdgeInsets.all(20), child: CircularProgressIndicator())),
+            error: (err, stack) => Center(child: Text('Lỗi tải ưu đãi: $err')),
+            data: (products) {
+              if (products.isEmpty) {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Text('Hiện không có sản phẩm ưu đãi đặc biệt nào.'),
+                  ),
+                );
+              }
+              return Column(
+                children: [
+                  for (final product in products) ...[
+                    AnimatedEntrance(
+                      delay: Duration(
+                        milliseconds: 100 + (products.indexOf(product) * 80),
+                      ),
+                      child: _DealProductCard(product: product),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                ],
+              );
+            },
+          ),
           const SizedBox(height: 12),
           const SectionHeader(title: 'Coupons'),
           const SizedBox(height: 14),
@@ -69,13 +90,13 @@ class DealsScreen extends StatelessWidget {
   }
 }
 
-class _DealBundleCard extends StatelessWidget {
-  const _DealBundleCard({required this.deal});
+class _DealProductCard extends ConsumerWidget {
+  const _DealProductCard({required this.product});
 
-  final DealBundle deal;
+  final Product product;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return OrganicCard(
       padding: const EdgeInsets.all(14),
       child: Row(
@@ -84,22 +105,36 @@ class _DealBundleCard extends StatelessWidget {
             width: 72,
             height: 72,
             decoration: BoxDecoration(
-              color: deal.color,
+              color: AppTheme.succulentGreen,
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Icon(deal.icon, color: AppTheme.primary, size: 34),
+            child: const Icon(Icons.local_offer_outlined, color: AppTheme.primary, size: 34),
           ),
           const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(deal.badge, style: Theme.of(context).textTheme.labelLarge),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: AppTheme.coral.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Text(
+                    'HOT DEAL',
+                    style: TextStyle(
+                      color: AppTheme.coral,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 4),
-                Text(deal.title, style: Theme.of(context).textTheme.titleSmall),
+                Text(product.name, style: Theme.of(context).textTheme.titleSmall),
                 const SizedBox(height: 4),
                 Text(
-                  deal.description,
+                  product.description,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodyMedium,
@@ -108,7 +143,7 @@ class _DealBundleCard extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      formatCurrency(deal.price),
+                      formatCurrency(product.price),
                       style: const TextStyle(
                         color: AppTheme.primary,
                         fontSize: 18,
@@ -117,7 +152,7 @@ class _DealBundleCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      formatCurrency(deal.originalPrice),
+                      formatCurrency(product.price * 1.25),
                       style: const TextStyle(
                         color: AppTheme.outline,
                         decoration: TextDecoration.lineThrough,
@@ -130,7 +165,18 @@ class _DealBundleCard extends StatelessWidget {
             ),
           ),
           IconButton.filled(
-            onPressed: () => context.go(CartScreen.routePath),
+            onPressed: () async {
+              await ref.read(cartRepositoryProvider).addItem(
+                    productId: product.id,
+                    quantity: 1,
+                  );
+              ref.invalidate(cartProvider);
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Đã thêm ${product.name} vào giỏ hàng!')),
+                );
+              }
+            },
             style: IconButton.styleFrom(backgroundColor: AppTheme.primary),
             icon: const Icon(Icons.add, color: Colors.white),
           ),

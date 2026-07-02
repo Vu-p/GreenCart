@@ -31,7 +31,10 @@ class CartScreen extends ConsumerWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => ref.invalidate(cartProvider),
+            onPressed: () async {
+              await ref.read(cartRepositoryProvider).clear();
+              ref.invalidate(cartProvider);
+            },
             child: const Text('Clear All'),
           ),
           Padding(

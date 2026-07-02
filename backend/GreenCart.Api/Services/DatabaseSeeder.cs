@@ -11,6 +11,7 @@ public sealed class DatabaseSeeder(AppDbContext dbContext, IConfiguration config
         await SeedAdminAsync();
         await SeedProductsAsync();
         await SeedMealPlansAsync();
+        await SeedSampleOrdersAsync();
     }
 
     private async Task SeedAdminAsync()
@@ -67,36 +68,122 @@ public sealed class DatabaseSeeder(AppDbContext dbContext, IConfiguration config
         var categoryByName = await dbContext.Categories.ToDictionaryAsync(category => category.Name);
         var products = new[]
         {
-            Product("Organic Spinach", "Tender organic spinach leaves for salads, smoothies, and quick stir-fries.", 3.49m, 42, categoryByName["Vegetables"], "https://images.unsplash.com/photo-1576045057995-568f588f82fb", true, true),
-            Product("Vine Tomatoes", "Juicy vine-ripened tomatoes picked for bright flavor and firm texture.", 2.99m, 36, categoryByName["Vegetables"], "https://images.unsplash.com/photo-1592924357228-91a4daadcfea", false, false),
-            Product("Avocado Pack", "Creamy avocados ready for toast, salads, and fresh bowls.", 5.99m, 18, categoryByName["Fruit"], "https://images.unsplash.com/photo-1523049673857-eb18f1d7b578", true, true),
-            Product("Strawberries", "Sweet strawberries packed fresh for desserts and breakfast.", 4.79m, 24, categoryByName["Fruit"], "https://images.unsplash.com/photo-1464965911861-746a04b4bca6", false, false),
-            Product("TH Fresh Milk", "Pasteurized fresh milk with a clean, naturally creamy taste.", 2.49m, 24, categoryByName["Dairy"], "https://images.unsplash.com/photo-1563636619-e9143da7973b", false, false),
-            Product("Greek Yogurt", "High-protein plain yogurt for snacks, bowls, and smoothies.", 3.29m, 31, categoryByName["Dairy"], "https://images.unsplash.com/photo-1488477181946-6428a0291777", false, true),
-            Product("Chicken Breast", "Lean chicken breast trimmed and ready for meal prep.", 7.99m, 20, categoryByName["Meat"], "https://images.unsplash.com/photo-1604503468506-a8da13d82791", false, false),
-            Product("Brown Rice", "Nutty whole grain rice for healthy weekly cooking.", 6.49m, 44, categoryByName["Pantry"], "https://images.unsplash.com/photo-1586201375761-83865001e31c", false, false),
-            Product("Sourdough Loaf", "Naturally leavened bread with a crisp crust and soft center.", 4.99m, 16, categoryByName["Bakery"], "https://images.unsplash.com/photo-1509440159596-0249088772ff", false, true),
-            Product("Cold Pressed Juice", "Bright green juice with apple, cucumber, spinach, and lime.", 3.99m, 28, categoryByName["Beverages"], "https://images.unsplash.com/photo-1613478223719-2ab802602423", true, false),
-            Product("Free Range Eggs", "Dozen free range eggs for breakfast, baking, and weekly staples.", 4.49m, 35, categoryByName["Dairy"], "https://images.unsplash.com/photo-1506976785307-8732e854ad03", false, true),
-            Product("Carrots", "Crunchy sweet carrots for soups, roasting, and lunch bowls.", 2.19m, 38, categoryByName["Vegetables"], "https://images.unsplash.com/photo-1445282768818-728615cc910a", false, false),
-            Product("Fresh Cilantro", "Bright cilantro bunch for soups, salads, and fresh garnish.", 1.29m, 40, categoryByName["Vegetables"], "https://images.unsplash.com/photo-1506368249639-73a05d6f6488", false, false),
-            Product("Yellow Onion", "Aromatic yellow onions for braises, soups, and savory bases.", 1.49m, 52, categoryByName["Vegetables"], "https://images.unsplash.com/photo-1518977676601-b53f82aba655", false, false),
-            Product("Bell Pepper", "Crisp bell peppers with bright color and sweet flavor.", 2.79m, 26, categoryByName["Vegetables"], "https://images.unsplash.com/photo-1563565375-f3fdfdbefa83", false, false),
-            Product("Pork Belly", "Rich pork belly slices for slow braises and caramelized dishes.", 8.99m, 18, categoryByName["Meat"], "https://images.unsplash.com/photo-1602470520998-f4a52199a3d6", false, false),
-            Product("Fresh Ginger", "Fragrant ginger root for soups, marinades, and stir-fries.", 1.99m, 33, categoryByName["Vegetables"], "https://images.unsplash.com/photo-1615485500704-8e990f9900e1", false, false),
-            Product("Garlic Bulb", "Fresh garlic bulbs for seasoning sauces, soups, and roasted meals.", 1.19m, 55, categoryByName["Vegetables"], "https://images.unsplash.com/photo-1615477550927-6ecb4a5a59a1", false, false),
-            Product("Lime", "Juicy limes for dressings, soups, and bright finishing flavor.", 0.79m, 60, categoryByName["Fruit"], "https://images.unsplash.com/photo-1590502593747-42a996133562", false, false)
+            Product("Organic Spinach", "Rau chân vịt hữu cơ tươi sạch cho salad và xào.", 35000m, 42, categoryByName["Vegetables"], "https://images.unsplash.com/photo-1576045057995-568f588f82fb", true, true),
+            Product("Vine Tomatoes", "Cà chua chín cây mọng nước vị ngọt tự nhiên.", 30000m, 36, categoryByName["Vegetables"], "https://images.unsplash.com/photo-1592924357228-91a4daadcfea", false, false),
+            Product("Avocado Pack", "Bơ sáp béo ngậy chuẩn bị cho món salad và bánh mì nướng.", 60000m, 18, categoryByName["Fruit"], "https://images.unsplash.com/photo-1523049673857-eb18f1d7b578", true, true),
+            Product("Strawberries", "Dâu tây ngọt lịm tươi ngon cho món tráng miệng.", 48000m, 24, categoryByName["Fruit"], "https://images.unsplash.com/photo-1464965911861-746a04b4bca6", false, false),
+            Product("TH Fresh Milk", "Sữa tươi thanh trùng TH True Milk thanh mát.", 25000m, 24, categoryByName["Dairy"], "https://images.unsplash.com/photo-1563636619-e9143da7973b", false, false),
+            Product("Greek Yogurt", "Sữa chua Hy Lạp giàu protein cho bữa phụ và sinh tố.", 33000m, 31, categoryByName["Dairy"], "https://images.unsplash.com/photo-1488477181946-6428a0291777", false, true),
+            Product("Chicken Breast", "Ức gà ức sạch giàu protein chuẩn bị sẵn cho bữa ăn.", 80000m, 20, categoryByName["Meat"], "https://images.unsplash.com/photo-1604503468506-a8da13d82791", false, false),
+            Product("Brown Rice", "Gạo lứt nguyên cám dinh dưỡng cho bữa ăn lành mạnh.", 65000m, 44, categoryByName["Pantry"], "https://images.unsplash.com/photo-1586201375761-83865001e31c", false, false),
+            Product("Sourdough Loaf", "Bánh mì men tự nhiên vỏ giòn ruột mềm thơm phức.", 50000m, 16, categoryByName["Bakery"], "https://images.unsplash.com/photo-1509440159596-0249088772ff", false, true),
+            Product("Cold Pressed Juice", "Nước ép ép lạnh xanh mát từ táo, dưa chuột và chanh.", 40000m, 28, categoryByName["Beverages"], "https://images.unsplash.com/photo-1613478223719-2ab802602423", true, false),
+            Product("Free Range Eggs", "Trứng gà thả rườn 10 quả giàu dinh dưỡng.", 45000m, 35, categoryByName["Dairy"], "https://images.unsplash.com/photo-1506976785307-8732e854ad03", false, true),
+            Product("Carrots", "Cà rốt tươi giòn ngọt cho món súp và xào.", 22000m, 38, categoryByName["Vegetables"], "https://images.unsplash.com/photo-1445282768818-728615cc910a", false, false),
+            Product("Fresh Cilantro", "Rau mùi thơm tươi cho món súp và phở.", 13000m, 40, categoryByName["Vegetables"], "https://images.unsplash.com/photo-1506368249639-73a05d6f6488", false, false),
+            Product("Yellow Onion", "Hành tây vàng thơm cho các món hầm và xào.", 15000m, 52, categoryByName["Vegetables"], "https://images.unsplash.com/photo-1518977676601-b53f82aba655", false, false),
+            Product("Bell Pepper", "Ớt chuông tươi giòn màu sắc bắt mắt ngọt vị.", 28000m, 26, categoryByName["Vegetables"], "https://images.unsplash.com/photo-1563565375-f3fdfdbefa83", false, false),
+            Product("Pork Belly", "Thịt ba chỉ heo tươi ngon cho món kho tấu đậm đà.", 90000m, 18, categoryByName["Meat"], "https://images.unsplash.com/photo-1602470520998-f4a52199a3d6", false, false),
+            Product("Fresh Ginger", "Gừng tươi thơm nồng cho nước dùng và món xào.", 20000m, 33, categoryByName["Vegetables"], "https://images.unsplash.com/photo-1615485500704-8e990f9900e1", false, false),
+            Product("Garlic Bulb", "Tỏi củ tươi thơm gia vị không thể thiếu cho nhà bếp.", 12000m, 55, categoryByName["Vegetables"], "https://images.unsplash.com/photo-1615477550927-6ecb4a5a59a1", false, false),
+            Product("Lime (Chanh tươi - Test 5k)", "Chanh tươi thơm mát giá đúng 5.000 VNĐ để test thanh toán PayOS.", 5000m, 100, categoryByName["Fruit"], "https://images.unsplash.com/photo-1590502593747-42a996133562", true, true),
+            Product("Hành lá tươi (Test PayOS 5k)", "Hành lá tươi xanh chuẩn giá 5.000 VNĐ dùng để test nhanh luồng thanh toán.", 5000m, 100, categoryByName["Vegetables"], "https://images.unsplash.com/photo-1506368249639-73a05d6f6488", true, true)
         };
 
         foreach (var product in products)
         {
-            if (!await dbContext.Products.AnyAsync(existing => existing.Name == product.Name))
+            var existing = await dbContext.Products.FirstOrDefaultAsync(p => p.Name == product.Name);
+            if (existing is null)
             {
                 dbContext.Products.Add(product);
+            }
+            else
+            {
+                existing.Price = product.Price;
+                existing.Stock = product.Stock;
+                existing.Description = product.Description;
+                existing.ImageUrl = product.ImageUrl;
             }
         }
 
         await dbContext.SaveChangesAsync();
+    }
+
+    private async Task SeedSampleOrdersAsync()
+    {
+        var adminEmail = configuration["SeedAdmin:Email"]?.Trim().ToLowerInvariant();
+        if (string.IsNullOrWhiteSpace(adminEmail)) return;
+
+        var adminUser = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == adminEmail);
+        if (adminUser is null) return;
+
+        var hasOrders = await dbContext.Orders.AnyAsync(o => o.UserId == adminUser.Id);
+        if (!hasOrders)
+        {
+            var spinach = await dbContext.Products.FirstOrDefaultAsync(p => p.Name == "Organic Spinach");
+            var lime = await dbContext.Products.FirstOrDefaultAsync(p => p.Name.Contains("Lime"));
+
+            var cancelledOrder = new Order
+            {
+                OrderNumber = "GC-9001",
+                UserId = adminUser.Id,
+                Status = OrderStatuses.Cancelled,
+                PaymentStatus = PaymentStatuses.Cancelled,
+                DeliveryAddress = "221B Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh",
+                DeliveryPhone = "0901234567",
+                DeliverySlot = "Today, 5:00 - 7:00 PM",
+                PaymentProvider = "PayOS",
+                PayOsOrderCode = 900101,
+                Subtotal = 35000m,
+                DeliveryFee = 15000m,
+                Total = 50000m,
+                CreatedAt = DateTimeOffset.UtcNow.AddDays(-2),
+                UpdatedAt = DateTimeOffset.UtcNow.AddDays(-2)
+            };
+            if (spinach != null)
+            {
+                cancelledOrder.Items.Add(new OrderItem
+                {
+                    ProductId = spinach.Id,
+                    ProductName = spinach.Name,
+                    ImageUrl = spinach.ImageUrl,
+                    UnitPrice = 35000m,
+                    Quantity = 1
+                });
+            }
+
+            var activeOrder = new Order
+            {
+                OrderNumber = "GC-9002",
+                UserId = adminUser.Id,
+                Status = OrderStatuses.Delivering,
+                PaymentStatus = PaymentStatuses.Paid,
+                DeliveryAddress = "221B Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh",
+                DeliveryPhone = "0901234567",
+                DeliverySlot = "Tomorrow, 8:00 - 10:00 AM",
+                PaymentProvider = "PayOS",
+                PayOsOrderCode = 900201,
+                Subtotal = 5000m,
+                DeliveryFee = 10000m,
+                Total = 15000m,
+                CreatedAt = DateTimeOffset.UtcNow.AddHours(-3),
+                UpdatedAt = DateTimeOffset.UtcNow.AddHours(-1)
+            };
+            if (lime != null)
+            {
+                activeOrder.Items.Add(new OrderItem
+                {
+                    ProductId = lime.Id,
+                    ProductName = lime.Name,
+                    ImageUrl = lime.ImageUrl,
+                    UnitPrice = 5000m,
+                    Quantity = 1
+                });
+            }
+
+            dbContext.Orders.AddRange(cancelledOrder, activeOrder);
+            await dbContext.SaveChangesAsync();
+        }
     }
 
     private async Task SeedMealPlansAsync()

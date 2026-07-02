@@ -91,15 +91,21 @@ class OrderTile extends StatelessWidget {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: order.active
-                        ? AppTheme.succulentGreen
-                        : AppTheme.surfaceContainerLow,
+                    color: order.isCancelled
+                        ? const Color(0xFFFFE5E5)
+                        : (order.active
+                            ? AppTheme.succulentGreen
+                            : AppTheme.surfaceContainerLow),
                     borderRadius: BorderRadius.circular(999),
                   ),
                   child: Text(
-                    order.active ? 'ACTIVE' : 'DONE',
+                    order.isCancelled
+                        ? 'ĐÃ HỦY'
+                        : (order.active ? 'ACTIVE' : 'DONE'),
                     style: TextStyle(
-                      color: order.active ? AppTheme.primary : AppTheme.outline,
+                      color: order.isCancelled
+                          ? const Color(0xFFD32F2F)
+                          : (order.active ? AppTheme.primary : AppTheme.outline),
                       fontSize: 10,
                       fontWeight: FontWeight.w900,
                     ),
