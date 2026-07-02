@@ -288,6 +288,30 @@ const OrdersPage = () => {
               <button onClick={() => setSelectedOrder(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', fontWeight: '700' }}>✕</button>
             </div>
 
+            {/* Customer & Order Info */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px', padding: '12px', backgroundColor: '#F8FAF9', borderRadius: '12px', fontSize: '13px' }}>
+              <div>
+                <div style={{ color: 'var(--text-secondary)' }}>Khách hàng:</div>
+                <div style={{ fontWeight: '700' }}>{selectedOrder.userName || selectedOrder.userId || 'Khách hàng'}</div>
+              </div>
+              <div>
+                <div style={{ color: 'var(--text-secondary)' }}>Số điện thoại:</div>
+                <div style={{ fontWeight: '700' }}>{selectedOrder.deliveryPhone || selectedOrder.userPhone || 'N/A'}</div>
+              </div>
+              <div style={{ gridColumn: 'span 2' }}>
+                <div style={{ color: 'var(--text-secondary)' }}>Địa chỉ giao hàng:</div>
+                <div style={{ fontWeight: '700' }}>{selectedOrder.deliveryAddress || selectedOrder.shippingAddress || 'N/A'}</div>
+              </div>
+              <div>
+                <div style={{ color: 'var(--text-secondary)' }}>Khung giờ giao:</div>
+                <div style={{ fontWeight: '700' }}>{selectedOrder.deliverySlot || 'Giao tiêu chuẩn'}</div>
+              </div>
+              <div>
+                <div style={{ color: 'var(--text-secondary)' }}>Thanh toán:</div>
+                <div style={{ fontWeight: '700' }}>{selectedOrder.paymentProvider || selectedOrder.paymentMethod || 'COD'} ({selectedOrder.paymentStatus || 'Paid'})</div>
+              </div>
+            </div>
+
             {/* Items List */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
               <h4 style={{ fontSize: '15px', fontWeight: '700', margin: 0 }}>Danh sách món đặt ({selectedOrder.items?.length || 0})</h4>
@@ -301,12 +325,12 @@ const OrdersPage = () => {
                     </div>
                     <div>
                       <div style={{ fontWeight: '700' }}>{item.productName || `Món hàng #${idx+1}`}</div>
-                      <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Đơn giá: {formatCurrency(item.price || 0)}</div>
+                      <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Đơn giá: {formatCurrency(item.unitPrice ?? item.price ?? 0)}</div>
                     </div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <div style={{ fontWeight: '800', color: 'var(--primary)' }}>
-                      {formatCurrency((item.price || 0) * (item.quantity || 1))}
+                      {formatCurrency((item.unitPrice ?? item.price ?? 0) * (item.quantity || 1))}
                     </div>
                   </div>
                 </div>
@@ -314,11 +338,19 @@ const OrdersPage = () => {
             </div>
 
             {/* Total Summary */}
-            <div style={{ padding: '16px', backgroundColor: '#E9F5EE', borderRadius: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '16px', fontWeight: '700', color: '#006A38' }}>TỔNG THANH TOÁN:</span>
-              <span style={{ fontSize: '22px', fontWeight: '800', color: '#006A38' }}>
-                {formatCurrency(selectedOrder.totalAmount || 0)}
-              </span>
+            <div style={{ padding: '16px', backgroundColor: '#E9F5EE', borderRadius: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {selectedOrder.deliveryFee > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: '#166534' }}>
+                  <span>Phí giao hàng:</span>
+                  <span style={{ fontWeight: '600' }}>{formatCurrency(selectedOrder.deliveryFee)}</span>
+                </div>
+              )}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: selectedOrder.deliveryFee > 0 ? '1px solid #BBF7D0' : 'none', paddingTop: selectedOrder.deliveryFee > 0 ? '8px' : '0' }}>
+                <span style={{ fontSize: '16px', fontWeight: '700', color: '#006A38' }}>TỔNG THANH TOÁN:</span>
+                <span style={{ fontSize: '22px', fontWeight: '800', color: '#006A38' }}>
+                  {formatCurrency(selectedOrder.total ?? selectedOrder.totalAmount ?? 0)}
+                </span>
+              </div>
             </div>
           </div>
         </div>
