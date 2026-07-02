@@ -393,10 +393,18 @@ class _MealPlanCard extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(18),
               child: Image.network(
-                _imageFor(meal.id),
+                meal.imageUrl.isNotEmpty
+                    ? meal.imageUrl
+                    : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c',
                 width: 82,
                 height: 82,
                 fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  width: 82,
+                  height: 82,
+                  color: AppTheme.succulentGreen,
+                  child: const Icon(Icons.restaurant, color: AppTheme.primary),
+                ),
               ),
             ),
             const SizedBox(width: 14),
@@ -565,17 +573,5 @@ class _IngredientRow extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-String _imageFor(String id) {
-  switch (id) {
-    case 'tomato-chicken':
-      return 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&q=80&w=900';
-    case 'berry-yogurt':
-      return 'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&q=80&w=900';
-    case 'green-bowl':
-    default:
-      return 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=80&w=900';
   }
 }

@@ -127,7 +127,18 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                Image.network(_imageFor(meal.id), fit: BoxFit.cover),
+                Image.network(
+                  meal.imageUrl.isNotEmpty
+                      ? meal.imageUrl
+                      : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c',
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    color: AppTheme.succulentGreen,
+                    child: const Center(
+                      child: Icon(Icons.restaurant, color: AppTheme.primary, size: 48),
+                    ),
+                  ),
+                ),
                 DecoratedBox(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -459,18 +470,6 @@ String _cartErrorMessage(Object error) {
     return 'One ingredient is out of stock.';
   }
   return 'Could not update your cart. Please try again.';
-}
-
-String _imageFor(String id) {
-  switch (id) {
-    case 'tomato-chicken':
-      return 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&q=80&w=1100';
-    case 'berry-yogurt':
-      return 'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&q=80&w=1100';
-    case 'green-bowl':
-    default:
-      return 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=80&w=1100';
-  }
 }
 
 class _StepRow extends StatelessWidget {
