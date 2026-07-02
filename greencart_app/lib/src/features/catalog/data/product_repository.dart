@@ -46,6 +46,9 @@ class ProductRepository {
     double? minPrice,
     double? maxPrice,
     bool? isDeal,
+    bool? isOrganic,
+    bool? inStock,
+    String? sortBy,
   }) async {
     final queryParameters = <String, dynamic>{};
     if (keyword != null && keyword.trim().isNotEmpty) {
@@ -62,6 +65,15 @@ class ProductRepository {
     }
     if (isDeal != null) {
       queryParameters['isDeal'] = isDeal;
+    }
+    if (isOrganic != null) {
+      queryParameters['isOrganic'] = isOrganic;
+    }
+    if (inStock != null) {
+      queryParameters['inStock'] = inStock;
+    }
+    if (sortBy != null && sortBy.isNotEmpty) {
+      queryParameters['sortBy'] = sortBy;
     }
 
     final response = await _apiClient.get(

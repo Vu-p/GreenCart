@@ -18,6 +18,7 @@ public sealed class ProductsController(AppDbContext dbContext) : ControllerBase
         [FromQuery] bool? isDeal,
         [FromQuery] bool? isOrganic,
         [FromQuery] bool? inStock,
+        [FromQuery] string? sortBy,
         CancellationToken cancellationToken)
     {
         var query = dbContext.Products.Include(product => product.Category).AsNoTracking();
@@ -62,10 +63,15 @@ public sealed class ProductsController(AppDbContext dbContext) : ControllerBase
                 : query.Where(product => product.Stock <= 0);
         }
 
-        var products = await query
-            .OrderByDescending(product => product.IsDeal)
-            .ThenBy(product => product.Name)
-            .ToListAsync(cancellationToken);
+        query = sortBy?.ToLower() switch
+        {
+            "price_asc" => query.OrderBy(product => product.Price),
+            "price_desc" => query.OrderByDescending(product => product.Price),
+            "name_asc" => query.OrderBy(product => product.Name),
+            _ => query.OrderByDescending(product => product.IsDeal).ThenBy(product => product.Name)
+        };
+
+        var products = await query.ToListAsync(cancellationToken);
 
         return Ok(products.Select(ApiMappings.ToResponse).ToList());
     }
