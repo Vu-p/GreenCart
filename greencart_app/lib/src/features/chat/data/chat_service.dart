@@ -89,9 +89,9 @@ $productContext
       ]
     });
 
-    try {
+    Future<Response<dynamic>> sendRequest() {
       final apiClient = _ref.read(apiClientProvider);
-      final response = await apiClient.post(
+      return apiClient.post(
         '/api/chat',
         data: {
           'contents': _history,
@@ -107,7 +107,10 @@ $productContext
           ]
         },
       );
+    }
 
+    try {
+      var response = await sendRequest();
       final candidates = response.data['candidates'] as List<dynamic>?;
       if (candidates != null && candidates.isNotEmpty) {
         final parts = candidates[0]['content']['parts'] as List<dynamic>;
@@ -127,13 +130,34 @@ $productContext
     } on DioException catch (e) {
       final statusCode = e.response?.statusCode;
       final responseData = e.response?.data;
+
+      // Nếu gặp lỗi 429 hoặc 503 từ Client, tự động đợi 4 giây rồi thử lại thêm 1 lần ngầm
+      if (statusCode == 429 || statusCode == 503) {
+        try {
+          await Future<void>.delayed(const Duration(seconds: 4));
+          final retryResponse = await sendRequest();
+          final candidates = retryResponse.data['candidates'] as List<dynamic>?;
+          if (candidates != null && candidates.isNotEmpty) {
+            final parts = candidates[0]['content']['parts'] as List<dynamic>;
+            final reply = parts.map((p) => p['text'] as String).join();
+            _history.add({
+              'role': 'model',
+              'parts': [{'text': reply}]
+            });
+            return reply;
+          }
+        } catch (_) {
+          // Nếu thử lại vẫn lỗi thì chuyển sang thông báo thân thiện
+        }
+      }
+
       if (statusCode == 400 &&
           responseData != null &&
           responseData.toString().contains('Chưa cấu hình API Key')) {
         return '⚠️ Chưa cấu hình API Key Gemini trên máy chủ Backend.';
       }
       if (statusCode == 429) {
-        return '⚠️ Trợ lý AI đang vượt giới hạn lượt phản hồi miễn phí (Lỗi 429 Google Gemini). Bạn vui lòng chờ khoảng 30 - 60 giây rồi hỏi lại nhé! 🌿';
+        return '🌿 AI đang xử lý rất nhiều câu hỏi cùng lúc nên hơi chậm xíu xíu. Bạn đợi khoảng 20 giây rồi nhắn lại giúp mình nha! 😊';
       }
       if (statusCode != null && statusCode >= 500) {
         return '⚠️ Máy chủ AI đang bảo trì hoặc bận (Lỗi $statusCode). Vui lòng thử lại sau ít phút!';

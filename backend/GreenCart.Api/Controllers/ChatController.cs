@@ -23,18 +23,39 @@ public sealed class ChatController(IConfiguration configuration, HttpClient http
         var contentString = await reader.ReadToEndAsync(cancellationToken);
 
         var url = $"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={apiKey}";
-        using var content = new StringContent(contentString, Encoding.UTF8, "application/json");
+        
+        // Thử tối đa 3 lần với Exponential Backoff (chờ 3s -> 6s -> 10s) khi gặp 429 hoặc 503
+        var delays = new[] { 3000, 6000, 10000 };
+        HttpResponseMessage? response = null;
 
-        var response = await httpClient.PostAsync(url, content, cancellationToken);
-        if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests || response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
+        for (int attempt = 0; attempt <= delays.Length; attempt++)
         {
-            await Task.Delay(2500, cancellationToken);
-            using var retryContent = new StringContent(contentString, Encoding.UTF8, "application/json");
-            response = await httpClient.PostAsync(url, retryContent, cancellationToken);
+            using var content = new StringContent(contentString, Encoding.UTF8, "application/json");
+            response = await httpClient.PostAsync(url, content, cancellationToken);
+
+            if (response.IsSuccessStatusCode)
+            {
+                break;
+            }
+
+            if ((response.StatusCode == System.Net.HttpStatusCode.TooManyRequests || 
+                 response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable) && attempt < delays.Length)
+            {
+                await Task.Delay(delays[attempt], cancellationToken);
+                
+                // Nếu lần thử cuối cùng vẫn lỗi 429, thử chuyển tự động sang model gemini-1.5-flash làm phương án dự phòng
+                if (attempt == delays.Length - 1 && model == "gemini-2.0-flash")
+                {
+                    url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={apiKey}";
+                }
+            }
+            else
+            {
+                break;
+            }
         }
 
-        var responseString = await response.Content.ReadAsStringAsync(cancellationToken);
-
+        var responseString = await response!.Content.ReadAsStringAsync(cancellationToken);
         return StatusCode((int)response.StatusCode, responseString);
     }
 }
