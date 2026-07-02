@@ -26,6 +26,13 @@ public sealed class ChatController(IConfiguration configuration, HttpClient http
         using var content = new StringContent(contentString, Encoding.UTF8, "application/json");
 
         var response = await httpClient.PostAsync(url, content, cancellationToken);
+        if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests || response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
+        {
+            await Task.Delay(2500, cancellationToken);
+            using var retryContent = new StringContent(contentString, Encoding.UTF8, "application/json");
+            response = await httpClient.PostAsync(url, retryContent, cancellationToken);
+        }
+
         var responseString = await response.Content.ReadAsStringAsync(cancellationToken);
 
         return StatusCode((int)response.StatusCode, responseString);

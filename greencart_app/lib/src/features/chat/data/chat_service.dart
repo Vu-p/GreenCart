@@ -125,13 +125,20 @@ $productContext
 
       return 'Xin lỗi, mình không thể trả lời lúc này. Vui lòng thử lại sau! 🙏';
     } on DioException catch (e) {
+      final statusCode = e.response?.statusCode;
       final responseData = e.response?.data;
-      if (e.response?.statusCode == 400 &&
+      if (statusCode == 400 &&
           responseData != null &&
           responseData.toString().contains('Chưa cấu hình API Key')) {
         return '⚠️ Chưa cấu hình API Key Gemini trên máy chủ Backend.';
       }
-      return 'Lỗi kết nối: ${e.message ?? "Không thể kết nối tới máy chủ AI"}. Vui lòng kiểm tra mạng và thử lại! 📡';
+      if (statusCode == 429) {
+        return '⚠️ Trợ lý AI đang vượt giới hạn lượt phản hồi miễn phí (Lỗi 429 Google Gemini). Bạn vui lòng chờ khoảng 30 - 60 giây rồi hỏi lại nhé! 🌿';
+      }
+      if (statusCode != null && statusCode >= 500) {
+        return '⚠️ Máy chủ AI đang bảo trì hoặc bận (Lỗi $statusCode). Vui lòng thử lại sau ít phút!';
+      }
+      return 'Lỗi kết nối tới AI: Không thể xử lý yêu cầu lúc này. Vui lòng kiểm tra lại kết nối mạng! 📡';
     } catch (e) {
       return 'Đã xảy ra lỗi: $e. Vui lòng thử lại! 🔄';
     }
