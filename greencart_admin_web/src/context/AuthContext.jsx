@@ -17,15 +17,16 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     try {
       const response = await api.post('/auth/login', { email, password });
-      const { accessToken, user: userData } = response.data;
+      const { token, accessToken, user: userData } = response.data;
+      const finalToken = token || accessToken;
       
       if (userData?.role !== 'Admin') {
         throw new Error('Tài khoản của bạn không có quyền Quản trị viên (Admin).');
       }
 
-      localStorage.setItem('greencart_admin_token', accessToken);
+      localStorage.setItem('greencart_admin_token', finalToken);
       localStorage.setItem('greencart_admin_user', JSON.stringify(userData));
-      setToken(accessToken);
+      setToken(finalToken);
       setUser(userData);
       return { success: true };
     } catch (err) {
