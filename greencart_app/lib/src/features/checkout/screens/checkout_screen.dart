@@ -34,144 +34,12 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       return;
     }
 
-    final formKey = GlobalKey<FormState>();
-    final addressController = TextEditingController(
-      text: draft.deliveryAddress,
-    );
-    final phoneController = TextEditingController(text: draft.deliveryPhone);
-    final phoneFocusNode = FocusNode();
-
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      builder: (sheetContext) {
-        return Padding(
-          padding: EdgeInsets.fromLTRB(
-            20,
-            20,
-            20,
-            20 + MediaQuery.viewInsetsOf(sheetContext).bottom,
-          ),
-          child: Form(
-            key: formKey,
-            child: SingleChildScrollView(
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        'Delivery Address',
-                        style: Theme.of(sheetContext).textTheme.titleLarge,
-                      ),
-                      const Spacer(),
-                      IconButton(
-                        tooltip: 'Close',
-                        onPressed: () => Navigator.of(sheetContext).pop(),
-                        icon: const Icon(Icons.close),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  OutlinedButton.icon(
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      foregroundColor: const Color(0xFF006A38),
-                      side: const BorderSide(color: Color(0xFF006A38), width: 1.5),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    onPressed: () async {
-                      final picked = await Navigator.of(sheetContext).push<String>(
-                        MaterialPageRoute(
-                          builder: (_) => MapAddressPickerScreen(
-                            initialAddress: addressController.text,
-                          ),
-                        ),
-                      );
-                      if (picked != null && picked.isNotEmpty) {
-                        addressController.text = picked;
-                      }
-                    },
-                    icon: const Icon(Icons.map_outlined),
-                    label: const Text(
-                      '🗺 Chọn vị trí trên Bản đồ (Pick on Map)',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  TextFormField(
-                    controller: addressController,
-                    autofocus: true,
-                    minLines: 2,
-                    maxLines: 3,
-                    textInputAction: TextInputAction.next,
-                    onFieldSubmitted: (_) => phoneFocusNode.requestFocus(),
-                    decoration: const InputDecoration(
-                      labelText: 'Street address',
-                      prefixIcon: Icon(Icons.location_on_outlined),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.trim().length < 5) {
-                        return 'Enter a complete delivery address.';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 14),
-                  TextFormField(
-                    controller: phoneController,
-                    focusNode: phoneFocusNode,
-                    keyboardType: TextInputType.phone,
-                    textInputAction: TextInputAction.done,
-                    decoration: const InputDecoration(
-                      labelText: 'Phone number',
-                      prefixIcon: Icon(Icons.phone_outlined),
-                    ),
-                    onFieldSubmitted: (_) {
-                      if (formKey.currentState!.validate()) {
-                        ref
-                            .read(checkoutDraftProvider.notifier)
-                            .updateAddress(
-                              address: addressController.text,
-                              phone: phoneController.text,
-                            );
-                        Navigator.of(sheetContext).pop();
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () {
-                      FocusManager.instance.primaryFocus?.unfocus();
-                      if (!formKey.currentState!.validate()) {
-                        return;
-                      }
-                      ref
-                          .read(checkoutDraftProvider.notifier)
-                          .updateAddress(
-                            address: addressController.text,
-                            phone: phoneController.text,
-                          );
-                      Navigator.of(sheetContext).pop();
-                    },
-                    child: const Text('Save Address'),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
+      builder: (_) => _EditAddressSheet(draft: draft),
     );
-
-    addressController.dispose();
-    phoneController.dispose();
-    phoneFocusNode.dispose();
   }
 
   @override
@@ -596,6 +464,152 @@ class _SummaryRow extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _EditAddressSheet extends ConsumerStatefulWidget {
+  const _EditAddressSheet({required this.draft});
+
+  final CheckoutDraft draft;
+
+  @override
+  ConsumerState<_EditAddressSheet> createState() => _EditAddressSheetState();
+}
+
+class _EditAddressSheetState extends ConsumerState<_EditAddressSheet> {
+  final _formKey = GlobalKey<FormState>();
+  late final TextEditingController _addressController;
+  late final TextEditingController _phoneController;
+  late final FocusNode _phoneFocusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _addressController = TextEditingController(text: widget.draft.deliveryAddress);
+    _phoneController = TextEditingController(text: widget.draft.deliveryPhone);
+    _phoneFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    _addressController.dispose();
+    _phoneController.dispose();
+    _phoneFocusNode.dispose();
+    super.dispose();
+  }
+
+  void _save() {
+    FocusManager.instance.primaryFocus?.unfocus();
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+    ref.read(checkoutDraftProvider.notifier).updateAddress(
+          address: _addressController.text,
+          phone: _phoneController.text,
+        );
+    Navigator.of(context).pop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        20,
+        20,
+        20,
+        20 + MediaQuery.viewInsetsOf(context).bottom,
+      ),
+      child: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    'Delivery Address',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    tooltip: 'Close',
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(Icons.close),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  foregroundColor: const Color(0xFF006A38),
+                  side: const BorderSide(color: Color(0xFF006A38), width: 1.5),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: () async {
+                  final picked = await Navigator.of(context).push<String>(
+                    MaterialPageRoute(
+                      builder: (_) => MapAddressPickerScreen(
+                        initialAddress: _addressController.text,
+                      ),
+                    ),
+                  );
+                  if (picked != null && picked.isNotEmpty) {
+                    _addressController.text = picked;
+                  }
+                },
+                icon: const Icon(Icons.map_outlined),
+                label: const Text(
+                  '🗺 Chọn vị trí trên Bản đồ (Pick on Map)',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _addressController,
+                autofocus: true,
+                minLines: 2,
+                maxLines: 3,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) => _phoneFocusNode.requestFocus(),
+                decoration: const InputDecoration(
+                  labelText: 'Street address',
+                  prefixIcon: Icon(Icons.location_on_outlined),
+                ),
+                validator: (value) {
+                  if (value == null || value.trim().length < 5) {
+                    return 'Enter a complete delivery address.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 14),
+              TextFormField(
+                controller: _phoneController,
+                focusNode: _phoneFocusNode,
+                keyboardType: TextInputType.phone,
+                textInputAction: TextInputAction.done,
+                decoration: const InputDecoration(
+                  labelText: 'Phone number',
+                  prefixIcon: Icon(Icons.phone_outlined),
+                ),
+                onFieldSubmitted: (_) => _save(),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _save,
+                child: const Text('Save Address'),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
