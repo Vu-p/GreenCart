@@ -17,6 +17,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddHttpClient<IFirebaseTokenVerifier, FirebaseTokenVerifier>();
+builder.Services.AddHttpClient();
 builder.Services.AddScoped<IDatabaseSeeder, DatabaseSeeder>();
 builder.Services.AddScoped<IPayOsPaymentService, PayOsPaymentService>();
 

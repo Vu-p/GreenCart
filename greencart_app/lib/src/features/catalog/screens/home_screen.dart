@@ -16,6 +16,7 @@ import 'package:greencart_app/src/features/meal_planner/screens/meal_planner_scr
 import 'package:greencart_app/src/features/meal_planner/screens/recipe_detail_screen.dart';
 import 'package:greencart_app/src/features/notifications/data/notification_repository.dart';
 import 'package:greencart_app/src/features/notifications/screens/notifications_screen.dart';
+import 'package:greencart_app/src/features/chat/screens/ai_chat_screen.dart';
 
 import 'search_screen.dart';
 
@@ -30,6 +31,19 @@ class HomeScreen extends ConsumerWidget {
     final products = ref.watch(featuredProductsProvider);
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        heroTag: 'ai_chat_fab',
+        backgroundColor: const Color(0xFF006A38),
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => const AiChatScreen(),
+            ),
+          );
+        },
+        tooltip: 'Trợ lý AI GreenCart',
+        child: const Text('🤖', style: TextStyle(fontSize: 26)),
+      ),
       body: SafeArea(
         child: Column(
           children: [
