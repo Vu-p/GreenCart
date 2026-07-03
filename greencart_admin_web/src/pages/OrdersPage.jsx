@@ -52,6 +52,18 @@ const OrdersPage = () => {
     }
   };
 
+  const aiAutoSubstitute = async (orderId) => {
+    setUpdatingId(orderId);
+    try {
+      const res = await api.post(`/admin/orders/${orderId}/ai-auto-substitute`);
+      alert(res.data?.message || '🤖 AI đã kiểm tra và tạo đề xuất thay thế thành công!');
+    } catch (err) {
+      alert(err.response?.data?.message || 'Lỗi khi gọi AI đề xuất thay thế sản phẩm');
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
   const filteredOrders = orders.filter(o => {
     const matchesTab = activeFilter === 'All' || o.status === activeFilter ||
       (activeFilter === 'Delivering' && o.status === 'Shipping') ||
@@ -251,14 +263,27 @@ const OrdersPage = () => {
                       </div>
                     </td>
                     <td>
-                      <button
-                        onClick={() => setSelectedOrder(order)}
-                        className="btn btn-secondary"
-                        style={{ padding: '8px 14px' }}
-                      >
-                        <Eye size={16} />
-                        <span>Chi tiết</span>
-                      </button>
+                      <div style={{ display: 'flex', gap: '6px' }}>
+                        <button
+                          onClick={() => setSelectedOrder(order)}
+                          className="btn btn-secondary"
+                          style={{ padding: '8px 12px' }}
+                        >
+                          <Eye size={16} />
+                          <span>Chi tiết</span>
+                        </button>
+                        {order.status !== 'Completed' && order.status !== 'Cancelled' && (
+                          <button
+                            disabled={updatingId === order.id}
+                            onClick={() => aiAutoSubstitute(order.id)}
+                            className="btn"
+                            style={{ padding: '8px 12px', background: '#F3E8FF', color: '#6B21A8', fontWeight: '700', borderRadius: '10px', border: '1px solid #D8B4FE' }}
+                            title="Tự động kiểm tra và đề xuất thay thế món bằng AI"
+                          >
+                            🤖 AI Đổi món
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -315,6 +340,16 @@ const OrdersPage = () => {
             {/* Items List */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
               <h4 style={{ fontSize: '15px', fontWeight: '700', margin: 0 }}>Danh sách món đặt ({selectedOrder.items?.length || 0})</h4>
+              {selectedOrder.status !== 'Completed' && selectedOrder.status !== 'Cancelled' && (
+                <button
+                  disabled={updatingId === selectedOrder.id}
+                  onClick={() => aiAutoSubstitute(selectedOrder.id)}
+                  className="btn"
+                  style={{ padding: '6px 14px', background: '#9333EA', color: '#FFFFFF', fontWeight: '700', borderRadius: '10px', fontSize: '13px' }}
+                >
+                  🤖 Chạy AI Tối Ưu & Thay Thế Món
+                </button>
+              )}
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
               {(selectedOrder.items || []).map((item, idx) => (

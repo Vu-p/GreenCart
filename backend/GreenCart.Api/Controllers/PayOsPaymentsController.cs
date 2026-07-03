@@ -166,14 +166,15 @@ public sealed class PayOsPaymentsController(
 
     private async Task SaveOrderPaymentEventAsync(Order order, string eventType, CancellationToken cancellationToken)
     {
-        var payload = JsonSerializer.Serialize(new
+        var eventData = new
         {
-            order.Id,
-            order.OrderNumber,
-            order.Status,
-            order.PaymentStatus,
-            order.UpdatedAt
-        });
+            id = order.Id,
+            orderNumber = order.OrderNumber,
+            status = order.Status,
+            paymentStatus = order.PaymentStatus,
+            updatedAt = order.UpdatedAt
+        };
+        var payload = JsonSerializer.Serialize(eventData);
 
         dbContext.RealtimeEvents.Add(new RealtimeEvent
         {
@@ -195,9 +196,9 @@ public sealed class PayOsPaymentsController(
         });
 
         await dbContext.SaveChangesAsync(cancellationToken);
-        await orderHub.Clients.Group(OrderHub.OrderGroup(order.Id.ToString())).SendAsync(eventType, payload, cancellationToken);
-        await orderHub.Clients.Group(OrderHub.OrderGroup(order.OrderNumber)).SendAsync(eventType, payload, cancellationToken);
-        await orderHub.Clients.Group(OrderHub.UserGroup(order.UserId.ToString())).SendAsync(eventType, payload, cancellationToken);
+        await orderHub.Clients.Group(OrderHub.OrderGroup(order.Id.ToString())).SendAsync(eventType, eventData, cancellationToken);
+        await orderHub.Clients.Group(OrderHub.OrderGroup(order.OrderNumber)).SendAsync(eventType, eventData, cancellationToken);
+        await orderHub.Clients.Group(OrderHub.UserGroup(order.UserId.ToString())).SendAsync(eventType, eventData, cancellationToken);
         await orderHub.Clients.Group(OrderHub.UserGroup(order.UserId.ToString())).SendAsync("ReceiveNotification", new
         {
             title = eventType == "OrderPaymentPaid" ? "Thanh toán thành công" : "Đã hủy thanh toán",

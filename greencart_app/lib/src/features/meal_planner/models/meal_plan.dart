@@ -37,6 +37,7 @@ class MealPlan {
     required this.id,
     required this.title,
     required this.subtitle,
+    required this.imageUrl,
     required this.minutes,
     required this.calories,
     required this.ingredients,
@@ -49,6 +50,7 @@ class MealPlan {
   final String id;
   final String title;
   final String subtitle;
+  final String imageUrl;
   final int minutes;
   final int calories;
   final List<String> ingredients;
@@ -56,18 +58,6 @@ class MealPlan {
   final List<String> steps;
   final IconData icon;
   final Color color;
-
-  String get imageUrl {
-    switch (id) {
-      case 'tomato-chicken':
-        return 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&q=80&w=900';
-      case 'berry-yogurt':
-        return 'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&q=80&w=900';
-      case 'green-bowl':
-      default:
-        return 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=80&w=900';
-    }
-  }
 
   factory MealPlan.fromJson(Map<String, dynamic> json) {
     final rawIngredients = json['ingredients'] as List<dynamic>? ?? [];
@@ -91,6 +81,7 @@ class MealPlan {
       id: json['slug'] as String? ?? json['id'] as String? ?? '',
       title: json['title'] as String? ?? '',
       subtitle: json['subtitle'] as String? ?? '',
+      imageUrl: json['imageUrl'] as String? ?? '',
       minutes: (json['minutes'] as num?)?.toInt() ?? 30,
       calories: (json['calories'] as num?)?.toInt() ?? 500,
       ingredients: strings,

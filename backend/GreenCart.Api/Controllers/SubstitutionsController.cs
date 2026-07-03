@@ -58,20 +58,21 @@ public sealed class SubstitutionsController(AppDbContext dbContext, IHubContext<
 
         dbContext.Substitutions.Add(substitution);
 
-        var payload = JsonSerializer.Serialize(new
+        var eventData = new
         {
-            substitution.Id,
-            substitution.OrderId,
-            substitution.OrderItemId,
-            substitution.OriginalProductId,
+            id = substitution.Id,
+            orderId = substitution.OrderId,
+            orderItemId = substitution.OrderItemId,
+            originalProductId = substitution.OriginalProductId,
             originalProductName = originalProduct.Name,
-            substitution.ReplacementProductId,
+            replacementProductId = substitution.ReplacementProductId,
             replacementProductName = replacementProduct.Name,
             replacementImageUrl = replacementProduct.ImageUrl,
             replacementPrice = replacementProduct.Price,
-            substitution.Status,
-            substitution.Note
-        });
+            status = substitution.Status,
+            note = substitution.Note
+        };
+        var payload = JsonSerializer.Serialize(eventData);
 
         dbContext.RealtimeEvents.Add(new RealtimeEvent
         {
@@ -83,9 +84,9 @@ public sealed class SubstitutionsController(AppDbContext dbContext, IHubContext<
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        await orderHub.Clients.Group(OrderHub.OrderGroup(order.Id.ToString())).SendAsync("SubstitutionProposed", payload, cancellationToken);
-        await orderHub.Clients.Group(OrderHub.OrderGroup(order.OrderNumber)).SendAsync("SubstitutionProposed", payload, cancellationToken);
-        await orderHub.Clients.Group(OrderHub.UserGroup(order.UserId.ToString())).SendAsync("SubstitutionProposed", payload, cancellationToken);
+        await orderHub.Clients.Group(OrderHub.OrderGroup(order.Id.ToString())).SendAsync("SubstitutionProposed", eventData, cancellationToken);
+        await orderHub.Clients.Group(OrderHub.OrderGroup(order.OrderNumber)).SendAsync("SubstitutionProposed", eventData, cancellationToken);
+        await orderHub.Clients.Group(OrderHub.UserGroup(order.UserId.ToString())).SendAsync("SubstitutionProposed", eventData, cancellationToken);
 
         return Ok(ApiMappings.ToResponse(substitution));
     }
@@ -117,16 +118,14 @@ public sealed class SubstitutionsController(AppDbContext dbContext, IHubContext<
         }
 
         var bestMatch = candidates
-            .OrderByDescending(p => (originalProduct != null && p.CategoryId == originalProduct.CategoryId ? 100 : 0) +
-                                    (originalProduct != null && p.Price < originalProduct.Price ? 60 + (double)((originalProduct.Price - p.Price) / 1000m) : (originalProduct != null && p.Price == originalProduct.Price ? 20 : (originalProduct != null ? - (double)((p.Price - originalProduct.Price) / 1000m) : 0))) +
-                                    (p.IsOrganic ? 30 : 0) +
-                                    (p.IsDeal ? 30 : 0))
+            .OrderByDescending(p => ScoreCulinaryMatch(originalProduct, p))
             .First();
 
         var priceDiff = originalProduct != null ? originalProduct.Price - bestMatch.Price : 0;
+        var clusterReason = GetCulinaryClusterReason(originalProduct, bestMatch);
         var note = priceDiff > 0
-            ? $"🤖 AI Đề xuất tối ưu: Thay '{orderItem.ProductName}' ({originalProduct?.Price:N0}đ) bằng '{bestMatch.Name}' (Cùng loại, CHẤT LƯỢNG TỐT & RẺ HƠN, giúp bạn TIẾT KIỆM {priceDiff:N0}đ!)"
-            : $"🤖 AI Đề xuất tối ưu: Thay '{orderItem.ProductName}' bằng '{bestMatch.Name}' (Cùng danh mục dinh dưỡng, tối ưu giá trị & chất lượng tốt nhất)";
+            ? $"🤖 AI Culinary Match: Thay '{orderItem.ProductName}' bằng '{bestMatch.Name}' ({clusterReason}, GIÁ RẺ HƠN giúp bạn TIẾT KIỆM {priceDiff:N0}đ!)"
+            : $"🤖 AI Culinary Match: Thay '{orderItem.ProductName}' bằng '{bestMatch.Name}' ({clusterReason}, đảm bảo giá trị dinh dưỡng tương đương)";
 
         var substitution = new Substitution
         {
@@ -143,47 +142,13 @@ public sealed class SubstitutionsController(AppDbContext dbContext, IHubContext<
         dbContext.Notifications.Add(new Notification
         {
             UserId = order.UserId,
-            Title = "🤖 AI Đề xuất đổi món",
-            Message = $"Sản phẩm '{orderItem.ProductName}' trong đơn {order.OrderNumber} được AI gợi ý thay bằng '{bestMatch.Name}'.",
+            Title = "🤖 AI Đề xuất đổi món phù hợp",
+            Message = $"Sản phẩm '{orderItem.ProductName}' trong đơn {order.OrderNumber} được gợi ý thay bằng '{bestMatch.Name}'.",
             Type = "Substitution",
             ReferenceId = order.Id
         });
 
-        var payload = JsonSerializer.Serialize(new
-        {
-            substitution.Id,
-            substitution.OrderId,
-            substitution.OrderItemId,
-            substitution.OriginalProductId,
-            originalProductName = orderItem.ProductName,
-            substitution.ReplacementProductId,
-            replacementProductName = bestMatch.Name,
-            replacementImageUrl = bestMatch.ImageUrl,
-            replacementPrice = bestMatch.Price,
-            substitution.Status,
-            substitution.Note
-        });
-
-        dbContext.RealtimeEvents.Add(new RealtimeEvent
-        {
-            UserId = order.UserId,
-            OrderId = order.Id,
-            Type = "SubstitutionProposed",
-            Payload = payload
-        });
-
         await dbContext.SaveChangesAsync(cancellationToken);
-
-        await orderHub.Clients.Group(OrderHub.OrderGroup(order.Id.ToString())).SendAsync("SubstitutionProposed", payload, cancellationToken);
-        await orderHub.Clients.Group(OrderHub.OrderGroup(order.OrderNumber)).SendAsync("SubstitutionProposed", payload, cancellationToken);
-        await orderHub.Clients.Group(OrderHub.UserGroup(order.UserId.ToString())).SendAsync("SubstitutionProposed", payload, cancellationToken);
-        await orderHub.Clients.Group(OrderHub.UserGroup(order.UserId.ToString())).SendAsync("ReceiveNotification", new
-        {
-            title = "🤖 AI Đề xuất đổi món",
-            message = $"Sản phẩm '{orderItem.ProductName}' trong đơn {order.OrderNumber} được AI gợi ý thay bằng '{bestMatch.Name}'.",
-            type = "Substitution",
-            referenceId = order.Id
-        }, cancellationToken);
 
         return Ok(ApiMappings.ToResponse(substitution));
     }
@@ -217,24 +182,22 @@ public sealed class SubstitutionsController(AppDbContext dbContext, IHubContext<
                 if (candidatesForOrig.Count == 0) continue;
 
                 var bestMatch = candidatesForOrig
-                    .OrderByDescending(p => (p.CategoryId == orig.CategoryId ? 100 : 0) +
-                                            (p.Price < orig.Price ? 60 + (double)((orig.Price - p.Price) / 1000m) : (p.Price == orig.Price ? 20 : - (double)((p.Price - orig.Price) / 1000m))) +
-                                            (p.IsOrganic ? 30 : 0) +
-                                            (p.IsDeal ? 30 : 0))
+                    .OrderByDescending(p => ScoreCulinaryMatch(orig, p))
                     .FirstOrDefault();
 
                 if (bestMatch != null)
                 {
                     bool isOut = orig.Stock <= 0;
-                    bool isCheaperAndBetter = bestMatch.CategoryId == orig.CategoryId && bestMatch.Price < orig.Price;
+                    bool isCheaperAndBetter = ScoreCulinaryMatch(orig, bestMatch) >= 150 && bestMatch.Price < orig.Price;
 
                     if (isOut || isCheaperAndBetter)
                     {
                         var priceDiff = orig.Price - bestMatch.Price;
                         var reason = isOut ? "(hết hàng)" : "(tối ưu chi phí & chất lượng)";
+                        var clusterReason = GetCulinaryClusterReason(orig, bestMatch);
                         var note = priceDiff > 0
-                            ? $"🤖 AI Đề xuất tối ưu {reason}: Thay '{item.ProductName}' ({orig.Price:N0}đ) bằng '{bestMatch.Name}' (Cùng loại, RẺ HƠN & TỐT HƠN, giúp bạn TIẾT KIỆM {priceDiff:N0}đ!)"
-                            : $"🤖 AI Đề xuất tối ưu {reason}: Thay '{item.ProductName}' bằng '{bestMatch.Name}' (Cùng danh mục, đảm bảo chất lượng tốt nhất)";
+                            ? $"🤖 AI Culinary Match {reason}: Thay '{item.ProductName}' bằng '{bestMatch.Name}' ({clusterReason}, RẺ HƠN & TIẾT KIỆM {priceDiff:N0}đ!)"
+                            : $"🤖 AI Culinary Match {reason}: Thay '{item.ProductName}' bằng '{bestMatch.Name}' ({clusterReason})";
 
                         var sub = new Substitution
                         {
@@ -258,7 +221,70 @@ public sealed class SubstitutionsController(AppDbContext dbContext, IHubContext<
         }
 
         await dbContext.SaveChangesAsync(cancellationToken);
-        return Ok(new { message = $"🤖 AI đã tự động tạo {proposedCount} đề xuất thay thế cho các món hết hàng trong đơn!" });
+        return Ok(new { message = $"🤖 AI đã tự động tạo {proposedCount} đề xuất thay thế tối ưu cho đơn hàng!" });
+    }
+
+    private static double ScoreCulinaryMatch(Product? orig, Product candidate)
+    {
+        if (orig is null) return 0;
+        double score = 0;
+
+        // 1. Khớp cụm thực phẩm nấu ăn chuyên sâu (Culinary Clusters)
+        var origCluster = GetCulinaryCluster(orig.Name);
+        var candCluster = GetCulinaryCluster(candidate.Name);
+
+        if (origCluster != string.Empty && origCluster == candCluster)
+        {
+            score += 500; // Cùng nhóm thay thế hoàn hảo trong nấu ăn/tiêu dùng
+        }
+        else if (orig.CategoryId == candidate.CategoryId)
+        {
+            score += 150; // Cùng danh mục thực phẩm
+        }
+
+        // 2. Tối ưu giá tiền: Ưu tiên món có giá tương đương hoặc rẻ hơn cho khách
+        if (candidate.Price <= orig.Price)
+        {
+            score += 60 + (double)((orig.Price - candidate.Price) / 1000m);
+        }
+        else
+        {
+            score -= (double)((candidate.Price - orig.Price) / 1000m);
+        }
+
+        if (candidate.IsOrganic) score += 30;
+        if (candidate.IsDeal) score += 20;
+
+        return score;
+    }
+
+    private static string GetCulinaryCluster(string name)
+    {
+        var n = name.ToLowerInvariant();
+        if (n.Contains("milk") || n.Contains("sữa") || n.Contains("yogurt")) return "milk_dairy";
+        if (n.Contains("egg") || n.Contains("trứng")) return "eggs";
+        if (n.Contains("apple") || n.Contains("táo") || n.Contains("berry") || n.Contains("straw") || n.Contains("dâu")) return "sweet_fruits";
+        if (n.Contains("spinach") || n.Contains("broccoli") || n.Contains("asparagus") || n.Contains("rau") || n.Contains("cải") || n.Contains("lơ")) return "leafy_greens";
+        if (n.Contains("potato") || n.Contains("khoai") || n.Contains("corn") || n.Contains("carrots") || n.Contains("củ")) return "tubers_roots";
+        if (n.Contains("chicken") || n.Contains("gà") || n.Contains("pork") || n.Contains("heo") || n.Contains("beef") || n.Contains("bò") || n.Contains("salmon") || n.Contains("cá")) return "protein_meat";
+        if (n.Contains("onion") || n.Contains("garlic") || n.Contains("hành") || n.Contains("tỏi") || n.Contains("ginger") || n.Contains("gừng")) return "aromatics";
+        return string.Empty;
+    }
+
+    private static string GetCulinaryClusterReason(Product? orig, Product cand)
+    {
+        var cluster = GetCulinaryCluster(orig?.Name ?? "");
+        return cluster switch
+        {
+            "milk_dairy" => "Cùng nhóm sữa & đồ uống dinh dưỡng thơm mát",
+            "eggs" => "Cùng nhóm trứng sạch giàu protein dễ chế biến",
+            "sweet_fruits" => "Cùng loại trái cây giòn ngọt giàu vitamin C",
+            "leafy_greens" => "Cùng nhóm rau xanh nấu canh/xào giàu chất xơ",
+            "tubers_roots" => "Cùng loại củ quả bùi ngọt dinh dưỡng",
+            "protein_meat" => "Cùng nhóm đạm cao cấp chuẩn bị bữa ăn đầy đủ",
+            "aromatics" => "Cùng nhóm gia vị nấu nướng thơm lừng",
+            _ => "Cùng danh mục thực phẩm chất lượng cao"
+        };
     }
 
     [Authorize]
@@ -318,13 +344,14 @@ public sealed class SubstitutionsController(AppDbContext dbContext, IHubContext<
         substitution.Status = "Accepted";
         substitution.UpdatedAt = DateTimeOffset.UtcNow;
 
-        var payload = JsonSerializer.Serialize(new
+        var eventData = new
         {
-            substitution.Id,
-            substitution.OrderId,
-            substitution.Status,
-            Order = ApiMappings.ToResponse(order)
-        });
+            id = substitution.Id,
+            orderId = substitution.OrderId,
+            status = substitution.Status,
+            order = ApiMappings.ToResponse(order)
+        };
+        var payload = JsonSerializer.Serialize(eventData);
 
         dbContext.RealtimeEvents.Add(new RealtimeEvent
         {
@@ -336,8 +363,8 @@ public sealed class SubstitutionsController(AppDbContext dbContext, IHubContext<
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        await orderHub.Clients.Group(OrderHub.OrderGroup(order.Id.ToString())).SendAsync("SubstitutionAccepted", payload, cancellationToken);
-        await orderHub.Clients.Group(OrderHub.OrderGroup(order.OrderNumber)).SendAsync("SubstitutionAccepted", payload, cancellationToken);
+        await orderHub.Clients.Group(OrderHub.OrderGroup(order.Id.ToString())).SendAsync("SubstitutionAccepted", eventData, cancellationToken);
+        await orderHub.Clients.Group(OrderHub.OrderGroup(order.OrderNumber)).SendAsync("SubstitutionAccepted", eventData, cancellationToken);
 
         return Ok(ApiMappings.ToResponse(substitution));
     }
@@ -377,12 +404,13 @@ public sealed class SubstitutionsController(AppDbContext dbContext, IHubContext<
         substitution.Status = "Declined";
         substitution.UpdatedAt = DateTimeOffset.UtcNow;
 
-        var payload = JsonSerializer.Serialize(new
+        var decEventData = new
         {
-            substitution.Id,
-            substitution.OrderId,
-            substitution.Status
-        });
+            id = substitution.Id,
+            orderId = substitution.OrderId,
+            status = substitution.Status
+        };
+        var payload = JsonSerializer.Serialize(decEventData);
 
         dbContext.RealtimeEvents.Add(new RealtimeEvent
         {
@@ -394,8 +422,8 @@ public sealed class SubstitutionsController(AppDbContext dbContext, IHubContext<
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        await orderHub.Clients.Group(OrderHub.OrderGroup(order.Id.ToString())).SendAsync("SubstitutionDeclined", payload, cancellationToken);
-        await orderHub.Clients.Group(OrderHub.OrderGroup(order.OrderNumber)).SendAsync("SubstitutionDeclined", payload, cancellationToken);
+        await orderHub.Clients.Group(OrderHub.OrderGroup(order.Id.ToString())).SendAsync("SubstitutionDeclined", decEventData, cancellationToken);
+        await orderHub.Clients.Group(OrderHub.OrderGroup(order.OrderNumber)).SendAsync("SubstitutionDeclined", decEventData, cancellationToken);
 
         return Ok(ApiMappings.ToResponse(substitution));
     }

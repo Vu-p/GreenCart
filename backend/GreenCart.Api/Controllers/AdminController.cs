@@ -46,13 +46,14 @@ public sealed class AdminController(AppDbContext dbContext, IHubContext<OrderHub
         order.Status = request.Status;
         order.UpdatedAt = DateTimeOffset.UtcNow;
 
-        var payload = JsonSerializer.Serialize(new
+        var eventData = new
         {
-            order.Id,
-            order.OrderNumber,
-            order.Status,
-            order.UpdatedAt
-        });
+            id = order.Id,
+            orderNumber = order.OrderNumber,
+            status = order.Status,
+            updatedAt = order.UpdatedAt
+        };
+        var payload = JsonSerializer.Serialize(eventData);
 
         dbContext.RealtimeEvents.Add(new RealtimeEvent
         {
@@ -72,9 +73,9 @@ public sealed class AdminController(AppDbContext dbContext, IHubContext<OrderHub
         });
 
         await dbContext.SaveChangesAsync(cancellationToken);
-        await orderHub.Clients.Group(OrderHub.OrderGroup(order.Id.ToString())).SendAsync("OrderStatusChanged", payload, cancellationToken);
-        await orderHub.Clients.Group(OrderHub.OrderGroup(order.OrderNumber)).SendAsync("OrderStatusChanged", payload, cancellationToken);
-        await orderHub.Clients.Group(OrderHub.UserGroup(order.UserId.ToString())).SendAsync("OrderStatusChanged", payload, cancellationToken);
+        await orderHub.Clients.Group(OrderHub.OrderGroup(order.Id.ToString())).SendAsync("OrderStatusChanged", eventData, cancellationToken);
+        await orderHub.Clients.Group(OrderHub.OrderGroup(order.OrderNumber)).SendAsync("OrderStatusChanged", eventData, cancellationToken);
+        await orderHub.Clients.Group(OrderHub.UserGroup(order.UserId.ToString())).SendAsync("OrderStatusChanged", eventData, cancellationToken);
         await orderHub.Clients.Group(OrderHub.UserGroup(order.UserId.ToString())).SendAsync("ReceiveNotification", new
         {
             title = "Cập nhật đơn hàng",
@@ -490,12 +491,11 @@ public sealed class AdminController(AppDbContext dbContext, IHubContext<OrderHub
             .Select(p => new LowStockProductDto(p.Id, p.Name, p.Price, p.Stock, p.ImageUrl))
             .ToListAsync(cancellationToken);
 
-        var recentOrders = await dbContext.Orders
-            .AsNoTracking()
+        var recentOrders = allOrders
             .OrderByDescending(o => o.CreatedAt)
             .Take(5)
             .Select(o => new RecentOrderDto(o.Id.ToString(), o.OrderNumber, o.Total, o.Status, o.CreatedAt))
-            .ToListAsync(cancellationToken);
+            .ToList();
 
         return Ok(new AdminAnalyticsResponse(
             totalRevenue,

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:signalr_netcore/signalr_client.dart';
@@ -46,6 +47,10 @@ class SignalRService {
     _hubConnection?.on('ReceiveNotification', _onReceiveNotification);
     _hubConnection?.on('OrderStatusChanged', _onOrderStatusChanged);
     _hubConnection?.on('SubstitutionProposed', _onSubstitutionProposed);
+    _hubConnection?.on('SubstitutionAccepted', _onOrderStatusChanged);
+    _hubConnection?.on('SubstitutionDeclined', _onOrderStatusChanged);
+    _hubConnection?.on('OrderPaymentPaid', _onOrderStatusChanged);
+    _hubConnection?.on('OrderPaymentCancelled', _onOrderStatusChanged);
 
     try {
       await _hubConnection?.start();
@@ -55,14 +60,49 @@ class SignalRService {
     }
   }
 
+  Future<void> joinOrder(String orderId) async {
+    if (_hubConnection?.state == HubConnectionState.Connected) {
+      try {
+        await _hubConnection?.invoke('JoinOrder', args: [orderId]);
+      } catch (_) {}
+    }
+  }
+
+  Future<void> leaveOrder(String orderId) async {
+    if (_hubConnection?.state == HubConnectionState.Connected) {
+      try {
+        await _hubConnection?.invoke('LeaveOrder', args: [orderId]);
+      } catch (_) {}
+    }
+  }
+
+  Map<String, dynamic>? _extractPayload(Object? arg) {
+    if (arg == null) return null;
+    if (arg is Map) {
+      return Map<String, dynamic>.from(arg);
+    } else if (arg is String) {
+      try {
+        final decoded = jsonDecode(arg);
+        if (decoded is Map) {
+          return Map<String, dynamic>.from(decoded);
+        }
+      } catch (_) {}
+    }
+    return null;
+  }
+
   void _invalidateOrderProviders(List<Object?>? arguments) {
     _ref.invalidate(ordersProvider);
     if (arguments != null && arguments.isNotEmpty) {
-      final payload = arguments.first as Map<String, dynamic>?;
+      final payload = _extractPayload(arguments.first);
       if (payload != null) {
-        final orderId = payload['id'] ?? payload['Id'] ?? payload['referenceId'] ?? payload['ReferenceId'];
+        final orderId = payload['id'] ?? payload['Id'] ?? payload['orderId'] ?? payload['OrderId'] ?? payload['referenceId'] ?? payload['ReferenceId'];
+        final orderNumber = payload['orderNumber'] ?? payload['OrderNumber'];
         if (orderId != null) {
           _ref.invalidate(orderDetailProvider(orderId.toString()));
+        }
+        if (orderNumber != null) {
+          _ref.invalidate(orderDetailProvider(orderNumber.toString()));
         }
       }
     }
@@ -77,7 +117,7 @@ class SignalRService {
     _invalidateNotificationProviders();
     _invalidateOrderProviders(arguments);
     if (arguments == null || arguments.isEmpty) return;
-    final payload = arguments.first as Map<String, dynamic>?;
+    final payload = _extractPayload(arguments.first);
     if (payload == null) return;
 
     final title = payload['title']?.toString() ?? 'Thông báo mới';

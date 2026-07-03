@@ -12,11 +12,12 @@ import 'package:greencart_app/src/core/widgets/organic_state_message.dart';
 import 'package:greencart_app/src/core/widgets/pulse_dot.dart';
 import 'package:greencart_app/src/core/widgets/section_header.dart';
 import 'package:greencart_app/src/features/catalog/screens/home_screen.dart';
+import 'package:greencart_app/src/core/services/signalr_service.dart';
 import 'package:greencart_app/src/features/orders/data/orders_repository.dart';
 import 'package:greencart_app/src/features/orders/screens/orders_screen.dart';
 import 'package:greencart_app/src/features/orders/screens/rating_review_screen.dart';
 
-class OrderTrackingScreen extends ConsumerWidget {
+class OrderTrackingScreen extends ConsumerStatefulWidget {
   const OrderTrackingScreen({required this.orderId, super.key});
 
   static const routePath = '/orders/:id';
@@ -26,8 +27,27 @@ class OrderTrackingScreen extends ConsumerWidget {
   final String orderId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final orderState = ref.watch(orderDetailProvider(orderId));
+  ConsumerState<OrderTrackingScreen> createState() => _OrderTrackingScreenState();
+}
+
+class _OrderTrackingScreenState extends ConsumerState<OrderTrackingScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      ref.read(signalRServiceProvider).joinOrder(widget.orderId);
+    });
+  }
+
+  @override
+  void dispose() {
+    ref.read(signalRServiceProvider).leaveOrder(widget.orderId);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final orderState = ref.watch(orderDetailProvider(widget.orderId));
 
     return Scaffold(
       appBar: AppBar(
@@ -43,7 +63,7 @@ class OrderTrackingScreen extends ConsumerWidget {
           icon: const Icon(Icons.arrow_back),
         ),
         title: MobilePageTitle(
-          title: 'Order $orderId',
+          title: 'Order ${widget.orderId}',
           subtitle: 'Live delivery tracking',
         ),
       ),
@@ -56,7 +76,7 @@ class OrderTrackingScreen extends ConsumerWidget {
               icon: Icons.local_shipping_outlined,
               title: 'Could not load this order.',
               actionLabel: 'Retry',
-              onAction: () => ref.invalidate(orderDetailProvider(orderId)),
+              onAction: () => ref.invalidate(orderDetailProvider(widget.orderId)),
             ),
           ],
         ),
